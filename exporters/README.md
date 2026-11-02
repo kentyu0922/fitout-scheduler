@@ -12,7 +12,7 @@
 | :--- | :--- | :--- | :--- |
 | **`mpp_renderer.py`** | `.mpp` / `.xml` | pywin32, MS Project COM | 调用 MS Project 原生 COM 接口，精准设置项目开工起点、多层大纲级别 (OutlineLevel)、FS/SS/FF 前置关联关系、7天或工作日基准日历、节假日 Exceptions、注入 Text1/2/3 责任列，安全 CalculateProject 并落盘。 |
 | **`msp_automation.py`** | COM 脚本控制 / `.pdf` | pywin32, win32com | 提供底层的 MS Project Session 会话生命周期管理、任务导入/更新、批量属性安全提取及打印控制。 |
-| **`export_html.py`** | `.html` (单文件) | 纯 Python, 内嵌 SVG/JS/CSS | 遵循 executive 高管看板标准，渲染包含 Executive KPI 卡片、方案比选矩阵、战略里程碑时间轴、Level 2 甘特图、关键路径全景导览链及合规雷达的交互式看板。 |
+| **`export_html.py`** | `.html` (单文件) | 纯 Python, 内嵌 SVG/JS/CSS | 遵循管理层汇报看板标准，渲染包含 KPI 卡片、方案比选矩阵、战略里程碑时间轴、Level 2 甘特图、关键路径全景导览链及合规雷达的交互式看板。 |
 | **`export_pptx.py`** | `.pptx` | python-pptx, lxml | 纯代码自动生成 16:9 极简暖白风格高层汇报级单页 Key Milestones Timeline 演示文稿，实现卡片防挤压排版与关键卡口高亮。 |
 | **`export_pdf.py`** | `.pdf` | reportlab, pythoncom | 支持 A3 横向工程任务明细报表 (`--format=table`) 与带里程碑菱形的印刷级甘特图 (`--format=gantt`) 输出。 |
 

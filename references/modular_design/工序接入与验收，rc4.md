@@ -47,6 +47,6 @@ rc3的图中虽有部分前后置关系，但行业工作主要表现为零日�
 
 - [WBDG Building Commissioning: The Process](https://stg.wbdg.org/building-commissioning)：用于检查需求、设计、施工检查、功能验证及运维交接贯通的流程框架。
 - [WBDG Commissioning Documents](https://legacy.wbdg.org/building-commissioning/commissioning-documents)：用于检查安装准备记录、缺陷关闭、培训与系统资料的交付证据。
-- [Cisco Unified Communications Optimization Service](https://www.cisco.com/c/dam/en_us/about/doing_business/legal/service_descriptions/docs/Unified_Communications_Optimization_Service.pdf)：作为迁移、回退和验收测试的厂商实践例证，不能替代本项目应用系统方案。
+- [某公司统一通信优化服务](https://www.cisco.com/c/dam/en_us/about/doing_business/legal/service_descriptions/docs/Unified_Communications_Optimization_Service.pdf)：作为迁移、回退和验收测试的厂商实践例证，不能替代本项目应用系统方案。
 
 这些资料提供过程参考，不构成中国项目强制规范或通用工期定额。新增1–4天工作为未校准规划暂估，原签收L2配置保持原值。

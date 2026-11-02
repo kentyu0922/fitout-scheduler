@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-export_html.py - 生成 高管级 (C-Suite Standard) 交付策略与进度推演决策看板
+export_html.py - 生成管理层汇报版式交付策略与进度推演决策看板
 ======================================================================================
 特性标准 (executive dashboard standard):
   1. 【排版风格与商务美学】：纯净瓷白与雅致浅灰 (#f8fafc / #ffffff)，极细 1px 微边框 (#e2e8f0)，深空海军蓝 (#1F1F1F) 与克制点缀，Pretendard/Inter/SF Pro 高阶等宽数字排版。
@@ -49,7 +49,7 @@ def generate_html_report(
     output_html_path: str
 ) -> str:
     """
-    根据已解算任务列表与项目元数据，渲染生成 高管级交付控制台。
+    根据已解算任务列表与项目元数据，渲染生成管理层汇报控制台。
     """
     output_html_path = os.path.abspath(output_html_path)
     out_dir = os.path.dirname(output_html_path)
