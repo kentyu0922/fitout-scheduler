@@ -1,0 +1,171 @@
+{
+  "version": "1.0",
+  "description": "Scope identity for every ingested observation. scope_id is the ONLY key permitted for cross-source and cross-region comparison. Two items sharing an activity_type but not a scope_id are never pooled.",
+  "comparison_key": ["scope_id", "normalized_unit", "evidence_purpose"],
+  "rule": "Same scope_id + same normalized unit + compatible evidence_purpose is required before any pooling, median or variance is computed.",
+
+  "scopes": {
+    "partition_framing:framing_only:m2:v1": {
+      "engine_scope_id": "partition_framing:installed:m2:v1",
+      "activity_type": "partition_framing",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["setting out", "marking", "cutting", "stud and track installation", "anti-corrosion paint on steel"],
+      "excludes": ["boarding", "taping", "insulation", "doors"],
+      "note": "Framing skeleton only. Stud spacing is a design parameter recorded on the observation, not part of the scope boundary."
+    },
+    "ceiling_grid:accessible_flat:m2:v1": {
+      "engine_scope_id": "ceiling_grid:installed:m2:v1",
+      "activity_type": "ceiling_grid",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["hanger fabrication and fixing", "setting out", "main and cross runner installation", "temporary bracing", "levelling", "openings"],
+      "excludes": ["board or tile finish", "lighting cut-outs by others"],
+      "note": "Accessible (上人型) flat grid. Access class is held in the scope because it changes hanger duty."
+    },
+    "ceiling_grid:non_accessible_flat:m2:v1": {
+      "engine_scope_id": "ceiling_grid:installed:m2:v1",
+      "activity_type": "ceiling_grid",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["hanger fabrication and fixing", "setting out", "main and cross runner installation", "temporary bracing", "levelling"],
+      "excludes": ["board or tile finish"],
+      "note": "Non-accessible (不上人型) flat grid."
+    },
+    "ceiling_grid:accessible_stepped:m2:v1": {
+      "engine_scope_id": "ceiling_grid:installed:m2:v1",
+      "activity_type": "ceiling_grid",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["as accessible flat grid", "stepped / dropped level formwork of the grid"],
+      "excludes": ["board or tile finish", "feature ceiling carpentry"],
+      "note": "Stepped (跌级) form. The engine has a separate feature_ceiling activity, so flat-grid equivalence is not assumed."
+    },
+    "gypsum_ceiling:single_layer_with_taping:m2:v1": {
+      "engine_scope_id": "gypsum_ceiling:installed:m2:v1",
+      "activity_type": "gypsum_ceiling",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["board fixing to grid", "surface cleaning", "joint filling", "joint tape"],
+      "excludes": ["grid installation", "decoration", "skim coat"],
+      "note": "Single layer, board thickness recorded on the observation. Taping IS included."
+    },
+    "gypsum_ceiling:single_layer_no_taping:m2:v1": {
+      "engine_scope_id": "gypsum_ceiling:installed:m2:v1",
+      "activity_type": "gypsum_ceiling",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["board fixing to grid", "surface cleaning"],
+      "excludes": ["joint tape", "joint filler", "grid installation", "decoration"],
+      "note": "Taping is priced as a separate sub-item. NOT comparable with single_layer_with_taping."
+    },
+    "gypsum_ceiling:double_layer:m2:v1": {
+      "engine_scope_id": "gypsum_ceiling:installed:m2:v1",
+      "activity_type": "gypsum_ceiling",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["two layers of board fixing", "surface cleaning"],
+      "excludes": ["joint tape unless stated", "grid installation"],
+      "note": "Layer count is a scope condition, not an increment."
+    },
+    "gypsum_ceiling:incremental_layer:m2:v1": {
+      "engine_scope_id": "gypsum_ceiling:installed:m2:v1",
+      "activity_type": "gypsum_ceiling",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["one additional board layer on an existing layer"],
+      "excludes": ["the base layer", "joint treatment"],
+      "note": "Delta item, not a complete activity."
+    },
+    "painting:coats_only_no_prep:m2:v1": {
+      "engine_scope_id": "painting:installed:m2:v1",
+      "activity_type": "painting",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["surface cleaning", "touch-up filling", "sanding", "finish coats"],
+      "excludes": ["full skim coat / 满刮腻子", "primer if priced separately", "substrate preparation"],
+      "note": "Matches the engine painting declaration 'excludes substrate preparation'. Putty is a separate sub-item in this quota."
+    },
+    "painting:incremental_coat:m2:v1": {
+      "engine_scope_id": "painting:installed:m2:v1",
+      "activity_type": "painting",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["one additional finish coat"],
+      "excludes": ["first coat", "putty", "primer", "preparation"],
+      "note": "Delta item, not a complete activity."
+    },
+    "painting_plus_prep:wall_composite:m2:v1": {
+      "engine_scope_id": null,
+      "activity_type": null,
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["cleaning", "two full skim coats / 满刮腻子二遍", "sanding", "one primer coat", "two finish coats"],
+      "excludes": [],
+      "spans_activity_types": ["wall_prep", "painting"],
+      "note": "Composite of wall_prep + painting. Assigning the whole value to painting would double-count preparation already carried by wall_prep."
+    },
+    "painting_plus_prep:ceiling_composite:m2:v1": {
+      "engine_scope_id": null,
+      "activity_type": null,
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["cleaning", "two full skim coats", "sanding", "one primer coat", "two finish coats"],
+      "excludes": [],
+      "spans_activity_types": ["wall_prep", "painting"],
+      "note": "Same composite boundary as the wall version, applied to a soffit."
+    },
+    "carpet:tile_no_tackless_no_underlay:m2:v1": {
+      "engine_scope_id": "carpet:installed:m2:v1",
+      "activity_type": "carpet",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["substrate cleaning", "butting and laying tiles", "edge trimming", "surface cleaning"],
+      "excludes": ["tackless strip / 钉压条", "underlay or cushion", "adhesive bed"],
+      "note": "Dry-laid carpet tile. Excludes fixing and underlay."
+    },
+    "carpet:fixed_with_tackless:m2:v1": {
+      "engine_scope_id": "carpet:installed:m2:v1",
+      "activity_type": "carpet",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["setting out", "cutting", "substrate cleaning", "tackless strip fixing", "adhesive", "seaming", "laying", "edge trimming", "cleaning"],
+      "excludes": ["underlay unless stated"],
+      "note": "Fully fixed broadloom. Includes fixing components absent from the tile scope."
+    },
+    "carpet:tile_single_layer:m2:v1": {
+      "engine_scope_id": "carpet:installed:m2:v1",
+      "activity_type": "carpet",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["substrate preparation", "laying modular tile", "seaming tape", "adhesive", "trimming", "cleaning"],
+      "excludes": ["underlay", "broadloom"],
+      "note": "Modular tile with seaming tape and adhesive. Fixing method differs from the Shanghai dry-laid tile scope."
+    },
+    "raised_floor:timber_with_supports:m2:v1": {
+      "engine_scope_id": "raised_floor:installed:m2:v1",
+      "activity_type": "raised_floor",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["substrate cleaning", "setting out", "pedestal installation", "bearers", "panel laying", "cleaning"],
+      "excludes": ["floor finish", "stringing and cabling"],
+      "note": "Timber core panel. Calcium-sulphate and steel panels are not interchangeable."
+    },
+    "containment:tray_no_supports:m:v1": {
+      "engine_scope_id": "containment:installed:m:v1",
+      "activity_type": "containment",
+      "normalized_unit": "m/worker-8h-day",
+      "includes": ["assembly", "welding or bolting", "bends tees crosses", "cover and divider fittings", "earth bonding", "on-site rectification"],
+      "excludes": ["hangers and support steel", "cable pulling"],
+      "note": "Support steel is NOT in the material schedule and is priced elsewhere, so the item understates installed length productivity."
+    },
+    "lighting:surface_mounted_small:each:v1": {
+      "engine_scope_id": "lighting:installed:each:v1",
+      "activity_type": "lighting",
+      "normalized_unit": "each/worker-8h-day",
+      "includes": ["measuring", "marking", "drilling", "plug fixing", "fixture installation", "wiring", "termination", "earthing"],
+      "excludes": ["conduit and containment", "circuit wiring from the board", "lamp supply unless stated"],
+      "note": "Size class is a condition (shade circumference limit), recorded on the observation."
+    },
+    "hvac_duct:fabricate_and_install:m2:v1": {
+      "engine_scope_id": "hvac_duct:installed:m2:v1",
+      "activity_type": "hvac_duct",
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["setting out", "cutting and folding", "seaming", "stiffener and hanger bracket fabrication", "erection", "alignment", "gasket", "corner and bolt fixing", "fittings"],
+      "excludes": ["thermal insulation", "air balancing", "final connection to plant"],
+      "note": "Fabrication and installation are merged, and part of the fabrication is off-site. Not comparable with an install-only site scope."
+    },
+    "gypsum_boarding:nail_spot_prime:m2:v1": {
+      "engine_scope_id": null,
+      "activity_type": null,
+      "normalized_unit": "m2/worker-8h-day",
+      "includes": ["spot filling of nail holes", "anti-rust spot priming"],
+      "excludes": ["full skim coat", "finish coats"],
+      "note": "No engine activity type carries this work separately. Retained as reference only."
+    }
+  }
+}

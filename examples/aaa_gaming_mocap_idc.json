@@ -1,0 +1,19 @@
+{
+  "project_name": "示例科技公司B AAA 游戏工作室光学动捕棚 (MoCap) 与高算力机房研发总部项目",
+  "city": "上海",
+  "area": 12000,
+  "sector": "gaming",
+  "delivery": "DB",
+  "bidding": "invite",
+  "start_date": "2027-03-01",
+  "nc_rating": "NC-20",
+  "esd_level": "机房区 ANSI/ESD S20.20",
+  "power_kva": 2400,
+  "mocap_camera_count": 36,
+  "mocap_stage_area_sqm": 450,
+  "specialist_area_sqm": 450,
+  "addon_a04": "required",
+  "addon_a06": "required",
+  "addon_a07": "required",
+  "addon_a08": "required"
+}

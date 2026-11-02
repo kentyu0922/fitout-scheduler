@@ -1,0 +1,17 @@
+{
+  "examples/01_їйш╡┴└╒ш╫╒р╝_╡г╟╒жцї+э╡№╗.json": "examples/示例一_上海办公2000平.json",
+  "examples/03_╡╪б╒└╫╒ш╫╒р╝_■°л╡сч╡∙╤╡гГїй─▐чм╒э╜╡ш╤╒лэ╒ёо╡Єж.json": "examples/示例三_杭州办公1500平.json",
+  "examples/02_їйш╡┴└■ЎГ■ыо╒ю+▐ь╗_╡ш╤╒лэї+э╡№╗┌в╔╒р┐.json": "examples/示例二_上海生物医药办公_报审信息齐全.json",
+  "references/modular_design/04_їе╪╡ьлїй─┌╟щ■Ў┐▐еж■Єю_V1.md": "references/modular_design/依据与适用边界_V1.md",
+  "references/modular_design/06_╒шс▐вв╡┐э╒╪∙╒└╤╒ж┼╒ьэ_V2.md": "references/modular_design/22项加载模块工序与接口_V2.md",
+  "references/modular_design/05_┌чч▐жб╒°°┌Їе▐└╗_V2.md": "references/modular_design/企业三轮采购与四条链路_V2.md",
+  "references/modular_design/09_їйЇ┌эж╡╟+╡─║╡─╤╒┼·їй─■+ф╒╔ъ▐║ф╒ъ╓_rc7.md": "references/modular_design/专项总控接口与组合规则_rc7.md",
+  "references/modular_design/02_Addon╡┐э╒╪∙╒└╤╒ж┼їй─╡─╤╒┼·.csv": "references/modular_design/02_加载项工序与接口.csv",
+  "references/modular_design/08_╡√в╒└╤╡─╤╒┼·їй─┌мю╡Ў┬_V4.md": "references/modular_design/工序接入与验收，rc4.md",
+  "references/modular_design/00_╡┐э╒╪∙╒ю√╡╫┬╡╫фїй─╒└╤╒ж┼▐║ф╒ъ╓_V1.md": "references/modular_design/PMP_Schedule_模块化架构与工序规则_V1.md",
+  "references/modular_design/╡┐э╒╪∙▐║ф╡с+■жє╒+Є.json": "references/modular_design/模块规格提案.json",
+  "references/modular_design/02_Addon╒└╤╒ж┼╒ьэ_┌р▐╗+■ыъ.md": "references/modular_design/Add-on工序卡_V1.md",
+  "references/modular_design/03_╒р╤╒┼·╒ъё╒л▄їй─┌∙б■─╗┌мю╡Ў┬_V1.md": "references/modular_design/统一入口、组合接口与闭环验收_V1.md",
+  "references/modular_design/07_▐эюїй▄╒Гж■э╟╡┴№■┐я_V3.md": "references/modular_design/无Addon也保留的五行业基础流程_V3.md",
+  "references/modular_design/01_їжю╒ь№╒╤∙╒Гж■э╟■+ф╒╔ъ.csv": "references/modular_design/01_加载项工序与接口.csv"
+}

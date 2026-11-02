@@ -1,0 +1,14 @@
+{
+  "project": {
+    "project_name": "示例三_杭州办公1500平",
+    "city": "杭州",
+    "area_sqm": 1500,
+    "sector": "finance",
+    "delivery": "DBB",
+    "bidding": "invite",
+    "start_date": "2027-02-01",
+    "target_date": "2027-10-31",
+    "authority_permit_days": 9,
+    "authority_days_basis": "示例假设：当地住建窗口答复许可约9个工作日"
+  }
+}

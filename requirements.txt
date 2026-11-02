@@ -1,0 +1,22 @@
+# 核心依赖包
+# 1. MS Project COM 自动化（Windows-only，物理 .mpp 导出必需）
+#    非 Windows 不安装 pywin32；main.py --no_mpp 路径按设计不依赖它（延迟/受保护 import）
+pywin32>=306; sys_platform == "win32"
+
+# 2. A3 打印级 PDF 任务表/甘特图（所有平台；非 Windows 自动回退到可用中文字体或内建 CID 字体）
+reportlab>=4.0
+
+# 3. 高层汇报级单页 PPTX 演示文稿生成
+python-pptx>=1.0.2
+Pillow>=10.0.0
+lxml>=5.0.0
+openpyxl>=3.1
+
+# 4. 交付说明 Word（缺少时自动改出 .txt 说明，不影响计划文件）
+python-docx>=1.1
+
+# 5. 本仓库回归（不参与 PDF 路线运行时）
+pytest>=7.0
+
+# PDF/PNG render acceptance tests
+PyMuPDF>=1.24

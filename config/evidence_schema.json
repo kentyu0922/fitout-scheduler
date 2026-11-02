@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "description": "Two-dimensional evidence model. Axis A = provenance (where the number came from). Axis B = purpose (what the number was built to measure). Source authenticity and schedule applicability are separate judgements; an official source never earns a high planning confidence on its own.",
+
+  "axis_a_provenance": {
+    "A0": "assumption_or_placeholder",
+    "A1": "published_or_official_standard",
+    "A2": "contractor_or_industry_benchmark",
+    "A3": "historical_project_actual",
+    "A4": "calibrated_portfolio_benchmark"
+  },
+  "axis_a_notes": {
+    "A0": "Engine defaults and any value with no external source. Never upgraded by this layer.",
+    "A1": "Government quota, labour norm or published standard. High source authenticity, but usually built for cost/budget consumption, not for schedule planning.",
+    "A2": "Contractor or industry benchmark supplied outside a verified project record.",
+    "A3": "Measured actuals from a named project with accepted quantity and timesheet labour.",
+    "A4": "A rate derived from a reviewed A3 population. Requires sample size, scope and unit compatibility."
+  },
+
+  "axis_b_purpose": {
+    "budget_consumption": "Labour days allowed per unit for pricing. Includes allowance/幅度差 and is not a site production rate.",
+    "planning_benchmark": "A rate whose declared purpose is schedule planning or duration estimating.",
+    "observed_production": "Measured output per worker-day from a real site record.",
+    "calibrated_production": "A planning rate derived from a compatible observed population."
+  },
+
+  "purpose_compatibility": {
+    "budget_consumption": ["budget_consumption"],
+    "planning_benchmark": ["planning_benchmark"],
+    "observed_production": ["observed_production"],
+    "calibrated_production": ["calibrated_production", "observed_production"]
+  },
+
+  "scope_equivalence_classes": {
+    "exact": "Same work content boundary as the target activity; no work belonging to another activity type and no missing component.",
+    "partial": "Same activity boundary, but a declared design condition (grade, size class, spacing, thickness, layer count, access type) is not declared in the target scope.",
+    "composite": "Spans more than one activity type; cannot be attributed to a single activity without splitting.",
+    "not_comparable": "No comparable engine activity, or the item is a delta/increment rather than a complete activity."
+  },
+
+  "schedule_applicability_classes": {
+    "direct": "Scope closely matches the site planning activity and the item may become a planning benchmark candidate.",
+    "adjusted": "Scope is broadly aligned but a conversion or condition factor is required before it can be used.",
+    "reference_only": "Usable as a sanity check; must not enter a selected planning rate.",
+    "rejected": "Scope, unit or definition cannot be compared reliably."
+  },
+
+  "applicability_guardrails": {
+    "official_source_never_auto_direct": true,
+    "guardrail_reason": "An A1 budget-consumption item is priced labour, not site production. Marking it direct would convert a cost allowance into a schedule rate without evidence.",
+    "official_default_class": "adjusted",
+    "composite_default_class": "reference_only",
+    "not_comparable_default_class": "rejected"
+  },
+
+  "standard_units": [
+    "m2/worker-8h-day",
+    "m/worker-8h-day",
+    "each/worker-8h-day"
+  ],
+  "day_basis": {
+    "standard_hours": 8,
+    "note": "Standard workday is 8 hours. A source using a different day length is rescaled by standard_hours / source_hours. Actual recorded hours in A3 data are never rescaled."
+  },
+
+  "required_fields": [
+    "evidence_id",
+    "activity_type",
+    "scope_id",
+    "source_name",
+    "source_region",
+    "source_version",
+    "source_type",
+    "table_number",
+    "item_number",
+    "pdf_page",
+    "print_page",
+    "raw_unit",
+    "raw_value",
+    "raw_quantity_unit",
+    "hours_per_workday",
+    "normalized_unit",
+    "work_time_basis",
+    "scope_description",
+    "work_included",
+    "work_excluded",
+    "verification_status",
+    "verification_method",
+    "source_authenticity_confidence",
+    "schedule_applicability",
+    "scope_equivalence",
+    "provenance_level",
+    "evidence_purpose",
+    "conversion_note",
+    "limitations",
+    "source_fingerprint",
+    "created_on"
+  ],
+
+  "verification_status_values": ["verified", "pending", "blocked", "excluded"],
+  "source_authenticity_values": ["high", "medium", "low", "unknown"],
+  "confidence_levels": ["none", "very_low", "low", "medium", "high"],
+
+  "note": "Required fields are validated but a missing locator is a data gap, never a reason to invent a value."
+}

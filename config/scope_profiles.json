@@ -1,0 +1,50 @@
+{
+  "_comment": "P1-11 fit-out scope profiles. Inputting only an area used to silently schedule the full trade list as fact. Profiles make the scope assumption explicit; the default remains full scope but is disclosed as ASSUMED_SCOPE with its assumed trades, reused systems and unknowns. Physical-logic exclusions are provisional until a measured takeoff overrides them.",
+  "status": "provisional",
+  "profiles": {
+    "SHELL_TO_CATB": {
+      "description": "Bare shell / Cat A base to full Cat B fit-out.",
+      "included_activity_types": null,
+      "excluded_activity_types": ["demolition", "waste_removal"],
+      "assumed_reuse": ["base building structure", "base building vertical MEP risers"],
+      "notes": "No existing fit-out to demolish."
+    },
+    "CAT_A_TO_CATB": {
+      "description": "Cat A landlord base with suspended ceilings/raised floor in place; tenant Cat B on top.",
+      "included_activity_types": null,
+      "excluded_activity_types": ["demolition", "waste_removal"],
+      "assumed_reuse": ["landlord Cat A ceilings", "landlord raised floor", "base building MEP risers", "sprinkler mains"],
+      "notes": "Cat A scope must be contractually confirmed; reuse list is provisional."
+    },
+    "EXISTING_REFURB": {
+      "description": "Refurbishment of an occupied-or-vacant existing fit-out.",
+      "included_activity_types": null,
+      "excluded_activity_types": [],
+      "assumed_reuse": [],
+      "notes": "Demolition fraction is UNKNOWN and must come from --site_condition cat_b_existing or renovation_partial with --demolition_fraction; this profile never invents a strip fraction."
+    },
+    "LIGHT_REFRESH": {
+      "description": "Cosmetic refresh: finishes and furniture only.",
+      "included_activity_types": ["wall_prep", "painting", "wallcovering", "carpet", "vinyl", "doors", "joinery", "lighting", "furniture", "snagging", "construction_cleaning", "final_cleaning", "site_setup", "setting_out"],
+      "excluded_activity_types": ["demolition", "waste_removal", "partition_framing", "gypsum_boarding", "glass_partition", "raised_floor", "ceiling_grid", "gypsum_ceiling", "feature_ceiling", "hvac_duct", "chw_pipe", "containment", "fcu", "sprinkler", "fire_alarm", "structured_cabling", "power", "tile_stone", "diffuser", "testing_commissioning"],
+      "assumed_reuse": ["existing partitions", "existing ceilings", "existing MEP", "existing fire systems"],
+      "notes": "Existing systems reused as-is; fire/MEP applicability under refresh requires separate authority confirmation."
+    },
+    "FULL_RENOVATION": {
+      "description": "Full strip-and-rebuild of an existing fit-out.",
+      "included_activity_types": null,
+      "excluded_activity_types": [],
+      "assumed_reuse": [],
+      "notes": "Requires --site_condition full_strip (or cat_b_existing) for demolition quantities."
+    },
+    "CUSTOM": {
+      "description": "User-defined scope; not selectable without an explicit definition.",
+      "included_activity_types": null,
+      "excluded_activity_types": null,
+      "assumed_reuse": null,
+      "implemented": false,
+      "not_implemented_reason": "A custom scope requires an explicit user-supplied definition; selection is rejected rather than defaulted.",
+      "notes": "Rejected on selection."
+    }
+  }
+}

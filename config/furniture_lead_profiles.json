@@ -1,0 +1,43 @@
+{
+    "version": "1.0.0",
+    "default_profile": "SYSTEM_FURNITURE",
+    "furniture_task_name_contains": "家具生产交货",
+    "profiles": {
+        "STANDARD_LOCAL": {
+            "lead_days": 15,
+            "basis": "本地标准成品：库存排产 + 市内物流",
+            "confidence": "provisional",
+            "evidence_ref": null
+        },
+        "CUSTOM_LOCAL": {
+            "lead_days": 30,
+            "basis": "本地定制：含现场复尺后下单",
+            "confidence": "provisional",
+            "evidence_ref": null
+        },
+        "IMPORTED": {
+            "lead_days": 90,
+            "basis": "进口家具：原装进口海运与清关（对齐 long_lead.json Furniture.Executive_Desk_Imported=90d）",
+            "confidence": "provisional",
+            "evidence_ref": "config/long_lead.json#Furniture.Executive_Desk_Imported"
+        },
+        "SYSTEM_FURNITURE": {
+            "lead_days": 35,
+            "basis": "系统家具（工作站类）：标准拼装 + 排产（对齐 long_lead.json Furniture.Workstation=35d）",
+            "confidence": "provisional",
+            "evidence_ref": "config/long_lead.json#Furniture.Workstation"
+        },
+        "LOOSE_FURNITURE": {
+            "lead_days": 10,
+            "basis": "散件活动家具：现货采购",
+            "confidence": "provisional",
+            "evidence_ref": null
+        },
+        "CUSTOM_JOINERY": {
+            "lead_days": 45,
+            "basis": "定制木作/固装家具：深化图下单 + 工厂制作",
+            "confidence": "provisional",
+            "evidence_ref": null
+        }
+    }
+}

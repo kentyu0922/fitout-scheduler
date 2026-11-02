@@ -1,0 +1,293 @@
+{
+  "version": "1.0.0",
+  "note": "Pre-construction occupancy at the L2 reference plate. Scaling law, plate_ref_m2 and area_exponent are read from config/l2_master_duration.json (not duplicated). b0_days is the typical-plate duration for that role; it is not a Python constant. Statutory windows are never taken from b0.",
+  "scale_source": "config/l2_master_duration.json",
+  "crew_source": "config/trade_capacity.json#workfront",
+  "practicality_source": "config/crew_practicality.json",
+  "quantity_source": "config/quantity_benchmarks.json",
+  "specialist_source": "config/specialist_rooms.json",
+  "statutory": {
+    "sprinkler_strength_test_days": {
+      "days": 1,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "GB 50261-2017第6.2.1条：工作压≤1.0MPa时试验压=1.5倍且≥1.4MPa，稳压30min压降≤0.05MPa；时钟工序，不随面积延长。"
+    },
+    "hydrostatic_test_days": {
+      "days": 1,
+      "unit": "calendar_days",
+      "lock": true,
+      "basis": "GB 50261-2017第6.2.2条：严密性试验为工作压稳压24h无渗漏；日历时钟，不随面积延长。"
+    },
+    "formal_tender_prepare_days": {
+      "days": 20,
+      "unit": "calendar_days",
+      "lock": true,
+      "basis": "《招标投标法》第24条（2017-12-27修正）：依法必须招标的项目，自招标文件开始发出之日起至提交投标文件截止之日止，最短不得少于20日。仅 statutory_tender_required=true 时锁定；不随面积延长。"
+    },
+    "publicity_days": {
+      "days": 3,
+      "unit": "calendar_days",
+      "lock": true,
+      "basis": "《招标投标法实施条例》第54条（2019修订）：依法必须招标项目的中标候选人公示期不得少于3日。仅必须招标时锁定。"
+    },
+    "duct_leakage_check_days": {
+      "days": 1,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "GB 50243-2016第4.2.1条及附录C.1：风管严密性检测（低压1.5倍、中压1.2倍且≥750Pa保持≥5min）；时钟检测，不随面积延长。"
+    },
+    "electrical_conduit_check_days": {
+      "days": 1,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "GB 50303-2015第3.3.11条：电气导管隐蔽前应检查合格；吊顶内配管先放样并与各专业商定。时钟检查，不随面积延长。"
+    },
+    "shanghai_drawing_review_workdays": {
+      "days": 5,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "沪建规范〔2025〕12号：既有建筑装修须审图者审图5个工作日（2025-09-15公布、2025-12-01施行）。法定时限不随面积延长。"
+    },
+    "shanghai_permit_issue_workdays": {
+      "days": 2,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "沪建规范〔2025〕12号：既有建筑装修施工许可发证2个工作日。法定时限不随面积延长。"
+    },
+    "fire_design_review_special_workdays": {
+      "days": 15,
+      "unit": "working_days",
+      "lock": true,
+      "basis": "《建设工程消防设计审查验收管理暂行规定》第58号令第23条：特殊建设工程消防设计审查自受理之日起15个工作日；仅 fire_classification=special 时进入许可链，不随面积延长。"
+    }
+  },
+  "design_area_exponent": 0.22,
+  "design_area_exponent_basis": "概念及初设沿用规划缩放；施工图按面积锚点插值，见 references/design_duration_practice.md。不是法定工期。",
+  "sector_complexity": {
+    "office": 1.0,
+    "finance": 1.05,
+    "gaming": 1.08,
+    "biopharma": 1.12,
+    "semiconductor": 1.15
+  },
+  "delivery_design_factor": {
+    "DB": 1.0,
+    "DBB": 1.0
+  },
+  "roles": {
+    "concept_design": {
+      "b0_days": 8,
+      "b_min": 8,
+      "b_max": 16,
+      "family": "design",
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "productivity_activity": "partition_framing",
+      "crew_diminishing": true,
+      "match_any": [
+        "概念方案深化",
+        "Test Fit",
+        "空间规划调整"
+      ]
+    },
+    "detailed_drawings": {
+      "b0_days": 14,
+      "b_min": 13,
+      "b_max": 42,
+      "family": "design",
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "productivity_activity": "partition_framing",
+      "crew_diminishing": true,
+      "match_any": [
+        "全专业施工图深化",
+        "全专业施工图全套深化",
+        "施工图深化出图"
+      ],
+      "area_duration_anchors": [
+        [
+          800,
+          14
+        ],
+        [
+          3000,
+          21
+        ],
+        [
+          6000,
+          28
+        ],
+        [
+          10000,
+          35
+        ]
+      ]
+    },
+    "employer_requirements": {
+      "b0_days": 6,
+      "b_min": 5,
+      "b_max": 8,
+      "family": "design",
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "match_any": [
+        "用户需求收集",
+        "用户需求调研",
+        "发包人需求",
+        "雇主要求"
+      ]
+    },
+    "boq_prep": {
+      "b0_days": 4,
+      "b_min": 3,
+      "b_max": 6,
+      "scale_mode": "plate",
+      "quantity": "partition_and_ceiling",
+      "match_any": [
+        "工程量及可比报价",
+        "工程量清单",
+        "BOQ",
+        "最高限价"
+      ]
+    },
+    "db_rfp": {
+      "b0_days": 5,
+      "b_min": 5,
+      "b_max": 6,
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "match_any": [
+        "D&B 招标文件",
+        "一体化总包招标"
+      ],
+      "note": "非必须招标的邀请编制占位。依法必须招标时改锁 statutory.formal_tender_prepare_days=20 日历日（招标投标法第24条），不随面积压缩。"
+    },
+    "gc_prepare_invite": {
+      "b0_days": 5,
+      "b_min": 5,
+      "b_max": 6,
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "note": "非必须招标邀请编制。必须招标时锁 20 日历日（招标投标法第24条）。"
+    },
+    "design_rfp_prepare": {
+      "b0_days": 5,
+      "b_min": 4,
+      "b_max": 6,
+      "scale_mode": "plate",
+      "quantity": "gross_area"
+    },
+    "sd_package": {
+      "b0_days": 7,
+      "b_min": 5,
+      "b_max": 14,
+      "family": "design",
+      "scale_mode": "plate",
+      "quantity": "gross_area",
+      "match_any": [
+        "初步设计SD",
+        "初步设计 SD"
+      ]
+    },
+    "partition_concealed_allowance": {
+      "b0_days": 11,
+      "b_min": 8,
+      "scale_mode": "plate",
+      "quantity": "partition_area"
+    },
+    "mocap_acoustic_base": {
+      "b0_days": 12,
+      "b_min": 8,
+      "scale_mode": "plate",
+      "quantity": "specialist_room",
+      "room": "mocap"
+    },
+    "mocap_truss_grid": {
+      "b0_days": 8,
+      "b_min": 5,
+      "scale_mode": "plate",
+      "quantity": "specialist_room",
+      "room": "mocap"
+    },
+    "mocap_silent_mep": {
+      "b0_days": 10,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "quantity": "specialist_room",
+      "room": "mocap"
+    },
+    "mocap_optical_finishes": {
+      "b0_days": 10,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "quantity": "specialist_room",
+      "room": "mocap"
+    },
+    "mocap_camera_mount": {
+      "b0_days": 5,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "quantity": "camera_count",
+      "room": "mocap"
+    },
+    "mocap_calibration_ue5": {
+      "b0_days": 6,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "quantity": "camera_count",
+      "room": "mocap"
+    }
+  },
+  "permit_lead_bands": {
+    "note": "本轮第五轮修订：启动至施工许可的验收目标区间（日历天），不是法规；只用于核查，不得反推延长DBB。法规窗口独立保持。",
+    "non_statutory": {
+      "DB": {
+        "low": 40,
+        "high": 85
+      },
+      "DBB": {
+        "low": 55,
+        "high": 95
+      },
+      "gap_low": -15,
+      "gap_high": 45
+    },
+    "statutory": {
+      "DB": {
+        "low": 55,
+        "high": 100
+      },
+      "DBB": {
+        "low": 80,
+        "high": 115
+      },
+      "gap_low": -15,
+      "gap_high": 45
+    }
+  },
+  "concealed_gap": {
+    "unit": "project_calendar_working_days",
+    "basis": "间隔法定天数查不到（调研#15）；中型办公12–18工作日行业惯例；800㎡可8–15；10000㎡宜15–25或分区验收。天花封板前须完成喷淋强度+24h严密性（GB 50261-2017第6.2.1–6.2.2条）、风管严密性（GB 50243-2016第4.2.1条）、电气导管隐蔽检查（GB 50303-2015第3.3.11条）。",
+    "bands": [
+      {
+        "max_area_sqm": 1200,
+        "min_working_days": 8,
+        "max_working_days": 15,
+        "typical_working_days": 10
+      },
+      {
+        "max_area_sqm": 5000,
+        "min_working_days": 12,
+        "max_working_days": 18,
+        "typical_working_days": 14
+      },
+      {
+        "max_area_sqm": null,
+        "min_working_days": 15,
+        "max_working_days": 25,
+        "typical_working_days": 18
+      }
+    ]
+  }
+}

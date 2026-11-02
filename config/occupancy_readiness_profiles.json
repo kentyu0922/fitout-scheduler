@@ -1,0 +1,74 @@
+{
+  "version": "1.1.0",
+  "default_profile": "STANDARD",
+  "task_anchors": {
+    "first_iaq": "首次室内空气盲测",
+    "furniture_install": "家具及软装进场",
+    "flushout": "强排通风与空气净化散味",
+    "second_iaq": "二次室内空气质量复测",
+    "iaq_pass_milestone": "室内空气质量检测合格",
+    "final_cleaning": "深度精保洁"
+  },
+  "profiles": {
+    "STANDARD": {
+      "parameters": {
+        "first_iaq_days": 2,
+        "flushout_days": 0,
+        "second_iaq_days": 2,
+        "final_cleaning_days": 2,
+        "furniture_sequencing": "after_first_iaq"
+      },
+      "requires_second_iaq": true,
+      "formal_iaq": true,
+      "basis": "空气检测为内部规划安排，检测次数、方法与采样条件待项目核实。通风为现场管理事项，不设默认独立工序或等待天数。",
+      "confidence": "policy",
+      "first_iaq_standard": "GB 50325",
+      "second_iaq_standard": "GB/T 18883"
+    },
+    "CLIENT_STRICT": {
+      "parameters": {
+        "first_iaq_days": 3,
+        "flushout_days": 0,
+        "second_iaq_days": 3,
+        "final_cleaning_days": 3,
+        "furniture_sequencing": "after_first_iaq"
+      },
+      "requires_second_iaq": true,
+      "formal_iaq": true,
+      "basis": "空气检测为内部规划安排，检测次数、方法与采样条件待项目核实。通风为现场管理事项，不设默认独立工序或等待天数。",
+      "confidence": "provisional"
+    },
+    "CERTIFICATION_REQUIRED": {
+      "parameters": {
+        "first_iaq_days": 2,
+        "flushout_days": 0,
+        "second_iaq_days": 2,
+        "final_cleaning_days": 2,
+        "furniture_sequencing": "after_first_iaq"
+      },
+      "requires_second_iaq": true,
+      "formal_iaq": true,
+      "certification": "occupancy 需第三方 CMA 实验室报告；二次复测为强制保护项，不得折叠",
+      "basis": "空气检测为内部规划安排，检测次数、方法与采样条件待项目核实。通风为现场管理事项，不设默认独立工序或等待天数。",
+      "confidence": "provisional"
+    },
+    "NO_FORMAL_IAQ": {
+      "parameters": {
+        "first_iaq_days": 0,
+        "flushout_days": 0,
+        "second_iaq_days": 0,
+        "final_cleaning_days": 2,
+        "furniture_sequencing": "after_first_iaq"
+      },
+      "requires_second_iaq": false,
+      "formal_iaq": false,
+      "basis": "不做正式空气检测为项目显式选择，法定义务仍需核实。通风为现场管理事项，不设默认独立工序或等待天数。",
+      "confidence": "provisional"
+    },
+    "CUSTOM": {
+      "implemented": false,
+      "not_implemented_reason": "CUSTOM 需显式逐项参数输入；当前版本不接受空 CUSTOM 选择，请用四档之一或扩展 config"
+    }
+  },
+  "ventilation_policy": "No default standalone ventilation task or waiting duration; explicit project duration plus basis only."
+}

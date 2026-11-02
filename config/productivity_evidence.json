@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "description": "Separate verified numeric labor norms, measured regional productivity ratios, and actual project timesheets. Document identity does not verify a numeric item. No wages or budget multiplier in schedule rates.",
+  "calibration_policy": {
+    "min_observations": 3,
+    "min_projects": 2,
+    "min_labor_days": 10,
+    "prior_equivalent_labor_days": 10,
+    "min_validation_projects": 2,
+    "target_relative_error": 0.1,
+    "policy_status": "provisional statistical safeguards, not an accuracy guarantee"
+  },
+  "source_documents": [
+    {
+      "id": "LDT73",
+      "title": "LD/T73.1~4—2008 建设工程劳动定额 装饰工程",
+      "url": "https://ebook.chinabuilding.com.cn/zbooklib/bookpdf/probation?SiteID=1&bookID=129617",
+      "document_identity_verified": true,
+      "numeric_item_verified": false,
+      "verified_content": "Catalogue identifies time-norm tables; specific 16/30 items and time allowances not verified from original pages"
+    },
+    {
+      "id": "TY01-89-2016",
+      "title": "建筑安装工程工期定额",
+      "url": "https://ebook.chinabuilding.com.cn/zbooklib/book/detail/show?SiteID=1&bookID=105293",
+      "document_identity_verified": true,
+      "numeric_item_verified": false,
+      "category": "schedule_benchmark_not_labor_rate"
+    },
+    {
+      "id": "SH_WAGES",
+      "title": "Shanghai labor pricing and consumption policy",
+      "url": "https://zjw.sh.gov.cn/wjhb/20181121/0011-41047.html",
+      "category": "cost_context_only",
+      "numeric_item_verified": false
+    }
+  ],
+  "national_items": [],
+  "regional_adjustments": [],
+  "observations": [],
+  "validation_observations": [],
+  "quarantined_claims": [
+    {
+      "claim": "Framing 16 m2/person-day; boarding 30 m2/person-day",
+      "reason": "User-supplied AI summary; no verified table row/page or matching wall/ceiling/layer scope"
+    },
+    {
+      "claim": "Regional budget labor / 1.8 is scheduling labor",
+      "reason": "No universal conversion evidence; cost wages and labor allowances are not productivity factors"
+    },
+    {
+      "claim": "Accuracy +/-10%",
+      "reason": "Target only; no independent held-out project validation yet"
+    }
+  ],
+  "industry_items": [],
+  "evidence_hierarchy": {
+    "L0": "assumption",
+    "L1": "published_official_benchmark",
+    "L2": "contractor_industry_benchmark",
+    "L3": "historical_project_actual"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "version": "1.1.0",
+  "research_status": "ENGINE_AUTHORITY",
+  "pipeline": [
+    "intake",
+    "sequence_packages",
+    "baseline_at_reference_area",
+    "classify_scale_vs_lock",
+    "area_scaling_law",
+    "cpm_master_programme"
+  ],
+  "reference_area_sqm": 3000,
+  "area_exponent": 0.4,
+  "calendar_for_site_baseline": "7D",
+  "note": "Engine owns sequence, 3000㎡ occupancy baseline and scaling. Client supplies intake facts only — not durations. Q/R/C and floors do not govern.",
+  "construction_package_sequence": [
+    {"id": "mobilise", "name": "进场保护与放线"},
+    {"id": "strip_out", "name": "拆除与清运"},
+    {"id": "mep_first_fix", "name": "机电一次"},
+    {"id": "partition_system", "name": "隔墙系统"},
+    {"id": "ceiling", "name": "天花龙骨/封板"},
+    {"id": "mep_second_fix", "name": "机电二次"},
+    {"id": "finishes", "name": "饰面"},
+    {"id": "flooring", "name": "地材"},
+    {"id": "joinery_glass", "name": "木作玻璃门"},
+    {"id": "terminals", "name": "末端"},
+    {"id": "sector_site", "name": "行业特种现场包（机房/动捕等）"},
+    {"id": "commissioning", "name": "T&C 与缺陷"},
+    {"id": "close_out", "name": "保洁收口"}
+  ],
+  "lanes": {
+    "SCALE_RESEARCHED": "Has activity_type in L2 baseline table; b0 is the reference-area occupancy.",
+    "SCALE_TEMPLATE": "Sector/unlisted site work; engine treats template days as b0 at the reference area. Not used for flushout/IAQ/move-in/design/tender/cutover.",
+    "STATUTORY_LOCK": "Government permit / fire / completion — not area scaling. Inclusion may be programme policy, not verified legal applicability.",
+    "TIMED_TEST": "Clock-time tests (72h load bank, acoustic sample).",
+    "NOT_SITE": "Design, tender, TDD, IT cutover, FM, move-in, IAQ sample, flushout SOP, payments. Never area-scaled."
+  }
+}

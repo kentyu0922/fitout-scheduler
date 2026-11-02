@@ -1,0 +1,2419 @@
+{
+  "version": "2.0",
+  "description": "PMP Lead PM Master 标准 WBS 模版库 (8000㎡洁净室 + 20000㎡纯办公)",
+  "templates": {
+    "MNC_Standard_Fitout_DB_Invite": {
+      "name": "标准外企 (MNC) D&B 设计施工一体化工装项目模板 (Design & Build)",
+      "description": "适用于办公/实验室工装。单一责任点：前期规划 ➔ D&B 邀请比选多轮招采 ➔ 中标后承包商深化与图审 ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 强排通风 ➔ 验收+二次复测 ➔ 搬迁。",
+      "node_count": 78,
+      "base_area": 8000,
+      "procurement_mode": "设计施工一体化 (D&B) 邀请招标",
+      "tasks": [
+        {
+          "id": 1,
+          "name": "标准办公工装项目",
+          "outline_level": 1,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 2,
+          "name": "Phase 1 项目启动与规划",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 3,
+          "name": "Kick Off Meeting 项目启动会",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "",
+          "milestone": true
+        },
+        {
+          "id": 4,
+          "name": "大楼物业装修申请 & CI导则/机电图获取",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "3"
+        },
+        {
+          "id": 5,
+          "name": "项目执行计划 PEP 与各方确认",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "3"
+        },
+        {
+          "id": 6,
+          "name": "用户需求收集与项目任务书编制 (Brief)",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "3"
+        },
+        {
+          "id": 7,
+          "name": "Phase 2 D&B 总承包邀请招标与定标",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 8,
+          "name": "施工总包短名单拟定与发包人需求清单编制",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "6"
+        },
+        {
+          "id": 9,
+          "name": "招标文件 (RFP) 编制与内部审批",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "8"
+        },
+        {
+          "id": 10,
+          "name": "发放 D&B 招标文件及设计需求任务书",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "9"
+        },
+        {
+          "id": 11,
+          "name": "现场勘测踏勘与标前答疑",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "10"
+        },
+        {
+          "id": 12,
+          "name": "总包深化概念方案、机电方案与总价包干回标",
+          "outline_level": 3,
+          "duration_days": 10,
+          "predecessors": "11"
+        },
+        {
+          "id": 13,
+          "name": "方案效果/机电可行性评审与总价包干清标",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "12"
+        },
+        {
+          "id": 14,
+          "name": "下发首轮技术与造价质询(RFI)及总包澄清回函",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "13"
+        },
+        {
+          "id": 15,
+          "name": "D&B 主创设计与项目班子述标答辩 (4选2)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "14"
+        },
+        {
+          "id": 16,
+          "name": "二轮方案优化、VE 降本研讨与价格谈判",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "15"
+        },
+        {
+          "id": 17,
+          "name": "总包设计成本复核与申请集团特批底价",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "16"
+        },
+        {
+          "id": 18,
+          "name": "提交终版设计方案与密封报价 (BAFO一口价)",
+          "outline_level": 3,
+          "duration_days": 1,
+          "predecessors": "17"
+        },
+        {
+          "id": 19,
+          "name": "定标呈批与发放中标通知书 (LOA)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "18"
+        },
+        {
+          "id": 20,
+          "name": "中标通知书 (LOA) 签发",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "19",
+          "milestone": true
+        },
+        {
+          "id": 21,
+          "name": "D&B 工程总承包合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "20"
+        },
+        {
+          "id": 22,
+          "name": "D&B 总承包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "21",
+          "milestone": true
+        },
+        {
+          "id": 23,
+          "name": "Phase 3 中标后设计深化与图审",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 24,
+          "name": "概念方案深化与功能分区调整 (Test Fit)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "22"
+        },
+        {
+          "id": 25,
+          "name": "平面图确认与业主签字",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "24"
+        },
+        {
+          "id": 26,
+          "name": "效果图/3D渲染出图",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "25SS+2"
+        },
+        {
+          "id": 27,
+          "name": "材料选型确认",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "25SS+2"
+        },
+        {
+          "id": 28,
+          "name": "初步设计SD出图与确认",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "25"
+        },
+        {
+          "id": 29,
+          "name": "全专业施工图全套深化出图 (装饰/机电/消防深化图)",
+          "outline_level": 3,
+          "duration_days": 14,
+          "predecessors": "28"
+        },
+        {
+          "id": 30,
+          "name": "第三方图审机构审查与意见修改",
+          "outline_level": 3,
+          "duration_days": 8,
+          "predecessors": "29"
+        },
+        {
+          "id": 31,
+          "name": "图审合格证获取 / 施工图全套确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "30",
+          "milestone": true
+        },
+        {
+          "id": 32,
+          "name": "物业装修图纸送审与安全协议签署",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "31"
+        },
+        {
+          "id": 33,
+          "name": "Phase 4 施工许可证办理",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 34,
+          "name": "政府施工许可证申报与审批",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "31,32"
+        },
+        {
+          "id": 35,
+          "name": "正式取得施工许可证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "34",
+          "milestone": true
+        },
+        {
+          "id": 36,
+          "name": "Phase 5 长周期设备与家具采购",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 37,
+          "name": "家具供应商定标",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "25"
+        },
+        {
+          "id": 38,
+          "name": "家具生产交货 Lead Time",
+          "outline_level": 3,
+          "duration_days": 25,
+          "predecessors": "37"
+        },
+        {
+          "id": 39,
+          "name": "Phase 6 实体施工阶段",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 40,
+          "name": "场地移交与动工准备 Site Takeover",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "35",
+          "milestone": true
+        },
+        {
+          "id": 41,
+          "name": "常规基础施工",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 42,
+          "name": "场地保护与临时设施搭建",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "40",
+          "work_weekend": true
+        },
+        {
+          "id": 43,
+          "name": "原有装修拆除及建筑垃圾清运",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "42",
+          "work_weekend": true
+        },
+        {
+          "id": 44,
+          "name": "测量放线与基准标高复核",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "43",
+          "work_weekend": true
+        },
+        {
+          "id": 45,
+          "name": "隐蔽与骨架施工 (1st Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 46,
+          "name": "隔墙轻钢龙骨骨架搭设",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "44",
+          "work_weekend": true
+        },
+        {
+          "id": 47,
+          "name": "大机电主管桥架与主管道预埋安装",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "44SS+2",
+          "work_weekend": true
+        },
+        {
+          "id": 48,
+          "name": "隔墙及主管管线隐蔽工程验收 (In-Wall Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "46,47",
+          "work_weekend": true
+        },
+        {
+          "id": 49,
+          "name": "封板与天花机电施工 (2nd Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 50,
+          "name": "墙面封板与天花吊顶龙骨安装",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "48",
+          "work_weekend": true
+        },
+        {
+          "id": 51,
+          "name": "二次机电支管敷设、穿线与保温",
+          "outline_level": 4,
+          "duration_days": 18,
+          "predecessors": "48",
+          "work_weekend": true
+        },
+        {
+          "id": 52,
+          "name": "天花隐蔽工程验收 (Above-Ceiling Concealed Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "50,51",
+          "work_weekend": true
+        },
+        {
+          "id": 53,
+          "name": "饰面与地坪施工 (Finishing)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 54,
+          "name": "天花封石膏板与墙顶乳胶漆饰面",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "52",
+          "work_weekend": true
+        },
+        {
+          "id": 55,
+          "name": "架空防静电地板/地砖/地毯铺设",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "54",
+          "work_weekend": true
+        },
+        {
+          "id": 56,
+          "name": "机电末端面板与灯具、洁具安装",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "55",
+          "work_weekend": true
+        },
+        {
+          "id": 57,
+          "name": "全系统 T&C 联动调试",
+          "outline_level": 4,
+          "duration_days": 8,
+          "predecessors": "56",
+          "work_weekend": true
+        },
+        {
+          "id": 58,
+          "name": "施工全部完成及总包自检通过",
+          "outline_level": 4,
+          "duration_days": 0,
+          "predecessors": "57",
+          "milestone": true
+        },
+        {
+          "id": 59,
+          "name": "现场粗保洁与工程除尘",
+          "outline_level": 4,
+          "duration_days": 1,
+          "predecessors": "58",
+          "work_weekend": true
+        },
+        {
+          "id": 60,
+          "name": "物理竣工 / 硬装施工完成 (Physical Completion)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "59",
+          "milestone": true
+        },
+        {
+          "id": 61,
+          "name": "空气治理与家具进场 (Post-Completion & IAQ)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 62,
+          "name": "首次室内空气盲测 (GB 50325 基材/竣工验收)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "60"
+        },
+        {
+          "id": 63,
+          "name": "办公家具及软装进场就位安装",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "62"
+        },
+        {
+          "id": 64,
+          "name": "竣工强排通风与空气净化散味阶段",
+          "outline_level": 4,
+          "duration_days": 35,
+          "predecessors": "63",
+          "work_weekend": true
+        },
+        {
+          "id": 65,
+          "name": "Phase 7 竣工验收与合规审批",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 66,
+          "name": "第三方消防设施检测、电气防火检测与出具检测报告",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "60"
+        },
+        {
+          "id": 67,
+          "name": "住建主管部门消防验收/竣工消防备案申报与实地查验",
+          "outline_level": 3,
+          "duration_days": 8,
+          "predecessors": "66"
+        },
+        {
+          "id": 68,
+          "name": "消防查验意见整改复查与正式批文办理",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "67"
+        },
+        {
+          "id": 69,
+          "name": "取得《建设工程消防验收合格意见书》/ 消防备案凭证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "68",
+          "milestone": true
+        },
+        {
+          "id": 70,
+          "name": "住建局联合竣工验收与备案",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "69"
+        },
+        {
+          "id": 71,
+          "name": "竣工备案 / 联合验收通过",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "70",
+          "milestone": true
+        },
+        {
+          "id": 72,
+          "name": "二次室内空气质量复测 (GB/T 18883 交付入住)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "64"
+        },
+        {
+          "id": 73,
+          "name": "室内空气质量检测合格",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "72",
+          "milestone": true
+        },
+        {
+          "id": 74,
+          "name": "Phase 8 客户搬迁入驻与正式交付",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 75,
+          "name": "深度精保洁与场地最终移交准备",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "71,73"
+        },
+        {
+          "id": 76,
+          "name": "Site Handover 场地正式移交",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "75",
+          "milestone": true
+        },
+        {
+          "id": 77,
+          "name": "业主分批次搬迁入驻",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "76"
+        },
+        {
+          "id": 78,
+          "name": "搬迁全部完成 / 正式营业",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "77",
+          "milestone": true
+        }
+      ]
+    },
+    "MNC_Standard_Fitout_Office_DBB": {
+      "name": "标准外企 (MNC) DBB 公开招标工装项目模板 (Design-Bid-Build, Open Public Tendering)",
+      "description": "适用于大面积/国有资金项目。前期规划 ➔ 招设计单位(含Pre-Q) ➔ 设计深化与第三方图审合格 ➔ 施工总包公开招标 ➔ 申领施工许可证 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 通风 ➔ 验收+二次复测 ➔ 搬迁。",
+      "node_count": 83,
+      "base_area": 8000,
+      "procurement_mode": "标准 DBB 公开招标",
+      "tasks": [
+        {
+          "id": 1,
+          "name": "标准外企 (MNC) DBB 公开招标工装项目",
+          "outline_level": 1,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 2,
+          "name": "Phase 1 前期项目规划与需求定义",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 3,
+          "name": "Kick Off Meeting 项目启动会",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "",
+          "milestone": true
+        },
+        {
+          "id": 4,
+          "name": "用户需求调研与空间需求任务书编制 (Brief)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "3"
+        },
+        {
+          "id": 5,
+          "name": "大楼物业装修申请 & CI导则/现状机电图获取",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "3"
+        },
+        {
+          "id": 6,
+          "name": "项目执行计划 PEP 编制与各方确认",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "4SS+2"
+        },
+        {
+          "id": 7,
+          "name": "前期规划与项目任务书确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "4,5,6",
+          "milestone": true
+        },
+        {
+          "id": 8,
+          "name": "Phase 2 设计单位资格预审与招采 (Design Procurement)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 9,
+          "name": "设计任务书与设计招标文件 (Design RFP) 编制",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "7"
+        },
+        {
+          "id": 10,
+          "name": "设计单位资格预审 (Design Pre-Q) 与短名单拟定",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "9SS+1"
+        },
+        {
+          "id": 11,
+          "name": "设计 RFP 正式发出 + 现场踏勘与答疑",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "9,10"
+        },
+        {
+          "id": 12,
+          "name": "设计概念方案投标编制与回标",
+          "outline_level": 3,
+          "duration_days": 10,
+          "predecessors": "11"
+        },
+        {
+          "id": 13,
+          "name": "主笔设计团队方案述标答辩与比选 (4选2)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "12"
+        },
+        {
+          "id": 14,
+          "name": "设计定标呈批与中标通知书 (LOA) 发放",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "13"
+        },
+        {
+          "id": 15,
+          "name": "设计合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "14"
+        },
+        {
+          "id": 16,
+          "name": "设计总承包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "15",
+          "milestone": true
+        },
+        {
+          "id": 17,
+          "name": "Phase 3 设计深化、第三方审图与施工图确认",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 18,
+          "name": "概念方案深化与空间规划调整 (Test Fit)",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "16"
+        },
+        {
+          "id": 19,
+          "name": "效果图 3D Rendering 出图与材质选型确认",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "18SS+2"
+        },
+        {
+          "id": 20,
+          "name": "初步设计 SD 出图与业主方案签字确认",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "18"
+        },
+        {
+          "id": 21,
+          "name": "消防设计专篇及节能/环保专篇编制",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "20SS+1"
+        },
+        {
+          "id": 22,
+          "name": "全专业施工图深化出图 (装饰/机电/消防/弱电)",
+          "outline_level": 3,
+          "duration_days": 15,
+          "predecessors": "20,21"
+        },
+        {
+          "id": 23,
+          "name": "配合出图 LDI 本地化翻图、规范复核及正式盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "22"
+        },
+        {
+          "id": 24,
+          "name": "递交第三方施工图审查机构审查 (数字化审图)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "23"
+        },
+        {
+          "id": 25,
+          "name": "第三方专项图审意见答复与修改通过",
+          "outline_level": 3,
+          "duration_days": 7,
+          "predecessors": "24"
+        },
+        {
+          "id": 26,
+          "name": "取得《施工图审查合格书》 / 施工图全套确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "25",
+          "milestone": true
+        },
+        {
+          "id": 27,
+          "name": "住建局：消防设计审查申报",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "26"
+        },
+        {
+          "id": 28,
+          "name": "取得《建设工程消防设计审查合格意见书》",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "27",
+          "milestone": true
+        },
+        {
+          "id": 29,
+          "name": "Phase 4 施工总包公开招标 (Construction Procurement)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 30,
+          "name": "工程量清单 BOQ 编制与控制价测算",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "22"
+        },
+        {
+          "id": 31,
+          "name": "施工总包招标文件 (RFP) 编制与审批",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "22"
+        },
+        {
+          "id": 32,
+          "name": "编制并发布招标公告与资格预审 (法定≥5日)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "31"
+        },
+        {
+          "id": 33,
+          "name": "招标文件发售与标前现场踏勘答疑",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "30,32"
+        },
+        {
+          "id": 34,
+          "name": "编制投标文件与投标截止递交 (法定等标期≥20日历天)",
+          "outline_level": 3,
+          "duration_days": 20,
+          "predecessors": "33"
+        },
+        {
+          "id": 35,
+          "name": "开标与专家库抽取专家封闭评标 (技术方案与商务综合评审)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "34"
+        },
+        {
+          "id": 36,
+          "name": "中标候选人公示与下发澄清函 (法定≥3日)",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "35"
+        },
+        {
+          "id": 37,
+          "name": "定标报告备案与中标通知书发出",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "36"
+        },
+        {
+          "id": 38,
+          "name": "施工总承包合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "37"
+        },
+        {
+          "id": 39,
+          "name": "施工总包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "38",
+          "milestone": true
+        },
+        {
+          "id": 40,
+          "name": "Phase 5 施工许可证办理 (Building Permit)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 41,
+          "name": "物业装修图纸送审与进场安全协议签署",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "39"
+        },
+        {
+          "id": 42,
+          "name": "质安监报监及政府施工许可证申报",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "28,39,41"
+        },
+        {
+          "id": 43,
+          "name": "正式取得施工许可证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "42",
+          "milestone": true
+        },
+        {
+          "id": 44,
+          "name": "Phase 6 实体施工阶段",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 45,
+          "name": "场地移交与动工准备 Site Takeover",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "43",
+          "milestone": true
+        },
+        {
+          "id": 46,
+          "name": "常规基础施工",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 47,
+          "name": "场地保护与临时设施搭建",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "45",
+          "work_weekend": true
+        },
+        {
+          "id": 48,
+          "name": "原有装修拆除及建筑垃圾清运",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "47",
+          "work_weekend": true
+        },
+        {
+          "id": 49,
+          "name": "测量放线与基准标高复核",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "48",
+          "work_weekend": true
+        },
+        {
+          "id": 50,
+          "name": "隐蔽与骨架施工 (1st Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 51,
+          "name": "隔墙轻钢龙骨骨架搭设",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "49",
+          "work_weekend": true
+        },
+        {
+          "id": 52,
+          "name": "大机电主管桥架与主管道预埋安装",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "49SS+2",
+          "work_weekend": true
+        },
+        {
+          "id": 53,
+          "name": "隔墙及主管管线隐蔽工程验收 (In-Wall Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "51,52",
+          "work_weekend": true
+        },
+        {
+          "id": 54,
+          "name": "封板与天花机电施工 (2nd Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 55,
+          "name": "墙面封板与天花吊顶龙骨安装",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "53",
+          "work_weekend": true
+        },
+        {
+          "id": 56,
+          "name": "二次机电支管敷设、穿线与保温",
+          "outline_level": 4,
+          "duration_days": 18,
+          "predecessors": "53",
+          "work_weekend": true
+        },
+        {
+          "id": 57,
+          "name": "天花隐蔽工程验收 (Above-Ceiling Concealed Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "55,56",
+          "work_weekend": true
+        },
+        {
+          "id": 58,
+          "name": "饰面与地坪施工 (Finishing)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 59,
+          "name": "天花封石膏板与墙顶乳胶漆饰面",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "57",
+          "work_weekend": true
+        },
+        {
+          "id": 60,
+          "name": "架空防静电地板/地砖/地毯铺设",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "59",
+          "work_weekend": true
+        },
+        {
+          "id": 61,
+          "name": "机电末端面板与灯具、洁具安装",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "60",
+          "work_weekend": true
+        },
+        {
+          "id": 62,
+          "name": "全系统 T&C 联动调试",
+          "outline_level": 4,
+          "duration_days": 8,
+          "predecessors": "61",
+          "work_weekend": true
+        },
+        {
+          "id": 63,
+          "name": "施工全部完成及总包自检通过",
+          "outline_level": 4,
+          "duration_days": 0,
+          "predecessors": "62",
+          "milestone": true
+        },
+        {
+          "id": 64,
+          "name": "现场粗保洁与工程除尘",
+          "outline_level": 4,
+          "duration_days": 1,
+          "predecessors": "63",
+          "work_weekend": true
+        },
+        {
+          "id": 65,
+          "name": "物理竣工 / 硬装施工完成 (Physical Completion)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "64",
+          "milestone": true
+        },
+        {
+          "id": 66,
+          "name": "空气治理与家具进场 (Post-Completion & IAQ)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 67,
+          "name": "首次室内空气盲测 (GB 50325 基材/竣工验收)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "65"
+        },
+        {
+          "id": 68,
+          "name": "办公家具及软装进场就位安装",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "67"
+        },
+        {
+          "id": 69,
+          "name": "竣工强排通风与空气净化散味阶段",
+          "outline_level": 4,
+          "duration_days": 35,
+          "predecessors": "68",
+          "work_weekend": true
+        },
+        {
+          "id": 70,
+          "name": "Phase 7 竣工验收与合规审批",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 71,
+          "name": "第三方消防设施检测、电气防火检测与出具检测报告",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "65"
+        },
+        {
+          "id": 72,
+          "name": "住建主管部门消防验收/竣工消防备案申报与实地查验",
+          "outline_level": 3,
+          "duration_days": 8,
+          "predecessors": "71"
+        },
+        {
+          "id": 73,
+          "name": "消防查验意见整改复查与正式批文办理",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "72"
+        },
+        {
+          "id": 74,
+          "name": "取得《建设工程消防验收合格意见书》/ 消防备案凭证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "73",
+          "milestone": true
+        },
+        {
+          "id": 75,
+          "name": "住建局联合竣工验收与备案",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "74"
+        },
+        {
+          "id": 76,
+          "name": "竣工备案 / 联合验收通过",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "75",
+          "milestone": true
+        },
+        {
+          "id": 77,
+          "name": "二次室内空气质量复测 (GB/T 18883 交付入住)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "69"
+        },
+        {
+          "id": 78,
+          "name": "室内空气质量检测合格",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "77",
+          "milestone": true
+        },
+        {
+          "id": 79,
+          "name": "Phase 8 客户搬迁入驻与正式交付",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 80,
+          "name": "深度精保洁与场地最终移交准备",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "76,78"
+        },
+        {
+          "id": 81,
+          "name": "Site Handover 场地正式移交",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "80",
+          "milestone": true
+        },
+        {
+          "id": 82,
+          "name": "业主分批次搬迁入驻",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "81"
+        },
+        {
+          "id": 83,
+          "name": "搬迁全部完成 / 正式营业",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "82",
+          "milestone": true
+        }
+      ]
+    },
+    "MNC_Standard_Fitout_DB_Public": {
+      "name": "标准外企 (MNC) D&B 设计施工一体化公开招标工装项目模板 (Design & Build, Open Public Tendering)",
+      "description": "适用于办公/实验室工装。单一责任点：前期规划 ➔ D&B 公开招标(公告/挂网/开标/公示) ➔ 中标后承包商深化与图审 ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 强排通风 ➔ 验收+二次复测 ➔ 搬迁。",
+      "node_count": 73,
+      "base_area": 8000,
+      "procurement_mode": "设计施工一体化 (D&B) 公开招标",
+      "tasks": [
+        {
+          "id": 1,
+          "name": "标准外企 (MNC) D&B 公开招标工装项目",
+          "outline_level": 1,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 2,
+          "name": "Phase 1 项目启动与规划",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 3,
+          "name": "Kick Off Meeting 项目启动会",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "",
+          "milestone": true
+        },
+        {
+          "id": 4,
+          "name": "大楼物业装修申请 & CI导则/机电图获取",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "3"
+        },
+        {
+          "id": 5,
+          "name": "项目执行计划 PEP 与各方确认",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "3"
+        },
+        {
+          "id": 6,
+          "name": "用户需求收集与项目任务书编制 (Brief)",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "3"
+        },
+        {
+          "id": 7,
+          "name": "Phase 2 D&B 总承包公开招标",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 8,
+          "name": "编制并发布招标公告与资格预审 (法定≥5日)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "6"
+        },
+        {
+          "id": 9,
+          "name": "发包人要求任务书 (Employer's Requirements) 编制",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "6"
+        },
+        {
+          "id": 10,
+          "name": "D&B 招标文件编制与行政备案",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "8,9"
+        },
+        {
+          "id": 11,
+          "name": "招标文件发售与标前现场踏勘答疑",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "10"
+        },
+        {
+          "id": 12,
+          "name": "编制投标文件与投标截止递交 (法定等标期≥20日历天)",
+          "outline_level": 3,
+          "duration_days": 20,
+          "predecessors": "11"
+        },
+        {
+          "id": 13,
+          "name": "开标与专家库抽取专家封闭评标 (技术方案与商务综合评审)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "12"
+        },
+        {
+          "id": 14,
+          "name": "中标候选人公示与下发澄清函 (法定≥3日)",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "13"
+        },
+        {
+          "id": 15,
+          "name": "定标报告备案与中标通知书发出",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "14"
+        },
+        {
+          "id": 16,
+          "name": "D&B 工程总承包合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "15"
+        },
+        {
+          "id": 17,
+          "name": "D&B 总承包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "16",
+          "milestone": true
+        },
+        {
+          "id": 18,
+          "name": "Phase 3 中标后设计深化与图审",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 19,
+          "name": "概念方案深化与功能分区调整 (Test Fit)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "17"
+        },
+        {
+          "id": 20,
+          "name": "平面图确认与业主签字",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "19"
+        },
+        {
+          "id": 21,
+          "name": "效果图/3D渲染出图",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "20SS+2"
+        },
+        {
+          "id": 22,
+          "name": "材料选型确认",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "20SS+2"
+        },
+        {
+          "id": 23,
+          "name": "初步设计SD出图与确认",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "20"
+        },
+        {
+          "id": 24,
+          "name": "全专业施工图全套深化出图 (装饰/机电/消防深化图)",
+          "outline_level": 3,
+          "duration_days": 12,
+          "predecessors": "23"
+        },
+        {
+          "id": 25,
+          "name": "第三方图审机构审查与意见修改",
+          "outline_level": 3,
+          "duration_days": 7,
+          "predecessors": "24"
+        },
+        {
+          "id": 26,
+          "name": "图审合格证获取 / 施工图全套确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "25",
+          "milestone": true
+        },
+        {
+          "id": 27,
+          "name": "物业装修图纸送审与安全协议签署",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "26"
+        },
+        {
+          "id": 28,
+          "name": "Phase 4 施工许可证办理",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 29,
+          "name": "政府施工许可证申报与审批",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "17,27,26"
+        },
+        {
+          "id": 30,
+          "name": "正式取得施工许可证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "29",
+          "milestone": true
+        },
+        {
+          "id": 31,
+          "name": "Phase 5 长周期设备与家具采购",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 32,
+          "name": "家具供应商定标",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "20"
+        },
+        {
+          "id": 33,
+          "name": "家具生产交货 Lead Time",
+          "outline_level": 3,
+          "duration_days": 25,
+          "predecessors": "32"
+        },
+        {
+          "id": 34,
+          "name": "Phase 6 实体施工阶段",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 35,
+          "name": "场地移交与动工准备 Site Takeover",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "30",
+          "milestone": true
+        },
+        {
+          "id": 36,
+          "name": "常规基础施工",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 37,
+          "name": "场地保护与临时设施搭建",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "35",
+          "work_weekend": true
+        },
+        {
+          "id": 38,
+          "name": "原有装修拆除及建筑垃圾清运",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "37",
+          "work_weekend": true
+        },
+        {
+          "id": 39,
+          "name": "测量放线与基准标高复核",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "38",
+          "work_weekend": true
+        },
+        {
+          "id": 40,
+          "name": "隐蔽与骨架施工 (1st Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 41,
+          "name": "隔墙轻钢龙骨骨架搭设",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "39",
+          "work_weekend": true
+        },
+        {
+          "id": 42,
+          "name": "大机电主管桥架与主管道预埋安装",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "39SS+2",
+          "work_weekend": true
+        },
+        {
+          "id": 43,
+          "name": "隔墙及主管管线隐蔽工程验收 (In-Wall Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "41,42",
+          "work_weekend": true
+        },
+        {
+          "id": 44,
+          "name": "封板与天花机电施工 (2nd Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 45,
+          "name": "墙面封板与天花吊顶龙骨安装",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "43",
+          "work_weekend": true
+        },
+        {
+          "id": 46,
+          "name": "二次机电支管敷设、穿线与保温",
+          "outline_level": 4,
+          "duration_days": 18,
+          "predecessors": "43",
+          "work_weekend": true
+        },
+        {
+          "id": 47,
+          "name": "天花隐蔽工程验收 (Above-Ceiling Concealed Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "45,46",
+          "work_weekend": true
+        },
+        {
+          "id": 48,
+          "name": "饰面与地坪施工 (Finishing)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 49,
+          "name": "天花封石膏板与墙顶乳胶漆饰面",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "47",
+          "work_weekend": true
+        },
+        {
+          "id": 50,
+          "name": "架空防静电地板/地砖/地毯铺设",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "49",
+          "work_weekend": true
+        },
+        {
+          "id": 51,
+          "name": "机电末端面板与灯具、洁具安装",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "50",
+          "work_weekend": true
+        },
+        {
+          "id": 52,
+          "name": "全系统 T&C 联动调试",
+          "outline_level": 4,
+          "duration_days": 8,
+          "predecessors": "51",
+          "work_weekend": true
+        },
+        {
+          "id": 53,
+          "name": "施工全部完成及总包自检通过",
+          "outline_level": 4,
+          "duration_days": 0,
+          "predecessors": "52",
+          "milestone": true
+        },
+        {
+          "id": 54,
+          "name": "现场粗保洁与工程除尘",
+          "outline_level": 4,
+          "duration_days": 1,
+          "predecessors": "53",
+          "work_weekend": true
+        },
+        {
+          "id": 55,
+          "name": "物理竣工 / 硬装施工完成 (Physical Completion)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "54",
+          "milestone": true
+        },
+        {
+          "id": 56,
+          "name": "空气治理与家具进场 (Post-Completion & IAQ)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 57,
+          "name": "首次室内空气盲测 (GB 50325 基材/竣工验收)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "55"
+        },
+        {
+          "id": 58,
+          "name": "办公家具及软装进场就位安装",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "57"
+        },
+        {
+          "id": 59,
+          "name": "竣工强排通风与空气净化散味阶段",
+          "outline_level": 4,
+          "duration_days": 35,
+          "predecessors": "58",
+          "work_weekend": true
+        },
+        {
+          "id": 60,
+          "name": "Phase 7 竣工验收与合规审批",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 61,
+          "name": "第三方消防设施检测、电气防火检测与出具检测报告",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "55"
+        },
+        {
+          "id": 62,
+          "name": "住建主管部门消防验收/竣工消防备案申报与实地查验",
+          "outline_level": 3,
+          "duration_days": 8,
+          "predecessors": "61"
+        },
+        {
+          "id": 63,
+          "name": "消防查验意见整改复查与正式批文办理",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "62"
+        },
+        {
+          "id": 64,
+          "name": "取得《建设工程消防验收合格意见书》/ 消防备案凭证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "63",
+          "milestone": true
+        },
+        {
+          "id": 65,
+          "name": "住建局联合竣工验收与备案",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "64"
+        },
+        {
+          "id": 66,
+          "name": "竣工备案 / 联合验收通过",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "65",
+          "milestone": true
+        },
+        {
+          "id": 67,
+          "name": "二次室内空气质量复测 (GB/T 18883 交付入住)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "59"
+        },
+        {
+          "id": 68,
+          "name": "室内空气质量检测合格",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "67",
+          "milestone": true
+        },
+        {
+          "id": 69,
+          "name": "Phase 8 客户搬迁入驻与正式交付",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 70,
+          "name": "深度精保洁与场地最终移交准备",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "66,68"
+        },
+        {
+          "id": 71,
+          "name": "Site Handover 场地正式移交",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "70",
+          "milestone": true
+        },
+        {
+          "id": 72,
+          "name": "业主分批次搬迁入驻",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "71"
+        },
+        {
+          "id": 73,
+          "name": "搬迁全部完成 / 正式营业",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "72",
+          "milestone": true
+        }
+      ]
+    },
+    "MNC_Standard_Fitout_DBB_Invite": {
+      "name": "标准外企 (MNC) DBB 邀请招标工装项目模板 (Design-Bid-Build, Invited Tendering)",
+      "description": "适用于纯办公/综合工装。前期规划 ➔ 招设计单位(含Pre-Q) ➔ 方案/SD/CD施工图深化/第三方图审合格 ➔ 招施工总包(图审后发标，BOQ提前编制) ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 通风 ➔ 验收+二次复测 ➔ 搬迁。",
+      "node_count": 89,
+      "base_area": 8000,
+      "procurement_mode": "标准 DBB 邀请招标",
+      "tasks": [
+        {
+          "id": 1,
+          "name": "标准外企 (MNC) DBB 邀请招标工装项目",
+          "outline_level": 1,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 2,
+          "name": "Phase 1 前期项目规划与需求定义",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 3,
+          "name": "Kick Off Meeting 项目启动会",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "",
+          "milestone": true
+        },
+        {
+          "id": 4,
+          "name": "用户需求调研与空间需求任务书编制 (Brief)",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "3"
+        },
+        {
+          "id": 5,
+          "name": "大楼物业装修申请 & CI导则/现状机电图获取",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "3"
+        },
+        {
+          "id": 6,
+          "name": "项目执行计划 PEP 编制与各方确认",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "4SS+2"
+        },
+        {
+          "id": 7,
+          "name": "前期规划与项目任务书确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "4,5,6",
+          "milestone": true
+        },
+        {
+          "id": 8,
+          "name": "Phase 2 设计单位资格预审与招采 (Design Procurement)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 9,
+          "name": "设计任务书与设计招标文件 (Design RFP) 编制",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "7"
+        },
+        {
+          "id": 10,
+          "name": "设计单位资格预审 (Design Pre-Q) 与短名单拟定",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "9SS+1"
+        },
+        {
+          "id": 11,
+          "name": "设计 RFP 正式发出 + 现场踏勘与答疑",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "9,10"
+        },
+        {
+          "id": 12,
+          "name": "设计概念方案投标编制与回标",
+          "outline_level": 3,
+          "duration_days": 10,
+          "predecessors": "11"
+        },
+        {
+          "id": 13,
+          "name": "主笔设计团队方案述标答辩与比选 (4选2)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "12"
+        },
+        {
+          "id": 14,
+          "name": "设计定标呈批与中标通知书 (LOA) 发放",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "13"
+        },
+        {
+          "id": 15,
+          "name": "设计合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "14"
+        },
+        {
+          "id": 16,
+          "name": "设计总承包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "15",
+          "milestone": true
+        },
+        {
+          "id": 17,
+          "name": "Phase 3 设计深化、第三方审图与施工图确认",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 18,
+          "name": "概念方案深化与空间规划调整 (Test Fit)",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "16"
+        },
+        {
+          "id": 19,
+          "name": "效果图 3D Rendering 出图与材质选型确认",
+          "outline_level": 3,
+          "duration_days": 6,
+          "predecessors": "18SS+2"
+        },
+        {
+          "id": 20,
+          "name": "初步设计 SD 出图与业主方案签字确认",
+          "outline_level": 3,
+          "duration_days": 4,
+          "predecessors": "18"
+        },
+        {
+          "id": 21,
+          "name": "消防设计专篇及节能/环保专篇编制",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "20SS+1"
+        },
+        {
+          "id": 22,
+          "name": "全专业施工图深化出图 (装饰/机电/消防/弱电)",
+          "outline_level": 3,
+          "duration_days": 15,
+          "predecessors": "20,21"
+        },
+        {
+          "id": 23,
+          "name": "配合出图 LDI 本地化翻图、规范复核及正式盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "22"
+        },
+        {
+          "id": 24,
+          "name": "递交第三方施工图审查机构审查 (数字化审图)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "23"
+        },
+        {
+          "id": 25,
+          "name": "第三方专项图审意见答复与修改通过",
+          "outline_level": 3,
+          "duration_days": 7,
+          "predecessors": "24"
+        },
+        {
+          "id": 26,
+          "name": "取得《施工图审查合格书》 / 施工图全套确认",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "25",
+          "milestone": true
+        },
+        {
+          "id": 27,
+          "name": "住建局：消防设计审查申报",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "26"
+        },
+        {
+          "id": 28,
+          "name": "取得《建设工程消防设计审查合格意见书》",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "27",
+          "milestone": true
+        },
+        {
+          "id": 29,
+          "name": "Phase 4 施工总包邀请招标与定标 (Construction Procurement)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 30,
+          "name": "工程量清单 BOQ 编制与控制价测算",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "22"
+        },
+        {
+          "id": 31,
+          "name": "施工总包招标文件 (RFP) 编制与内部审批",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "22"
+        },
+        {
+          "id": 32,
+          "name": "施工总包短名单拟定与资格预审",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "31"
+        },
+        {
+          "id": 33,
+          "name": "标书发放与现场踏勘",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "30,32"
+        },
+        {
+          "id": 34,
+          "name": "标前答疑与下发补遗纪要 (RFI & Addendum)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "33"
+        },
+        {
+          "id": 35,
+          "name": "总包编制投标文件与回标",
+          "outline_level": 3,
+          "duration_days": 10,
+          "predecessors": "34"
+        },
+        {
+          "id": 36,
+          "name": "商务标逐行清标与技术合规分析",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "35"
+        },
+        {
+          "id": 37,
+          "name": "下发首轮清标质询(RFI)与总包澄清回函",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "36"
+        },
+        {
+          "id": 38,
+          "name": "总包项目班子现场述标答辩 (4选2)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "37"
+        },
+        {
+          "id": 39,
+          "name": "面对面商务谈判与 VE价值工程降本研讨",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "38"
+        },
+        {
+          "id": 40,
+          "name": "总包向分包核价及申请集团特批底价",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "39"
+        },
+        {
+          "id": 41,
+          "name": "提交终版密封报价 (BAFO一口价)",
+          "outline_level": 3,
+          "duration_days": 1,
+          "predecessors": "40"
+        },
+        {
+          "id": 42,
+          "name": "定标报告呈批与发放中标通知书 (LOA)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "41"
+        },
+        {
+          "id": 43,
+          "name": "中标通知书 (LOA) 签发",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "42",
+          "milestone": true
+        },
+        {
+          "id": 44,
+          "name": "施工总承包合同谈判与签约盖章",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "43"
+        },
+        {
+          "id": 45,
+          "name": "施工总包合同签订完成",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "44",
+          "milestone": true
+        },
+        {
+          "id": 46,
+          "name": "Phase 5 施工许可证办理 (Building Permit)",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 47,
+          "name": "物业装修图纸送审与进场安全协议签署",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "45"
+        },
+        {
+          "id": 48,
+          "name": "质安监报监及政府施工许可证申报",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "28,45,47,26"
+        },
+        {
+          "id": 49,
+          "name": "正式取得施工许可证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "48",
+          "milestone": true
+        },
+        {
+          "id": 50,
+          "name": "Phase 6 实体施工阶段",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 51,
+          "name": "场地移交与动工准备 Site Takeover",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "49",
+          "milestone": true
+        },
+        {
+          "id": 52,
+          "name": "常规基础施工",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 53,
+          "name": "场地保护与临时设施搭建",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "51",
+          "work_weekend": true
+        },
+        {
+          "id": 54,
+          "name": "原有装修拆除及建筑垃圾清运",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "53",
+          "work_weekend": true
+        },
+        {
+          "id": 55,
+          "name": "测量放线与基准标高复核",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "54",
+          "work_weekend": true
+        },
+        {
+          "id": 56,
+          "name": "隐蔽与骨架施工 (1st Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 57,
+          "name": "隔墙轻钢龙骨骨架搭设",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "55",
+          "work_weekend": true
+        },
+        {
+          "id": 58,
+          "name": "大机电主管桥架与主管道预埋安装",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "55SS+2",
+          "work_weekend": true
+        },
+        {
+          "id": 59,
+          "name": "隔墙及主管管线隐蔽工程验收 (In-Wall Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "57,58",
+          "work_weekend": true
+        },
+        {
+          "id": 60,
+          "name": "封板与天花机电施工 (2nd Fix)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 61,
+          "name": "墙面封板与天花吊顶龙骨安装",
+          "outline_level": 4,
+          "duration_days": 14,
+          "predecessors": "59",
+          "work_weekend": true
+        },
+        {
+          "id": 62,
+          "name": "二次机电支管敷设、穿线与保温",
+          "outline_level": 4,
+          "duration_days": 18,
+          "predecessors": "59",
+          "work_weekend": true
+        },
+        {
+          "id": 63,
+          "name": "天花隐蔽工程验收 (Above-Ceiling Concealed Inspection)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "61,62",
+          "work_weekend": true
+        },
+        {
+          "id": 64,
+          "name": "饰面与地坪施工 (Finishing)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 65,
+          "name": "天花封石膏板与墙顶乳胶漆饰面",
+          "outline_level": 4,
+          "duration_days": 16,
+          "predecessors": "63",
+          "work_weekend": true
+        },
+        {
+          "id": 66,
+          "name": "架空防静电地板/地砖/地毯铺设",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "65",
+          "work_weekend": true
+        },
+        {
+          "id": 67,
+          "name": "机电末端面板与灯具、洁具安装",
+          "outline_level": 4,
+          "duration_days": 10,
+          "predecessors": "66",
+          "work_weekend": true
+        },
+        {
+          "id": 68,
+          "name": "全系统 T&C 联动调试",
+          "outline_level": 4,
+          "duration_days": 8,
+          "predecessors": "67",
+          "work_weekend": true
+        },
+        {
+          "id": 69,
+          "name": "施工全部完成及总包自检通过",
+          "outline_level": 4,
+          "duration_days": 0,
+          "predecessors": "68",
+          "milestone": true
+        },
+        {
+          "id": 70,
+          "name": "现场粗保洁与工程除尘",
+          "outline_level": 4,
+          "duration_days": 1,
+          "predecessors": "69",
+          "work_weekend": true
+        },
+        {
+          "id": 71,
+          "name": "物理竣工 / 硬装施工完成 (Physical Completion)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "70",
+          "milestone": true
+        },
+        {
+          "id": 72,
+          "name": "空气治理与家具进场 (Post-Completion & IAQ)",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 73,
+          "name": "首次室内空气盲测 (GB 50325 基材/竣工验收)",
+          "outline_level": 4,
+          "duration_days": 2,
+          "predecessors": "71"
+        },
+        {
+          "id": 74,
+          "name": "办公家具及软装进场就位安装",
+          "outline_level": 4,
+          "duration_days": 4,
+          "predecessors": "73"
+        },
+        {
+          "id": 75,
+          "name": "竣工强排通风与空气净化散味阶段",
+          "outline_level": 4,
+          "duration_days": 35,
+          "predecessors": "74",
+          "work_weekend": true
+        },
+        {
+          "id": 76,
+          "name": "Phase 7 竣工验收与合规审批",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 77,
+          "name": "第三方消防设施检测、电气防火检测与出具检测报告",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "71"
+        },
+        {
+          "id": 78,
+          "name": "住建主管部门消防验收/竣工消防备案申报与实地查验",
+          "outline_level": 3,
+          "duration_days": 8,
+          "predecessors": "77"
+        },
+        {
+          "id": 79,
+          "name": "消防查验意见整改复查与正式批文办理",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "78"
+        },
+        {
+          "id": 80,
+          "name": "取得《建设工程消防验收合格意见书》/ 消防备案凭证",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "79",
+          "milestone": true
+        },
+        {
+          "id": 81,
+          "name": "住建局联合竣工验收与备案",
+          "outline_level": 3,
+          "duration_days": 5,
+          "predecessors": "80"
+        },
+        {
+          "id": 82,
+          "name": "竣工备案 / 联合验收通过",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "81",
+          "milestone": true
+        },
+        {
+          "id": 83,
+          "name": "二次室内空气质量复测 (GB/T 18883 交付入住)",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "75"
+        },
+        {
+          "id": 84,
+          "name": "室内空气质量检测合格",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "83",
+          "milestone": true
+        },
+        {
+          "id": 85,
+          "name": "Phase 8 客户搬迁入驻与正式交付",
+          "outline_level": 2,
+          "duration_days": 0,
+          "predecessors": ""
+        },
+        {
+          "id": 86,
+          "name": "深度精保洁与场地最终移交准备",
+          "outline_level": 3,
+          "duration_days": 2,
+          "predecessors": "82,84"
+        },
+        {
+          "id": 87,
+          "name": "Site Handover 场地正式移交",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "86",
+          "milestone": true
+        },
+        {
+          "id": 88,
+          "name": "业主分批次搬迁入驻",
+          "outline_level": 3,
+          "duration_days": 3,
+          "predecessors": "87"
+        },
+        {
+          "id": 89,
+          "name": "搬迁全部完成 / 正式营业",
+          "outline_level": 3,
+          "duration_days": 0,
+          "predecessors": "88",
+          "milestone": true
+        }
+      ]
+    }
+  }
+}

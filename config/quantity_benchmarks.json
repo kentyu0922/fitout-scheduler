@@ -1,0 +1,509 @@
+{
+  "version": "0.2.0-fitout-default",
+  "description": "Quantity Engine v0 benchmark library. Derives BOQ-style quantities (ceiling_area, flooring_area, partition_length, partition_area, drywall/glass split, paint_area) from gross fit-out area + building grade (+ optional layout) when no measured takeoff exists. Deterministic: formulas live in core/quantity_engine.py, every number lives here (single source, same rule as holidays / city permits / productivity rates). All values are uncalibrated office fit-out rules of thumb for mainland China Grade A/B/C office buildings and MUST be replaced by measured BOQ when available.",
+  "quantity_source": "derived_from_area",
+  "confidence": "low",
+  "default_grade": "A",
+  "default_layout": "standard",
+  "grade_aliases": {
+    "a": "A",
+    "grade a": "A",
+    "grade_a": "A",
+    "gradea": "A",
+    "甲级": "A",
+    "a级": "A",
+    "a类": "A",
+    "b": "B",
+    "grade b": "B",
+    "grade_b": "B",
+    "gradeb": "B",
+    "乙级": "B",
+    "b级": "B",
+    "b类": "B",
+    "c": "C",
+    "grade c": "C",
+    "grade_c": "C",
+    "gradec": "C",
+    "丙级": "C",
+    "c级": "C",
+    "c类": "C"
+  },
+  "parameters": {
+    "net_ceiling_ratio": {
+      "unit": "m2 ceiling / m2 gross",
+      "description": "Share of gross fit-out area that receives a new suspended ceiling. Deducts core, risers, shafts, exposed-soffit zones (pantry/BOH/feature open ceiling)."
+    },
+    "net_floor_ratio": {
+      "unit": "m2 floor / m2 gross",
+      "description": "Share of gross area that receives new floor finish (carpet tile / raised floor / stone / LVT). Deducts cores, columns, shafts, wet areas retained from base build."
+    },
+    "partition_density_m_per_m2": {
+      "unit": "m partition / m2 gross",
+      "description": "Linear metres of new internal partition (drywall + glazed) per m2 gross. Lower for open-plan trading floors, higher for cellular offices."
+    },
+    "partition_height_m": {
+      "unit": "m",
+      "description": "Average partition height. Full-height (to slab) drywall for acoustic separation in Grade A; ceiling-height partitions in lower grades."
+    },
+    "glass_partition_share": {
+      "unit": "fraction of partition length",
+      "description": "Share of partition length that is framed/frameless glazing rather than drywall. Glazing is neither boarded nor painted."
+    },
+    "core_wall_density_m_per_m2": {
+      "unit": "m wall / m2 gross",
+      "description": "Linear metres of existing base-build wall (core, shaft, perimeter columns) that receive skim + paint in the fit-out."
+    },
+    "painted_face_fraction": {
+      "unit": "fraction",
+      "description": "Share of a drywall face that is actually painted after deducting doors, openings, skirting, wall panelling / vinyl / feature finishes."
+    },
+    "painted_ceiling_share": {
+      "unit": "fraction of ceiling_area",
+      "description": "Share of ceiling area that is painted gypsum bulkhead / plasterboard rather than unpainted lay-in tile."
+    }
+  },
+  "grades": {
+    "A": {
+      "label_en": "Grade A office (MNC HQ standard)",
+      "label_zh": "甲级办公楼 (外企总部标准)",
+      "params": {
+        "net_ceiling_ratio": 0.85,
+        "net_floor_ratio": 0.92,
+        "partition_density_m_per_m2": 0.3,
+        "partition_height_m": 3.5,
+        "glass_partition_share": 0.35,
+        "core_wall_density_m_per_m2": 0.1,
+        "painted_face_fraction": 0.85,
+        "painted_ceiling_share": 0.3
+      },
+      "assumptions": [
+        "net_ceiling_ratio 0.85 equals the legacy suspended_ceiling bridge ratio, so Grade A + default layout reproduces the PR #3 pilot quantity exactly.",
+        "Slab-to-slab 4.0-4.5 m, raised floor 100-150 mm, finished ceiling 2.8-3.0 m; meeting-room partitions run full height to slab for acoustics -> 3.5 m average partition height.",
+        "Open-plan workstation ratio high, but many glazed meeting rooms / phone booths -> 0.30 m/m2 partition density with 35% glazing.",
+        "More gypsum bulkheads and feature ceilings than lower grades -> 30% of ceiling area painted.",
+        "More wall panelling / acoustic finishes in front-of-house -> only 85% of drywall face is painted."
+      ]
+    },
+    "B": {
+      "label_en": "Grade B office (domestic corporate standard)",
+      "label_zh": "乙级办公楼 (国内企业标准)",
+      "params": {
+        "net_ceiling_ratio": 0.85,
+        "net_floor_ratio": 0.92,
+        "partition_density_m_per_m2": 0.35,
+        "partition_height_m": 3.2,
+        "glass_partition_share": 0.25,
+        "core_wall_density_m_per_m2": 0.1,
+        "painted_face_fraction": 0.9,
+        "painted_ceiling_share": 0.2
+      },
+      "assumptions": [
+        "Slab-to-slab 3.8-4.0 m, ceiling-height or part-height partitions -> 3.2 m average.",
+        "More cellular offices, less glazing (25%) -> 0.35 m/m2 partition density.",
+        "Mostly lay-in mineral fibre ceiling with 20% painted gypsum bulkheads."
+      ]
+    },
+    "C": {
+      "label_en": "Grade C office (budget / back-office)",
+      "label_zh": "丙级办公楼 (经济型/后台办公)",
+      "params": {
+        "net_ceiling_ratio": 0.8,
+        "net_floor_ratio": 0.92,
+        "partition_density_m_per_m2": 0.4,
+        "partition_height_m": 3.0,
+        "glass_partition_share": 0.1,
+        "core_wall_density_m_per_m2": 0.1,
+        "painted_face_fraction": 0.95,
+        "painted_ceiling_share": 0.1
+      },
+      "assumptions": [
+        "Some back-of-house left with exposed / existing soffit -> net_ceiling_ratio 0.80.",
+        "Cellular layout with painted drywall rather than glazing -> 0.40 m/m2 partition density, 10% glazing.",
+        "Minimal bulkheads -> 10% of ceiling painted; almost the whole drywall face is painted (95%)."
+      ]
+    }
+  },
+  "layouts": {
+    "open_plan": {
+      "label": "Open-plan / trading floor",
+      "partition_density_multiplier": 0.8
+    },
+    "standard": {
+      "label": "Standard mix of open plan and meeting rooms",
+      "partition_density_multiplier": 1.0
+    },
+    "cellular": {
+      "label": "Cellular offices / clinics / legal",
+      "partition_density_multiplier": 1.3
+    }
+  },
+  "quantities": {
+    "ceiling_area": {
+      "unit": "m2",
+      "formula": "gross_area * net_ceiling_ratio"
+    },
+    "flooring_area": {
+      "unit": "m2",
+      "formula": "gross_area * net_floor_ratio"
+    },
+    "partition_length": {
+      "unit": "m",
+      "formula": "gross_area * partition_density_m_per_m2 * layout.partition_density_multiplier"
+    },
+    "partition_area": {
+      "unit": "m2",
+      "formula": "partition_length * partition_height_m  (single-face wall surface, standard stud-partition measurement)"
+    },
+    "drywall_partition_area": {
+      "unit": "m2",
+      "formula": "partition_area * (1 - glass_partition_share)"
+    },
+    "glass_partition_area": {
+      "unit": "m2",
+      "formula": "partition_area * glass_partition_share"
+    },
+    "paint_area": {
+      "unit": "m2",
+      "formula": "drywall_partition_area * 2 faces * painted_face_fraction + gross_area * core_wall_density_m_per_m2 * partition_height_m * painted_face_fraction + ceiling_area * painted_ceiling_share"
+    }
+  },
+  "sanity_ranges_per_gross_m2": {
+    "description": "Engine self-check: derived quantity / gross_area must fall inside these bands or a warning is emitted (never silently). Bands bracket the A/B/C benchmarks with any layout modifier applied.",
+    "ceiling_area": [
+      0.7,
+      0.95
+    ],
+    "flooring_area": [
+      0.85,
+      0.98
+    ],
+    "partition_length": [
+      0.15,
+      0.6
+    ],
+    "partition_area": [
+      0.4,
+      2.2
+    ],
+    "drywall_partition_area": [
+      0.2,
+      2.2
+    ],
+    "glass_partition_area": [
+      0.0,
+      0.9
+    ],
+    "paint_area": [
+      1.0,
+      3.6
+    ]
+  },
+  "rounding": "round to 0.1 unit after all multiplications (matches legacy bridge round(area*ratio, 1))",
+  "fitout_profiles": {
+    "standard": 1,
+    "premium": 1.2,
+    "basic": 0.8
+  },
+  "extended_quantities": {
+    "gross_area": {
+      "unit": "m2",
+      "basis": "area",
+      "ratio": 1.0,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "partition_surface": {
+      "unit": "m2",
+      "basis": "drywall_partition_area",
+      "ratio": 2.0,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "door_count": {
+      "unit": "each",
+      "basis": "partition_length",
+      "ratio": 0.05,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "meeting_room_count": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.006,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": true,
+      "office_sensitive": true
+    },
+    "workstation_count": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.08,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": true
+    },
+    "lighting_points": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.12,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": true,
+      "office_sensitive": false
+    },
+    "sprinkler_points": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.1,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "data_points": {
+      "unit": "each",
+      "basis": "workstation_count",
+      "ratio": 2.0,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": true,
+      "office_sensitive": false
+    },
+    "fcu_count": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.008,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "furniture_count": {
+      "unit": "each",
+      "basis": "workstation_count",
+      "ratio": 2.5,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "waste_volume": {
+      "unit": "m3",
+      "basis": "area",
+      "ratio": 0.08,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "raised_floor_area": {
+      "unit": "m2",
+      "basis": "flooring_area",
+      "ratio": 1.0,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "carpet_area": {
+      "unit": "m2",
+      "basis": "flooring_area",
+      "ratio": 0.7,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "vinyl_area": {
+      "unit": "m2",
+      "basis": "flooring_area",
+      "ratio": 0.2,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "tile_stone_area": {
+      "unit": "m2",
+      "basis": "flooring_area",
+      "ratio": 0.1,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "grid_area": {
+      "unit": "m2",
+      "basis": "ceiling_area",
+      "ratio": 0.6,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "gypsum_ceiling_area": {
+      "unit": "m2",
+      "basis": "ceiling_area",
+      "ratio": 0.3,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "feature_ceiling_area": {
+      "unit": "m2",
+      "basis": "ceiling_area",
+      "ratio": 0.1,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "wallcovering_area": {
+      "unit": "m2",
+      "basis": "partition_surface",
+      "ratio": 0.1,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "joinery_length": {
+      "unit": "m",
+      "basis": "area",
+      "ratio": 0.025,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": true,
+      "office_sensitive": false
+    },
+    "duct_surface": {
+      "unit": "m2",
+      "basis": "area",
+      "ratio": 0.6,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "chw_length": {
+      "unit": "m",
+      "basis": "area",
+      "ratio": 0.15,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "diffuser_count": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.04,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "fire_alarm_points": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.025,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "power_points": {
+      "unit": "each",
+      "basis": "workstation_count",
+      "ratio": 1.5,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "containment_length": {
+      "unit": "m",
+      "basis": "area",
+      "ratio": 0.25,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "av_count": {
+      "unit": "each",
+      "basis": "meeting_room_count",
+      "ratio": 1.0,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": true,
+      "office_sensitive": false
+    },
+    "security_count": {
+      "unit": "each",
+      "basis": "door_count",
+      "ratio": 0.5,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "commissioning_points": {
+      "unit": "each",
+      "basis": "area",
+      "ratio": 0.2,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Unvalidated scenario allowance; replace with takeoff",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    },
+    "wall_prep_area": {
+      "unit": "m2",
+      "basis": "paint_area",
+      "ratio": 1,
+      "status": "provisional",
+      "confidence": "low",
+      "source": "Full prepared wall/ceiling surface before finish allocation",
+      "profile_sensitive": false,
+      "office_sensitive": false
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "_comment": "P1-12 construction calendar profiles. Default stays 7D for backward compatibility with the locked dual-calendar policy (SKILL.md solve rules), but it is no longer silent: every run discloses calendar_basis and recommends 6D for standard commercial fit-out.",
+  "recommended_default": "6D",
+  "recommended_default_reason": "6-day construction week is the standard commercial fit-out organisation; 7x8 works weekends and most statutory holidays, which is aggressive.",
+  "default_disclosure": "Construction calendar defaults to 7x8 (weekends working, only Spring Festival off). This is aggressive; the recommended standard for commercial fit-out is 6D. Switch with --calendar_profile 6d.",
+  "profiles": {
+    "5D": {
+      "working_days_per_week": 5,
+      "weekend_policy": "no_weekend_work",
+      "statutory_holiday_policy": "all_statutory_holidays_off",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "single_shift_8h",
+      "implemented": true,
+      "description": "Mon-Fri construction, all statutory holidays off."
+    },
+    "6D": {
+      "working_days_per_week": 6,
+      "weekend_policy": "saturday_works_sunday_off",
+      "statutory_holiday_policy": "working_except_spring_festival",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "single_shift_8h",
+      "implemented": true,
+      "description": "Saturday works, Sunday off; statutory holidays working except Spring Festival."
+    },
+    "7D": {
+      "working_days_per_week": 7,
+      "weekend_policy": "all_weekend_working",
+      "statutory_holiday_policy": "working_except_spring_festival",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "single_shift_8h",
+      "implemented": true,
+      "description": "Current locked dual-calendar construction policy; aggressive."
+    },
+    "NIGHT_ALLOWED": {
+      "working_days_per_week": null,
+      "weekend_policy": "profile_inherited",
+      "statutory_holiday_policy": "profile_inherited",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "night_shift_permitted_with_explicit_scenario",
+      "implemented": false,
+      "not_implemented_reason": "Night work requires the shift model's explicit night-shift scenario (config/resource_constraints.json shift_model.night_shift.requires_explicit_scenario). Selection is rejected rather than silently approximated by a day calendar profile.",
+      "description": "Declares night work permission; enforce via shift model, not this profile."
+    },
+    "WEEKEND_ONLY_SPECIAL": {
+      "working_days_per_week": 2,
+      "weekend_policy": "weekend_only_building_restriction",
+      "statutory_holiday_policy": "all_statutory_holidays_off",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "single_shift_8h",
+      "implemented": false,
+      "not_implemented_reason": "Requires the building's occupation/operation restriction details (weekday work windows, noise limits). Not approximated: selection is rejected pending building-specific input.",
+      "description": "For occupied buildings where only weekend work is permitted."
+    },
+    "CUSTOM": {
+      "working_days_per_week": null,
+      "weekend_policy": "user_defined",
+      "statutory_holiday_policy": "user_defined",
+      "spring_festival_policy": "off_including_lantern_return",
+      "shift_policy": "user_defined",
+      "implemented": false,
+      "not_implemented_reason": "A custom profile needs an explicit user-supplied calendar definition; no default is invented. Selection is rejected until a custom definition format exists.",
+      "description": "User-defined calendar; not yet selectable."
+    }
+  },
+  "building_restrictions": {
+    "none": "No building restriction; profile applies as selected.",
+    "no_weekend_work": "Landlord/building restriction overrides the profile: weekend construction work is prohibited, forcing the 5D construction mode."
+  }
+}

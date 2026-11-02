@@ -1,0 +1,31 @@
+{
+  "version": "1.0-candidate",
+  "sectors": {
+    "office": {"label": "通用商业办公", "focus": ["标准装饰装修流水", "家具安装", "标准IT/AV安装", "搬迁管理"]},
+    "gaming": {"label": "游戏", "focus": ["IT与AV切换", "声学空间范围", "搬迁与业务启用"]},
+    "internet": {"label": "互联网 / 科技", "focus": ["高密度IT与网络", "开放协作空间", "快速搬迁入驻"]},
+    "finance": {"label": "金融", "focus": ["交易大厅高可用双电双网", "金融级安防", "业务连续性"]},
+    "biopharma": {"label": "生物医药", "focus": ["行政办公与实验用途区分", "专业设备与机电接口", "使用放行条件"]},
+    "semiconductor": {"label": "半导体", "focus": ["办公、研发与生产范围区分", "洁净空间适用性", "设备与公用工程接口"]}
+  },
+  "spaces": {
+    "office": {
+      "label": "普通办公",
+      "modules": []
+    },
+    "laboratory": {"label": "实验室", "modules": ["Lab_Construction_Module"]},
+    "cleanroom": {"label": "洁净空间", "modules": ["Cleanroom_ISO_Validation_Module"]},
+    "server_room": {"label": "机房", "modules": ["Datacenter_LoadBank_Module"]},
+    "recording": {"label": "录音空间", "modules": ["Acoustic_Module"]},
+    "production": {"label": "生产设施", "modules": []}
+  },
+  "modules": {
+    "Office_Furniture_Install_Module": {"status": "IMPLEMENTED", "question": "定制办公家具的到货、摆场安装与软装是否纳入主进度（office_ff_move 包）？"},
+    "Office_ITAV_Install_Module": {"status": "IMPLEMENTED", "question": "标准会议 AV、网络点位与门禁安装调试是否纳入主进度（office_ff_move 包）？"},
+    "Office_Move_Management_Module": {"status": "IMPLEMENTED", "question": "搬迁方案编制、资产标签与分批搬迁计划是否纳入主进度（office_ff_move 包）？"},
+    "Lab_Construction_Module": {"status": "TEMPLATE_ONLY", "question": "实验室实际用途是什么；哪些机电、家具与设备属于本次工程？"},
+    "Cleanroom_ISO_Validation_Module": {"status": "TEMPLATE_ONLY", "question": "是否确有洁净范围；目标等级、验证范围及放行依据是什么？"},
+    "Datacenter_LoadBank_Module": {"status": "TEMPLATE_ONLY", "question": "是否要求负载测试；普通机房不能默认加载数据中心测试范围。"},
+    "Acoustic_Module": {"status": "NOT_IMPLEMENTED", "question": "是否包含声学装修及专项测试？"}
+  }
+}

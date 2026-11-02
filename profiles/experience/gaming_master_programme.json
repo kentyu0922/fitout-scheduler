@@ -1,0 +1,150 @@
+{
+  "version": "0.1-review",
+  "scope": "大型总部/搬迁/改造共用；游戏行业优先提示",
+  "source": "本次用户提供的八条经验，尚未独立验证案例实际工期",
+  "automatic_date_changes": false,
+  "items": [
+    {
+      "id": "G01",
+      "title": "消防设计审查与设计顾问",
+      "user_input_summary": "用户经验：单体面积>25000㎡或装修楼层高度总和>50m；审查额外1个月；建议独立设计顾问。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "大体量、复杂公共建筑或改造项目需先识别属地消防审验路线。",
+      "planning_value": "约1个月额外审查窗口（经验值）",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "设计顾问招采→设计资料完善→技术审查/修改闭环→适用的行政审查；避免重复计算原计划已有审图时间。",
+      "evidence_status": "THRESHOLD_NEEDS_LOCAL_VERIFICATION",
+      "implementation_note": "所查规定有关公共建筑条款为单体建筑面积>40000㎡或建筑高度>50m，并有其他特殊工程情形；不是楼层高度累加。第三方技术审查与行政审查分开。独立设计顾问不自动将DB变DBB。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G02",
+      "title": "租赁前TDD",
+      "user_input_summary": "用户经验：租赁签订前安排TDD顾问招采，现场机电和建筑条件复核至少1个月。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "选址/租赁尚未锁定，且建筑条件影响需求适配或租赁责任。",
+      "planning_value": "至少1个月复核；顾问招采另计，工期未提供",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "顾问采购→资料与现场可进入→TDD→缺陷及改造责任/成本/时间确认→租赁决策；可按协议设置附条件签约。",
+      "evidence_status": "PM_EXPERIENCE_NOT_BENCHMARK",
+      "implementation_note": "TDD建议覆盖使用条件、电力/制冷/竖井/结构荷载、现有消防文件及出租方交付边界。无招采天数不得默认为零。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G03",
+      "title": "电力增容",
+      "user_input_summary": "用户经验：现有电力不足时提前规划；外线扩容约1年，含电力公司审核、评审、设计和施工。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "负荷评估证实现有可用容量不足，且方案涉及外部供电线路增容。",
+      "planning_value": "外线增容约12个月；非所有增容均适用",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "负荷确认→现有容量核验→供电方案/申请→评审与设计→施工→送电与验收；送电约束受影响调试及IT启用。",
+      "evidence_status": "PM_EXPERIENCE_UTILITY_CONFIRMATION_REQUIRED",
+      "implementation_note": "区分楼内配电调整、变压器增容和外线工程；按供电单位路线核定。不能把电力审批承诺时限当整项工程工期。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G04",
+      "title": "监理、检测机构与材料检测",
+      "user_input_summary": "用户经验：超大项目预留监理/施工检测/平行检测招采；材料进场前审批及进场后检测，较长约1个月。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "项目治理要求或适用规定要求相关服务；材料类别有检验与见证需求。",
+      "planning_value": "较长材料检测约1个月；各服务招采待定",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "服务采购→送审/样品确认→到货取样→检验/见证→相关材料使用放行；按批次衔接具体工序。",
+      "evidence_status": "PM_EXPERIENCE_APPLICABILITY_REQUIRED",
+      "implementation_note": "不能默认所有项目必须另聘平行检测机构，也不把全部材料等待串成全场停工。检验依据、批次及必要放行需确认。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G05",
+      "title": "IT与数据迁移",
+      "user_input_summary": "用户经验：7000人搬迁或新楼项目预留6–8个月数据迁移，提前与客户IT确认。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "有实际系统/数据/网络迁移；人员规模只作案例背景。",
+      "planning_value": "7000人参考案例：6–8个月整体迁移工作流",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "系统盘点与停机窗口→目标架构/线路设备→环境验证→试迁移→分批切换与回退演练→业务验证。",
+      "evidence_status": "PM_EXPERIENCE_IT_CONFIRMATION_REQUIRED",
+      "implementation_note": "不得按人数线性外推；人员搬迁不等于服务器物理迁移。前期设计测试可与装修并行，最终切换依赖可用电力、网络及目标环境。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G06",
+      "title": "FM接管",
+      "user_input_summary": "用户经验：FM接收预留3个月，全楼层培训与熟悉运维。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "新址或多楼层复杂系统需要运维团队接管。",
+      "planning_value": "约3个月接管准备工作流",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "FM介入→资产编码与运维资料→见证调试→分批培训/应急演练→接管签认与支持。",
+      "evidence_status": "PM_EXPERIENCE_FM_CONFIRMATION_REQUIRED",
+      "implementation_note": "不默认在全部竣工后再等3个月；资料培训和见证可提前，现场操作以可安全进入及系统就绪为前提。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G07",
+      "title": "空气治理与通风",
+      "user_input_summary": "用户经验：预留3–6个月空气治理及通风。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "客户健康目标、材料与污染源风险、通风条件提出专项治理需求。",
+      "planning_value": "3–6个月经验风险窗口",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "材料与污染源控制→按区域具备条件后通风→家具等新增污染源后的复核→检测/整改/复测→使用放行。",
+      "evidence_status": "PM_EXPERIENCE_NOT_PASS_CRITERION",
+      "implementation_note": "不写成普遍法定最短时间；时间届满不能代替检测合格。按空间释放与通风条件安排并行，不压缩检测条件来实现目标日期。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    },
+    {
+      "id": "G08",
+      "title": "用途变更与施工许可",
+      "user_input_summary": "用户经验：工业改办公/研发、商业改办公等预留政府审批3个月，系统性改建施工许可至少2个月。",
+      "source_type": "USER_PM_EXPERIENCE",
+      "applicability": "拟用功能与现有土地、规划、产权或消防批准用途不一致。",
+      "planning_value": "用途审批约3个月；施工许可至少2个月，均为待核定经验值",
+      "value_unit": "months_as_supplied_not_converted_to_workdays",
+      "logic_proposal": "现状权属/规划/用途核对→开发商/业主配合与属地路径→资料/设计与必要审查→许可→允许施工范围释放。",
+      "evidence_status": "LOCAL_ROUTE_NOT_VERIFIED",
+      "implementation_note": "不是全国统一审批栏目或承诺期限；是否允许变更、申报主体、材料和流程取决于属地及项目。不能自动串行相加为5个月，也不能在未确定前默认可并行。",
+      "applied": false,
+      "scheduled_days": null,
+      "requires_project_scope": true
+    }
+  ],
+  "sources": [
+    {
+      "title": "上海消防审验管理办法",
+      "url": "https://www.shanghai.gov.cn/gwk/search/content/515ff61a630f42a9a85a95139b7733c0",
+      "supports": "相关消防分类门槛；不支持用户的25000㎡与1个月固定规则"
+    },
+    {
+      "title": "M Moser 莉莉丝游戏上海案例",
+      "url": "https://www.mmoser.com/projects/lilith-games-shanghai/",
+      "supports": "游戏办公室存在多楼栋及录音、研究观察等差异化范围；无八条工期背书"
+    },
+    {
+      "title": "M Moser Zynga San Mateo",
+      "url": "https://www.mmoser.com/projects/zynga-san-mateo/",
+      "supports": "游戏办公策略可以采用混合办公；不应自动假定全员工固定工位"
+    },
+    {
+      "title": "南京既有建筑改变使用功能办法",
+      "url": "https://ghj.nanjing.gov.cn/njsgtzyj/202405/t20240521_4671464.html",
+      "supports": "属地用途调整路径示例；不作为杭州或全国规则"
+    }
+  ]
+}

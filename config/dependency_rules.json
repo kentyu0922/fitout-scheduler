@@ -1,0 +1,253 @@
+{
+  "version": "0.1.0-v0",
+  "description": "Dependency Engine v0 — sectional (multi-workfront) SS+lag rule table. Default templates carry FS-only trade links; when a project is sectional (large area / several workfronts) the listed trade pairs are re-linked as Start-to-Start with a deterministic lag so trades flow zone by zone instead of waiting for the whole floor. Small projects keep the template FS logic untouched. Edit rules here only (single source); never hard-code pairs in Python.",
+  "activation": {
+    "mode_default": "auto",
+    "sectional_area_sqm_min": 5000,
+    "workfront_area_sqm": 2500,
+    "min_workfronts": 2,
+    "max_workfronts": 8,
+    "note": "auto: sectional when area >= sectional_area_sqm_min OR derived/explicit workfronts >= min_workfronts. workfronts = clamp(floor(area / workfront_area_sqm), 1, max_workfronts) unless --workfronts is given. on/off force the decision."
+  },
+  "lag_policy": {
+    "method": "predecessor_duration_over_workfronts",
+    "formula": "lag = clamp(ceil(predecessor_duration_days / workfronts), lag_days.min, lag_days.max)",
+    "unit": "successor calendar workdays (construction 7-day for site trades)",
+    "note": "Takt reading: the successor trade may start in zone 1 once the predecessor trade has cleared roughly one zone (predecessor duration ÷ number of zones)."
+  },
+  "gate_policy": {
+    "relationship": "FF",
+    "lag_days": 0,
+    "note": "Inspection gates (隐蔽工程验收) between the two trades are kept as Finish-to-Finish so the successor trade cannot complete before its gate inspection completes. This keeps the gate on the network (no dangling logic) while allowing zone-by-zone overlap."
+  },
+  "scope": {
+    "leaf_only": true,
+    "min_outline_level": 3,
+    "require_positive_duration": true,
+    "note": "Only leaf site tasks with duration > 0 are matched; summaries and milestones are never re-linked."
+  },
+  "rules": [
+    {
+      "id": "SEC-01",
+      "label_zh": "隔墙骨架 → 二次机电支管 (分区穿插)",
+      "label_en": "Partition frame → MEP 2nd fix (sectional overlap)",
+      "predecessor_keywords": [
+        "隔墙轻钢龙骨",
+        "隔墙龙骨骨架"
+      ],
+      "successor_keywords": [
+        "二次机电支管",
+        "二次机电"
+      ],
+      "relationship": "SS",
+      "lag_days": {
+        "min": 3,
+        "max": 10
+      },
+      "gate_keywords": [
+        "隔墙及主管管线隐蔽工程验收",
+        "In-Wall Inspection"
+      ],
+      "rationale": "Branch conduits / pipework follow partition framing zone by zone; on a single-zone floor they wait for the in-wall inspection (FS)."
+    },
+    {
+      "id": "SEC-02",
+      "label_zh": "大机电主管 → 二次机电支管 (分区穿插)",
+      "label_en": "MEP mains → MEP 2nd fix (sectional overlap)",
+      "predecessor_keywords": [
+        "大机电主管桥架",
+        "大机电主管"
+      ],
+      "successor_keywords": [
+        "二次机电支管",
+        "二次机电"
+      ],
+      "relationship": "SS",
+      "lag_days": {
+        "min": 3,
+        "max": 10
+      },
+      "gate_keywords": [
+        "隔墙及主管管线隐蔽工程验收",
+        "In-Wall Inspection"
+      ],
+      "rationale": "Branch runs tee off the mains; once mains in zone 1 are up the 2nd-fix crew can follow."
+    },
+    {
+      "id": "SEC-03",
+      "label_zh": "大机电主管 → 墙面封板与天花吊顶龙骨 (分区穿插)",
+      "label_en": "MEP mains → wall boarding & ceiling grid (sectional overlap)",
+      "predecessor_keywords": [
+        "大机电主管桥架",
+        "大机电主管"
+      ],
+      "successor_keywords": [
+        "天花吊顶龙骨",
+        "吊顶龙骨"
+      ],
+      "relationship": "SS",
+      "lag_days": {
+        "min": 4,
+        "max": 12
+      },
+      "gate_keywords": [
+        "隔墙及主管管线隐蔽工程验收",
+        "In-Wall Inspection"
+      ],
+      "rationale": "Ceiling grid hangers go in once high-level mains in that zone are fixed."
+    },
+    {
+      "id": "SEC-04",
+      "label_zh": "隔墙骨架 → 墙面封板与天花吊顶龙骨 (分区穿插)",
+      "label_en": "Partition frame → wall boarding & ceiling grid (sectional overlap)",
+      "predecessor_keywords": [
+        "隔墙轻钢龙骨",
+        "隔墙龙骨骨架"
+      ],
+      "successor_keywords": [
+        "天花吊顶龙骨",
+        "吊顶龙骨"
+      ],
+      "relationship": "SS",
+      "lag_days": {
+        "min": 4,
+        "max": 12
+      },
+      "gate_keywords": [
+        "隔墙及主管管线隐蔽工程验收",
+        "In-Wall Inspection"
+      ],
+      "rationale": "Wall boarding follows framing zone by zone."
+    },
+    {
+      "id": "SEC-05",
+      "label_zh": "二次机电支管 → 天花封板与饰面 (分区穿插)",
+      "label_en": "MEP 2nd fix → ceiling board close & finishes (sectional overlap)",
+      "predecessor_keywords": [
+        "二次机电支管",
+        "二次机电"
+      ],
+      "successor_keywords": [
+        "天花封石膏板",
+        "天花封板"
+      ],
+      "relationship": "SS",
+      "lag_days": {
+        "min": 4,
+        "max": 12
+      },
+      "gate_keywords": [
+        "天花隐蔽工程验收",
+        "Above-Ceiling Concealed Inspection"
+      ],
+      "rationale": "Ceiling is closed zone by zone after the above-ceiling 2nd fix in that zone is inspected."
+    }
+  ],
+  "fitout_rules": [
+    {
+      "predecessor": "demolition",
+      "successor": "waste_removal",
+      "sectional_relationship": "FF",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "demolition",
+      "successor": "setting_out",
+      "sectional_relationship": "FS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "setting_out",
+      "successor": "partition_framing",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "partition_framing",
+      "successor": "gypsum_boarding",
+      "sectional_relationship": "FS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "containment",
+      "successor": "structured_cabling",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "hvac_duct",
+      "successor": "diffuser",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "chw_pipe",
+      "successor": "fcu",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "ceiling_grid",
+      "successor": "lighting",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "gypsum_boarding",
+      "successor": "wall_prep",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "wall_prep",
+      "successor": "painting",
+      "sectional_relationship": "FS",
+      "lag": 2,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "raised_floor",
+      "successor": "carpet",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "wall_prep",
+      "successor": "wallcovering",
+      "sectional_relationship": "FS",
+      "lag": 2,
+      "max_lag": 10,
+      "status": "provisional",
+      "source": {
+        "type": "planning_assumption",
+        "reference": "Existing wall_prep to painting planning lag; not manufacturer drying specification",
+        "confidence": "low"
+      },
+      "applicability": "Separate paint and wallcovering surface quantities. Wallcovering follows its prepared substrate; verify moisture, primer/adhesive instructions, ventilation and adjacent wet works before issue. Two working days is a provisional planning allowance, not a product requirement."
+    },
+    {
+      "predecessor": "carpet",
+      "successor": "furniture",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10
+    },
+    {
+      "predecessor": "testing_commissioning",
+      "successor": "snagging",
+      "sectional_relationship": "FF",
+      "lag": 0,
+      "max_lag": 10
+    }
+  ]
+}

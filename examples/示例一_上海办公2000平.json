@@ -1,0 +1,11 @@
+{
+  "project": {
+    "project_name": "示例一_上海办公2000平",
+    "city": "上海",
+    "area_sqm": 2000,
+    "sector": "office",
+    "delivery": "DB",
+    "bidding": "invite",
+    "start_date": "2027-01-04"
+  }
+}

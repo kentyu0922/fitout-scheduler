@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "purpose": "FIX-03 — map each independent authority requirement to the WBS activities it governs, so an UNKNOWN requirement becomes a CONDITIONAL PLACEHOLDER instead of a mandatory committed activity.",
+  "note": "Keyword matching is applied to the expanded WBS task name. A requirement with no matching task is reported as a missing anchor, never invented.",
+
+  "requirement_task_map": {
+    "construction_permit_required": {
+      "keywords": ["施工许可证申报与审批", "正式取得施工许可证"],
+      "chain": "permit"
+    },
+    "fire_design_review_required": {
+      "keywords": ["消防设计审查", "消防设计审核", "消防设计备案"],
+      "chain": "fire"
+    },
+    "third_party_testing_required": {
+      "keywords": ["第三方消防设施检测", "电气防火检测", "第三方检测"],
+      "chain": "acceptance"
+    },
+    "fire_acceptance_required": {
+      "keywords": ["消防验收", "竣工消防备案", "消防查验意见整改", "消防验收合格意见书", "消防备案凭证"],
+      "chain": "acceptance"
+    },
+    "fire_filing_required": {
+      "keywords": ["竣工消防备案", "消防备案凭证"],
+      "chain": "acceptance"
+    },
+    "joint_completion_required": {
+      "keywords": ["联合竣工验收", "竣工备案 / 联合验收通过", "联合验收通过"],
+      "chain": "completion"
+    },
+    "landlord_approval_required": {
+      "keywords": ["物业装修申请", "物业装修图纸送审"],
+      "chain": "landlord"
+    }
+  },
+
+  "conditional_chains": {
+    "acceptance": {
+      "description": "Third-party fire testing -> fire acceptance / filing -> rectification re-check -> formal document.",
+      "serial": true,
+      "envelope_note": "This chain is serial, so the finish envelope over every independent TRUE/FALSE combination is exactly bounded by [none required, all required]. Scenario enumeration uses those two bounds."
+    },
+    "completion": {
+      "description": "Joint completion inspection and filing.",
+      "serial": true
+    }
+  },
+
+  "independence_rule": {
+    "statement": "construction permit / fire design review / fire acceptance / fire filing / third-party testing / landlord approval / joint completion are INDEPENDENT decisions.",
+    "forbidden": [
+      "construction permit exempt MUST NOT imply fire requirements exempt",
+      "one UNKNOWN MUST NOT default every authority requirement to TRUE"
+    ]
+  }
+}

@@ -1,0 +1,1347 @@
+{
+  "version": "6.0.0",
+  "description": "V6.0 dependency ontology — typed, condition-based construction logic. Single source of truth for why a link is FS / SS / FF / SF and with what lag. The legacy keyword table (config/dependency_rules.json#rules) and the flat typed table (#fitout_rules) are kept for compatibility only; a regression test asserts this ontology covers them.",
+  "provenance": {
+    "derived_from": [
+      "config/dependency_rules.json#fitout_rules (14 typed trade releases, v0.1.0)",
+      "config/fitout_wbs.json#predecessors (coarse package network)",
+      "config/fitout_wbs.json#inspection_requirements (concealed-work release gates)"
+    ],
+    "status": "provisional",
+    "not_a_source_of": [
+      "productivity rates",
+      "durations",
+      "crew sizes"
+    ],
+    "note": "This file models construction logic only. It never sets duration, and it must never be used to justify removing an inspection, approval or statutory gate."
+  },
+  "condition_classes": {
+    "hard": {
+      "label_zh": "硬依赖",
+      "label_en": "Hard (physical)",
+      "definition": "前道工序形成的实体状态未到位，后道工序在物理上无法施工。",
+      "example": "机电一次安装未完成 → 天花不得封闭。",
+      "overridable": true,
+      "may_overlap_when": "条件作用域为 zone 且分区流水已启用时，可在分区层面重叠。"
+    },
+    "information": {
+      "label_zh": "信息依赖",
+      "label_en": "Information",
+      "definition": "实体上可施工，但缺少已批准的信息（图纸 / 技术参数 / 封样）而不能开工。",
+      "example": "设计冻结 → 长周期采购发布。",
+      "overridable": true,
+      "may_overlap_when": "信息可按分部提前分批冻结。"
+    },
+    "resource": {
+      "label_zh": "资源依赖",
+      "label_en": "Resource contention",
+      "definition": "不构成先后逻辑，仅表示两道工序争夺同一工作面、通道或工种。不产生网络边，只产生资源竞争组，供 V6.2 资源优化消费。",
+      "example": "隔墙封板与墙面批腻子共用同一作业面。",
+      "emits_edge": false
+    },
+    "inspection": {
+      "label_zh": "检查依赖",
+      "label_en": "Inspection / hold point",
+      "definition": "法定或合同约定的隐蔽工程验收、检测、盲测。通过后覆盖工序方可继续。",
+      "example": "天花隐蔽工程验收 → 天花封板。",
+      "overridable": false,
+      "may_overlap_when": null
+    },
+    "authority": {
+      "label_zh": "权威依赖",
+      "label_en": "Statutory / authority",
+      "definition": "政府许可、图审合格证、质安监报监等行政行为。未取得即开工属违规。",
+      "example": "施工许可证取得 → 现场施工开始。",
+      "overridable": false,
+      "may_overlap_when": null
+    }
+  },
+  "relationship_policy": {
+    "hard": {
+      "single_workfront": "FS",
+      "sectional": "SS",
+      "lag_basis": "workfront_pipeline",
+      "lag_rule": "clamp(ceil(predecessor_duration_days / workfronts), lag_min, lag_max)"
+    },
+    "information": {
+      "single_workfront": "FS",
+      "sectional": "FS",
+      "lag_basis": "none"
+    },
+    "inspection": {
+      "single_workfront": "FS",
+      "sectional": "FS",
+      "lag_basis": "none",
+      "note": "Hold points are never overlapped. Scope is floor/project in the current model; when gates become zone-scoped in V6.1 this policy must be revisited explicitly, not silently relaxed."
+    },
+    "authority": {
+      "single_workfront": "FS",
+      "sectional": "FS",
+      "lag_basis": "none",
+      "note": "Statutory gates are never overlapped and never dropped."
+    },
+    "resource": {
+      "emits_edge": false
+    }
+  },
+  "scope_policy": {
+    "zone": "按分区形成。分区流水启用时允许 SS 重叠。",
+    "floor": "整层形成后才可用。任何情况下不允许 SS 重叠。",
+    "project": "全项目形成后才可用。任何情况下不允许 SS 重叠。",
+    "note": "SS 的充分条件：条件类别允许重叠 AND 条件作用域为 zone AND 决策为分区流水(workfronts>1)。三者缺一则回落到 FS。"
+  },
+  "gate_policy": {
+    "force_fs_when_gated": true,
+    "force_fs_label": "inspection_gate_ids / inspection_required",
+    "force_fs_reason": "后继工序的完成被检查门约束时（inspection_gate_ids / inspection_required），其全部入边强制 FS：否则 SS 会让工作面在被验收之前就推进到下一分区。",
+    "v61_relaxation": "当检查门在 V6.1 变为分区作用域（每个 zone 各自报验）后，此规则可显式放宽为 SS；放宽必须改配置并跑回归，不得由调用方临时传参绕过。",
+    "inspection_owned_by": "gate_task",
+    "note": "inspection 类条件的边由 WBS 展开期的 inspection_gate_ids 机制落定，本体只做校验、不重复落边，避免双重所有权。"
+  },
+  "conditions": {
+    "site.facility_ready": {
+      "class": "hard",
+      "scope": "project",
+      "label_zh": "场地移交与临时设施就位",
+      "label_en": "Site handed over, temp facilities up"
+    },
+    "workface.demolished": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "原装修拆除完成、渣料形成",
+      "label_en": "Demolition done, debris generated"
+    },
+    "workface.clear": {
+      "class": "hard",
+      "scope": "floor",
+      "label_zh": "渣料清运完成、作业面清空",
+      "label_en": "Debris removed, workface clear"
+    },
+    "workface.set_out": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "放线基准与标高复核完成",
+      "label_en": "Setting-out benchmarks established"
+    },
+    "partition.frame_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "隔墙龙骨骨架完成（未封板）",
+      "label_en": "Partition framing complete"
+    },
+    "mep.mains_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "机电主管（风/水/桥架）安装完成",
+      "label_en": "MEP mains installed"
+    },
+    "containment.route_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "桥架线槽路由完成",
+      "label_en": "Containment route complete"
+    },
+    "ceiling.grid_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "吊顶龙骨完成并调平",
+      "label_en": "Ceiling grid set and levelled"
+    },
+    "ceiling.closed": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "天花封板完成",
+      "label_en": "Ceiling closed"
+    },
+    "board.surface_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "墙面封板完成、可批腻子",
+      "label_en": "Boarding complete, ready for skim"
+    },
+    "surface.substrate_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "基层处理完成、可涂饰",
+      "label_en": "Substrate prepared, ready to decorate"
+    },
+    "floor.raised_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "架空地板完成",
+      "label_en": "Raised floor complete"
+    },
+    "surface.decorated": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "墙面涂饰/裱糊完成（湿作业结束）",
+      "label_en": "Wall decoration complete (wet trades done)"
+    },
+    "finish.floor_protected": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "地毯铺装完成、可进家具",
+      "label_en": "Carpet laid, floor protected"
+    },
+    "finish.flooring_complete": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "楼地面面层全部完成",
+      "label_en": "Floor finishes complete"
+    },
+    "opening.ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "洞口与门套基层就位",
+      "label_en": "Openings and door-set substrate ready"
+    },
+    "finish.joinery_complete": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "隔断/门/固定木作完成",
+      "label_en": "Glazing, doors and joinery complete"
+    },
+    "systems.first_fix_complete": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "机电末端一次安装完成（FCU/喷淋/报警）",
+      "label_en": "MEP first-fix terminals installed"
+    },
+    "systems.low_current_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "强电与综合布线回路完成",
+      "label_en": "Power and structured cabling circuits complete"
+    },
+    "systems.elv_ready": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "AV 与安防系统完成",
+      "label_en": "AV and security systems complete"
+    },
+    "terminals.installed": {
+      "class": "hard",
+      "scope": "zone",
+      "label_zh": "风口与灯具末端安装完成",
+      "label_en": "Diffusers and luminaires installed"
+    },
+    "systems.tested": {
+      "class": "hard",
+      "scope": "floor",
+      "label_zh": "全系统联动调试完成",
+      "label_en": "T&C complete"
+    },
+    "finish.snagged": {
+      "class": "hard",
+      "scope": "floor",
+      "label_zh": "施工缺陷整改完成",
+      "label_en": "Snagging closed"
+    },
+    "info.design_frozen": {
+      "class": "information",
+      "scope": "project",
+      "label_zh": "设计冻结、图纸可用于采购",
+      "label_en": "Design frozen, releasable for procurement"
+    },
+    "info.shop_drawing_approved": {
+      "class": "information",
+      "scope": "zone",
+      "label_zh": "深化加工图批准",
+      "label_en": "Shop drawings approved"
+    },
+    "inspection.in_wall": {
+      "class": "inspection",
+      "scope": "floor",
+      "label_zh": "分区分段隔墙及主管隐蔽工程验收",
+      "label_en": "In-wall & mains concealed inspection"
+    },
+    "inspection.above_ceiling": {
+      "class": "inspection",
+      "scope": "floor",
+      "label_zh": "分区分段天花隐蔽工程验收",
+      "label_en": "Above-ceiling concealed inspection"
+    },
+    "inspection.iaq_first": {
+      "class": "inspection",
+      "scope": "floor",
+      "label_zh": "首次室内空气盲测",
+      "label_en": "First IAQ blind test"
+    },
+    "inspection.pre_commissioning": {
+      "class": "inspection",
+      "scope": "floor",
+      "label_zh": "机电安装完成及调试前安全验收",
+      "label_en": "Pre-commissioning safety inspection"
+    },
+    "permit.construction": {
+      "class": "authority",
+      "scope": "project",
+      "label_zh": "施工许可证取得",
+      "label_en": "Construction permit issued"
+    },
+    "permit.fire_design": {
+      "class": "authority",
+      "scope": "project",
+      "label_zh": "消防设计审查/图审合格证",
+      "label_en": "Fire design review / drawing review certificate"
+    },
+    "resource.same_workface": {
+      "class": "resource",
+      "scope": "zone",
+      "label_zh": "同一墙面作业面",
+      "label_en": "Same wall workface"
+    },
+    "resource.same_access": {
+      "class": "resource",
+      "scope": "floor",
+      "label_zh": "同一进场与垂直运输通道",
+      "label_en": "Same delivery route / hoist"
+    },
+    "resource.same_trade_mechanical": {
+      "class": "resource",
+      "scope": "project",
+      "label_zh": "同一暖通工种",
+      "label_en": "Same mechanical trade crew"
+    },
+    "resource.same_trade_electrical": {
+      "class": "resource",
+      "scope": "project",
+      "label_zh": "同一电气工种",
+      "label_en": "Same electrical trade crew"
+    }
+  },
+  "activity_types": {
+    "permit_fire_review": {
+      "requires": [],
+      "produces": [
+        "permit.fire_design"
+      ]
+    },
+    "permit_construction": {
+      "requires": [
+        "permit.fire_design"
+      ],
+      "produces": [
+        "permit.construction"
+      ]
+    },
+    "design_freeze": {
+      "requires": [],
+      "produces": [
+        "info.design_frozen"
+      ]
+    },
+    "procurement_release": {
+      "requires": [
+        "info.design_frozen"
+      ],
+      "produces": []
+    },
+    "shop_drawing": {
+      "requires": [
+        "info.design_frozen"
+      ],
+      "produces": [
+        "info.shop_drawing_approved"
+      ]
+    },
+    "site_setup": {
+      "requires": [
+        "permit.construction"
+      ],
+      "produces": [
+        "site.facility_ready"
+      ]
+    },
+    "demolition": {
+      "requires": [
+        "site.facility_ready"
+      ],
+      "produces": [
+        "workface.demolished"
+      ]
+    },
+    "waste_removal": {
+      "requires": [
+        "workface.demolished"
+      ],
+      "produces": [
+        "workface.clear"
+      ],
+      "resource": [
+        "resource.same_access"
+      ]
+    },
+    "setting_out": {
+      "requires": [
+        "workface.demolished",
+        "workface.clear"
+      ],
+      "produces": [
+        "workface.set_out"
+      ]
+    },
+    "partition_framing": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "partition.frame_ready"
+      ],
+      "resource": [
+        "resource.same_workface"
+      ]
+    },
+    "gypsum_boarding": {
+      "requires": [
+        "partition.frame_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "board.surface_ready",
+        "opening.ready"
+      ],
+      "resource": [
+        "resource.same_workface"
+      ]
+    },
+    "glass_partition": {
+      "requires": [
+        "partition.frame_ready",
+        "ceiling.grid_ready"
+      ],
+      "produces": [
+        "finish.joinery_complete"
+      ]
+    },
+    "doors": {
+      "requires": [
+        "opening.ready"
+      ],
+      "produces": [
+        "finish.joinery_complete"
+      ],
+      "resource": [
+        "resource.same_access"
+      ]
+    },
+    "joinery": {
+      "requires": [
+        "board.surface_ready"
+      ],
+      "produces": [
+        "finish.joinery_complete"
+      ],
+      "resource": [
+        "resource.same_access"
+      ]
+    },
+    "hvac_duct": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "mep.mains_ready"
+      ],
+      "resource": [
+        "resource.same_trade_mechanical"
+      ]
+    },
+    "chw_pipe": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "mep.mains_ready"
+      ],
+      "resource": [
+        "resource.same_trade_mechanical"
+      ]
+    },
+    "containment": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "mep.mains_ready",
+        "containment.route_ready"
+      ],
+      "resource": [
+        "resource.same_trade_electrical"
+      ]
+    },
+    "ceiling_grid": {
+      "requires": [
+        "mep.mains_ready"
+      ],
+      "produces": [
+        "ceiling.grid_ready"
+      ]
+    },
+    "gypsum_ceiling": {
+      "requires": [
+        "ceiling.grid_ready",
+        "inspection.above_ceiling"
+      ],
+      "produces": [
+        "ceiling.closed"
+      ]
+    },
+    "feature_ceiling": {
+      "requires": [
+        "ceiling.grid_ready",
+        "inspection.above_ceiling"
+      ],
+      "produces": [
+        "ceiling.closed"
+      ]
+    },
+    "wall_prep": {
+      "requires": [
+        "board.surface_ready",
+        "ceiling.closed"
+      ],
+      "produces": [
+        "surface.substrate_ready"
+      ],
+      "resource": [
+        "resource.same_workface"
+      ]
+    },
+    "painting": {
+      "requires": [
+        "surface.substrate_ready"
+      ],
+      "produces": [
+        "surface.decorated"
+      ],
+      "resource": [
+        "resource.same_workface"
+      ]
+    },
+    "wallcovering": {
+      "requires": [
+        "surface.substrate_ready"
+      ],
+      "produces": [
+        "surface.decorated"
+      ],
+      "resource": [
+        "resource.same_workface"
+      ]
+    },
+    "raised_floor": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "floor.raised_ready"
+      ]
+    },
+    "carpet": {
+      "requires": [
+        "floor.raised_ready",
+        "surface.decorated"
+      ],
+      "produces": [
+        "finish.floor_protected",
+        "finish.flooring_complete"
+      ],
+      "resource": [
+        "resource.same_access"
+      ]
+    },
+    "vinyl": {
+      "requires": [
+        "floor.raised_ready",
+        "surface.decorated"
+      ],
+      "produces": [
+        "finish.flooring_complete"
+      ]
+    },
+    "tile_stone": {
+      "requires": [
+        "workface.set_out"
+      ],
+      "produces": [
+        "finish.flooring_complete"
+      ]
+    },
+    "fcu": {
+      "requires": [
+        "mep.mains_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "systems.first_fix_complete"
+      ],
+      "resource": [
+        "resource.same_trade_mechanical"
+      ]
+    },
+    "sprinkler": {
+      "requires": [
+        "mep.mains_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "systems.first_fix_complete"
+      ]
+    },
+    "fire_alarm": {
+      "requires": [
+        "containment.route_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "systems.first_fix_complete"
+      ]
+    },
+    "structured_cabling": {
+      "requires": [
+        "containment.route_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "systems.low_current_ready"
+      ],
+      "resource": [
+        "resource.same_trade_electrical"
+      ]
+    },
+    "power": {
+      "requires": [
+        "containment.route_ready",
+        "inspection.in_wall"
+      ],
+      "produces": [
+        "systems.low_current_ready"
+      ],
+      "resource": [
+        "resource.same_trade_electrical"
+      ]
+    },
+    "diffuser": {
+      "requires": [
+        "mep.mains_ready",
+        "ceiling.closed"
+      ],
+      "produces": [
+        "terminals.installed"
+      ]
+    },
+    "lighting": {
+      "requires": [
+        "ceiling.grid_ready",
+        "ceiling.closed"
+      ],
+      "produces": [
+        "terminals.installed"
+      ]
+    },
+    "av": {
+      "requires": [
+        "systems.low_current_ready"
+      ],
+      "produces": [
+        "systems.elv_ready"
+      ]
+    },
+    "security": {
+      "requires": [
+        "systems.low_current_ready"
+      ],
+      "produces": [
+        "systems.elv_ready"
+      ]
+    },
+    "testing_commissioning": {
+      "requires": [
+        "inspection.pre_commissioning",
+        "systems.first_fix_complete",
+        "systems.low_current_ready",
+        "systems.elv_ready",
+        "terminals.installed"
+      ],
+      "produces": [
+        "systems.tested"
+      ]
+    },
+    "snagging": {
+      "requires": [
+        "systems.tested",
+        "finish.flooring_complete",
+        "finish.joinery_complete",
+        "surface.decorated"
+      ],
+      "produces": [
+        "finish.snagged"
+      ]
+    },
+    "construction_cleaning": {
+      "requires": [
+        "finish.snagged"
+      ],
+      "produces": []
+    },
+    "furniture": {
+      "requires": [
+        "finish.floor_protected",
+        "inspection.iaq_first"
+      ],
+      "produces": [],
+      "resource": [
+        "resource.same_access"
+      ]
+    },
+    "final_cleaning": {
+      "requires": [
+        "finish.snagged"
+      ],
+      "produces": []
+    }
+  },
+  "link_policy": [
+    {
+      "id": "ONTO-01",
+      "predecessor": "demolition",
+      "successor": "waste_removal",
+      "condition": "workface.demolished",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FF",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "渣料随拆除逐段形成，清运与拆除同步收尾；FF 保证清运不早于拆除完成，同时附加 SS 锚点防止清运在拆除开始前就被排到前面。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-02",
+      "predecessor": "demolition",
+      "successor": "setting_out",
+      "condition": "workface.demolished",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "放线必须在原装修拆除后量测；渣料清运以 FF 与拆除收口，可与放线并行，故放线对拆除保持 FS。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-03",
+      "predecessor": "setting_out",
+      "successor": "partition_framing",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "放线基准按分区交付；分区流水下隔墙可在首个分区基准完成后跟进，无需等全层放线结束。",
+      "confidence": "high"
+    },
+    {
+      "id": "ONTO-04",
+      "predecessor": "partition_framing",
+      "successor": "gypsum_boarding",
+      "condition": "partition.frame_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "石膏板封板受隔墙隐蔽验收门（inspection.in_wall）约束，门未过不得封板；该门在当前模型中为整层作用域，因此不随分区流水放开为 SS。",
+      "confidence": "high"
+    },
+    {
+      "id": "ONTO-05",
+      "predecessor": "containment",
+      "successor": "structured_cabling",
+      "condition": "containment.route_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "桥架路由按分区形成，布线可在首区路由完成后跟进；最终隐蔽验收仍由 inspection.in_wall 门把关。",
+      "confidence": "high"
+    },
+    {
+      "id": "ONTO-06",
+      "predecessor": "hvac_duct",
+      "successor": "diffuser",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "风口随风管分区到位后安装；风口还需天花封板完成（ceiling.closed）方可收口。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-07",
+      "predecessor": "chw_pipe",
+      "successor": "fcu",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "风机盘管随冷冻水管分区完成后安装，且受隔墙隐蔽验收门约束。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-08",
+      "predecessor": "ceiling_grid",
+      "successor": "lighting",
+      "condition": "ceiling.grid_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "灯具在龙骨调平分区完成后开孔安装；接线与收口仍受天花隐蔽验收及封板完成约束。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-09",
+      "predecessor": "gypsum_boarding",
+      "successor": "wall_prep",
+      "condition": "board.surface_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "批腻子随封板分区跟进；与封板共用同一作业面，属资源竞争（resource.same_workface），V6.2 需按工作面而非网络边处理。",
+      "confidence": "high"
+    },
+    {
+      "id": "ONTO-10",
+      "predecessor": "wall_prep",
+      "successor": "painting",
+      "condition": "surface.substrate_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FS",
+      "lag": 2,
+      "max_lag": 10,
+      "lag_basis": "drying_curing_allowance",
+      "status": "provisional",
+      "rationale": "腻子干燥与打磨后需养护方可涂饰。2 个工日是施工组织允许量，不是产品说明书的干燥时间；不同腻子/涂料体系与季节条件下应另行确认。",
+      "confidence": "low"
+    },
+    {
+      "id": "ONTO-11",
+      "predecessor": "raised_floor",
+      "successor": "carpet",
+      "condition": "floor.raised_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "地毯随架空地板分区完成后铺设；地毯另需墙面湿作业结束（surface.decorated），由 WBS 粗网络以 FS 落定。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-12",
+      "predecessor": "wall_prep",
+      "successor": "wallcovering",
+      "condition": "surface.substrate_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FS",
+      "lag": 2,
+      "max_lag": 10,
+      "lag_basis": "drying_curing_allowance",
+      "status": "provisional",
+      "rationale": "借用 wall_prep → painting 的施工组织允许量外推，无独立依据。裱糊对基层含水率、胶黏剂与通风的要求须另行确认后方可作为排程依据。",
+      "confidence": "low"
+    },
+    {
+      "id": "ONTO-13",
+      "predecessor": "carpet",
+      "successor": "furniture",
+      "condition": "finish.floor_protected",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "家具随地毯分区完成后进场；且受首次室内空气盲测门（inspection.iaq_first）约束，该门为整层作用域，不得分区重叠。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-14",
+      "predecessor": "testing_commissioning",
+      "successor": "snagging",
+      "condition": "systems.tested",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "FF",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "缺陷整改随调试分区收尾；FF 保证整改不早于调试完成，同时附加 SS 锚点防止整改在调试开始前启动。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-15",
+      "predecessor": "setting_out",
+      "successor": "hvac_duct",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 hvac_duct 可在 setting_out 于首个分区形成 workface.set_out 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-16",
+      "predecessor": "setting_out",
+      "successor": "chw_pipe",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 chw_pipe 可在 setting_out 于首个分区形成 workface.set_out 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-17",
+      "predecessor": "setting_out",
+      "successor": "containment",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 containment 可在 setting_out 于首个分区形成 workface.set_out 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-18",
+      "predecessor": "setting_out",
+      "successor": "raised_floor",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 raised_floor 可在 setting_out 于首个分区形成 workface.set_out 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-19",
+      "predecessor": "setting_out",
+      "successor": "tile_stone",
+      "condition": "workface.set_out",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 tile_stone 可在 setting_out 于首个分区形成 workface.set_out 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-20",
+      "predecessor": "partition_framing",
+      "successor": "glass_partition",
+      "condition": "partition.frame_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 glass_partition 可在 partition_framing 于首个分区形成 partition.frame_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-21",
+      "predecessor": "hvac_duct",
+      "successor": "ceiling_grid",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 ceiling_grid 可在 hvac_duct 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-22",
+      "predecessor": "hvac_duct",
+      "successor": "fcu",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 fcu 可在 hvac_duct 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-23",
+      "predecessor": "hvac_duct",
+      "successor": "sprinkler",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 sprinkler 可在 hvac_duct 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-24",
+      "predecessor": "chw_pipe",
+      "successor": "ceiling_grid",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 ceiling_grid 可在 chw_pipe 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-25",
+      "predecessor": "chw_pipe",
+      "successor": "sprinkler",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 sprinkler 可在 chw_pipe 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-26",
+      "predecessor": "chw_pipe",
+      "successor": "diffuser",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 diffuser 可在 chw_pipe 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-27",
+      "predecessor": "containment",
+      "successor": "ceiling_grid",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 ceiling_grid 可在 containment 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-28",
+      "predecessor": "containment",
+      "successor": "fcu",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 fcu 可在 containment 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-29",
+      "predecessor": "containment",
+      "successor": "sprinkler",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 sprinkler 可在 containment 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-30",
+      "predecessor": "containment",
+      "successor": "diffuser",
+      "condition": "mep.mains_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 diffuser 可在 containment 于首个分区形成 mep.mains_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-31",
+      "predecessor": "containment",
+      "successor": "fire_alarm",
+      "condition": "containment.route_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 fire_alarm 可在 containment 于首个分区形成 containment.route_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-32",
+      "predecessor": "containment",
+      "successor": "power",
+      "condition": "containment.route_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 power 可在 containment 于首个分区形成 containment.route_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-33",
+      "predecessor": "ceiling_grid",
+      "successor": "glass_partition",
+      "condition": "ceiling.grid_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 glass_partition 可在 ceiling_grid 于首个分区形成 ceiling.grid_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-34",
+      "predecessor": "ceiling_grid",
+      "successor": "gypsum_ceiling",
+      "condition": "ceiling.grid_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 gypsum_ceiling 可在 ceiling_grid 于首个分区形成 ceiling.grid_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-35",
+      "predecessor": "ceiling_grid",
+      "successor": "feature_ceiling",
+      "condition": "ceiling.grid_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 feature_ceiling 可在 ceiling_grid 于首个分区形成 ceiling.grid_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-36",
+      "predecessor": "gypsum_ceiling",
+      "successor": "wall_prep",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 wall_prep 可在 gypsum_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-37",
+      "predecessor": "gypsum_ceiling",
+      "successor": "diffuser",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 diffuser 可在 gypsum_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-38",
+      "predecessor": "gypsum_ceiling",
+      "successor": "lighting",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 lighting 可在 gypsum_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-39",
+      "predecessor": "feature_ceiling",
+      "successor": "wall_prep",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 wall_prep 可在 feature_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-40",
+      "predecessor": "feature_ceiling",
+      "successor": "diffuser",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 diffuser 可在 feature_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-41",
+      "predecessor": "feature_ceiling",
+      "successor": "lighting",
+      "condition": "ceiling.closed",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 lighting 可在 feature_ceiling 于首个分区形成 ceiling.closed 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-42",
+      "predecessor": "gypsum_boarding",
+      "successor": "joinery",
+      "condition": "board.surface_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 joinery 可在 gypsum_boarding 于首个分区形成 board.surface_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-43",
+      "predecessor": "raised_floor",
+      "successor": "vinyl",
+      "condition": "floor.raised_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 vinyl 可在 raised_floor 于首个分区形成 floor.raised_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-44",
+      "predecessor": "painting",
+      "successor": "carpet",
+      "condition": "surface.decorated",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 carpet 可在 painting 于首个分区形成 surface.decorated 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-45",
+      "predecessor": "painting",
+      "successor": "vinyl",
+      "condition": "surface.decorated",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 vinyl 可在 painting 于首个分区形成 surface.decorated 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-46",
+      "predecessor": "wallcovering",
+      "successor": "carpet",
+      "condition": "surface.decorated",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 carpet 可在 wallcovering 于首个分区形成 surface.decorated 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-47",
+      "predecessor": "wallcovering",
+      "successor": "vinyl",
+      "condition": "surface.decorated",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 vinyl 可在 wallcovering 于首个分区形成 surface.decorated 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-48",
+      "predecessor": "gypsum_boarding",
+      "successor": "doors",
+      "condition": "opening.ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 doors 可在 gypsum_boarding 于首个分区形成 opening.ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-49",
+      "predecessor": "structured_cabling",
+      "successor": "av",
+      "condition": "systems.low_current_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 av 可在 structured_cabling 于首个分区形成 systems.low_current_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-50",
+      "predecessor": "structured_cabling",
+      "successor": "security",
+      "condition": "systems.low_current_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 security 可在 structured_cabling 于首个分区形成 systems.low_current_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-51",
+      "predecessor": "power",
+      "successor": "av",
+      "condition": "systems.low_current_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 av 可在 power 于首个分区形成 systems.low_current_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    },
+    {
+      "id": "ONTO-52",
+      "predecessor": "power",
+      "successor": "security",
+      "condition": "systems.low_current_ready",
+      "single_workfront_relationship": "FS",
+      "sectional_relationship": "SS",
+      "lag": 0,
+      "max_lag": 10,
+      "rationale": "分区流水下 security 可在 power 于首个分区形成 systems.low_current_ready 后跟进；沿用 workfront_pipeline 规则 clamp(ceil(前序工期/工作面数),0,10)。",
+      "confidence": "medium"
+    }
+  ],
+  "auto_emit_classes": [
+    "authority",
+    "information"
+  ],
+  "auto_emit_note": "authority 与 information 类条件在生产者任务存在时自动落 FS 边（不走 link_policy）。inspection 类由 WBS 的 inspection_gate_ids 机制落边，本体只校验，避免双重所有权。resource 类永不落边。",
+  "confidence_levels": [
+    "high",
+    "medium",
+    "low"
+  ],
+  "confidence_default": "medium",
+  "confidence_note": "信心表示这条逻辑关系本身的可靠性，不是工期或生产率的可信度。provisional 状态的条目在缺少现场确认前不得作为压缩依据。"
+}

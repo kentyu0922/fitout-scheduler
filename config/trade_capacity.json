@@ -1,0 +1,302 @@
+{
+ "version": "1.0.0",
+ "description": "V6.4.4 canonical trade capacity model (FIX-01/04/05/06). Physical resource capacity = workfront_count × max_crews_per_workfront × workers_per_crew, subject to trade-specific constraints. Every value is a conservative construction-organisation default with NO field evidence; status=provisional and must be re-baselined with site_observed / contractor_confirmed data before being read as fact.",
+ "provenance": {
+  "productivity_source": "config/productivity_rates.json",
+  "workers_per_crew_source": "workers_per_crew defaults to productivity_rates.default_crew_size; this file only references it, never redefines a productivity rate.",
+  "workfront_source": "config/spatial_model.json (recommended_zone_area_sqm=2000) is the single canonical section size; this file does not invent a second area divisor.",
+  "congestion_source": "config/resource_constraints.json congestion_model.crew_efficiency_table (crew is not linear productivity).",
+  "status": "provisional_until_calibrated",
+  "note": "All capacity figures are planning constructs, not measurement. status=provisional, source_type=inherited_assumption, confirmed_by=null."
+ },
+ "workfront": {
+  "recommended_zone_area_sqm": 2000,
+  "min_zone_area_sqm": 800,
+  "max_zone_area_sqm": 3000,
+  "min_workfronts": 1,
+  "max_workfronts": 8,
+  "derivation_default": "by_area_ceil",
+  "derivation_formula": "clamp(ceil(project_area_sqm / recommended_zone_area_sqm), min_workfronts, max_workfronts)",
+  "note": "ceil() (not floor()) avoids the hard topology cliff documented in FIX-09: floor(3000/2500)=1 vs floor(6000/2500)=2 previously caused an unexplained sectional doubling. This derivation is the SAME one the spatial engine already uses (spatial_model.json zone_generation.by_area)."
+ },
+ "default_capacity": {
+  "max_crews_per_workfront": 1,
+  "minimum_crew": 2,
+  "maximum_crew": null,
+  "minimum_practical_workfront_area": 800,
+  "stacking_class": "general",
+  "congestion_class": "default",
+  "status": "provisional",
+  "source_type": "inherited_assumption",
+  "basis": "One trade crew occupies one 2000 sqm workfront at a time (conservative: no multi-crew parallelism assumed without contractor evidence).",
+  "confirmed_by": null,
+  "calibration_status": "uncalibrated"
+ },
+ "by_activity_type": {
+  "partition_framing": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "partitions_ceilings",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "gypsum_boarding": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "partitions_ceilings",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "ceiling_grid": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "partitions_ceilings",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "painting": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "wet_finishes",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "flooring": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "flooring",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 10.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "hvac_duct": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_mechanical",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "chw_pipe": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_mechanical",
+   "congestion_class": "default"
+  },
+  "containment": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_electrical",
+   "congestion_class": "default"
+  },
+  "power": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_electrical",
+   "congestion_class": "default"
+  },
+  "sprinkler": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_mechanical",
+   "congestion_class": "default"
+  },
+  "fire_alarm": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_electrical",
+   "congestion_class": "default"
+  },
+  "structured_cabling": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "mep_electrical",
+   "congestion_class": "default"
+  },
+  "furniture": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "furniture",
+   "congestion_class": "default"
+  },
+  "cleaning": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "general",
+   "congestion_class": "default"
+  },
+  "construction_cleaning": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 300.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "final_cleaning": {
+   "max_crews_per_workfront": 1,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "testing_commissioning": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "mep_commissioning",
+   "congestion_class": "default"
+  },
+  "snagging": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "site_setup": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 300.0,
+   "workers_per_workfront": 10.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "setting_out": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 6.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "wall_prep": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "glass_partition": {
+   "max_crews_per_workfront": 2,
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "quantity_scope": "partial",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。quantity_scope=partial：PM 2026-09-23 裁决玻璃隔断按实际面积与实际房间数计，非全楼工程量；容量覆盖检验的分母应取实际工程量，不构成对 b0 的质疑。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "demolition": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "suspended_ceiling": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 12.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "gypsum_ceiling": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "feature_ceiling": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "quantity_scope": "partial",
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。quantity_scope=partial：PM 2026-09-23 裁决造型吊顶为局部工程量——占比可以高（天花无论什么造型都要人工去弄），但不覆盖全楼；容量覆盖检验的分母应取实际工程量，不构成对 b0 的质疑。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "wallcovering": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 6.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "raised_floor": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "carpet": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "vinyl": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  },
+  "tile_stone": {
+   "stacking_class": "general",
+   "congestion_class": "default",
+   "max_crews_per_workfront": 1,
+   "capacity_zone_area_sqm": 500.0,
+   "workers_per_workfront": 8.0,
+   "basis": "capacity_zone_area_sqm / workers_per_workfront 取自本工序 productivity_rates.crew_scaling 的 area_per_front / max_workers_per_front。PM 2026-09-23 以工序下限反推，只有此口径能与其下限自洽（2000㎡/面 口径下 22 条中 16 条跑不进自身 D 的 1.5 倍）。",
+   "max_crews_per_workfront_status": "UNUSED when workers_per_workfront is present (v3.8)"
+  }
+ },
+ "known_limits": [
+  "max_crews_per_workfront 在 default_capacity 内保守取 1；但按工序声明 workers_per_workfront 的条目（v3.8, 2026-09-23）改由该字段决定每面人数上限，不再走 max_crews × crew。",
+  "workers_per_crew 继承 productivity_rates.default_crew_size (4-6)；逐工序覆盖需 basis + confirmed_by (GOV-09)。",
+  "工作面数在 max_workfronts=8 处饱和。按 v3.8 容量口径（500㎡/面），饱和面积为 8×500=4000㎡；此后容量不再增长，工期须实质拉长。旧文本 '~16000 sqm' 对应已废弃的 2000㎡/面 口径。"
+ ],
+ "calibration_2026_09_23": {
+  "what": "容量分区面积与每面人数上限按工序覆盖，取自各工序 crew_scaling。",
+  "why": "PM 2026-09-23 给的工序下限，用引擎自身工效反推，要求容量声明与工期声明自洽。原 2000㎡/面 × 1 班组口径与 PM 下限直接矛盾。",
+  "evidence": "demolition @1000㎡、下限4d ⇒ 需 1000/(12×4×0.9)=23.1 人 ⇒ 2 面 × 12 人。2000㎡/面 口径只给 12 人 ⇒ 9d，与下限矛盾；500㎡/面 口径给 24 人 ⇒ 3.9d，吻合。",
+  "not_changed": "b0/b_min/b_max 全部未动；workfront.recommended_zone_area_sqm 未动（那是交接拓扑的离散口径，与容量刻意分离，改它会造排期 cliff）。",
+  "script": ".workbuddy/build/apply_workfront_calibration.py"
+ },
+ "quantity_scope_ruling_2026_09_23": {
+  "what": "PM 就 v3.8 遗留的 2 条容量矛盾（feature_ceiling / glass_partition）裁决：两类均为**局部工程量**，非全楼。",
+  "pm_wording": "肯定是局部工程量啊 怎么可能全楼都吊顶跟玻璃隔断 吊顶可以占比高毕竟天花无论是什么造型 都是要人工去弄的 但隔断就是根据实际面积实际房间数来的",
+  "ceiling_note": "造型吊顶占比可以高（任何造型均须人工逐处制作），但仍按局部工程量计。",
+  "partition_note": "玻璃隔断按实际面积与实际房间数计（逐房间立工作面），不随全楼面积线性放大。",
+  "consequence": "容量覆盖检验（CAPACITY_COVERAGE_SHORT）对这两条不再以全楼面积作分母质疑 b0——分母错的是检验，不是 b0。两处落 quantity_scope=partial，检验读该字段分流 scope_ruled / genuine。",
+  "not_changed": "b0/b_min、容量分区、crew_scaling 全部未动——裁决只改**检验语义**，不改任何数值。"
+ }
+}

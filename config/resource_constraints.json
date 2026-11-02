@@ -1,0 +1,611 @@
+{
+ "version": "6.2.1",
+ "description": "V6.2 资源智能 + V6.2.1 资源治理：班组/人力模型、拥挤折减、班次折算、工作面容量、班组池可用性、工种干扰，以及资源输入的来源分类、就绪度与敏感性判定。本文件只描述资源侧约束与折减，绝不重复定义生产率数值。",
+ "provenance": {
+  "productivity_source": "config/productivity_rates.json",
+  "productivity_source_rule": "生产率数值（rates_per_worker_day / factors / min_duration_days）唯一来源为 productivity_rates.json；本文件只允许引用、不允许覆盖。资源引擎不得自带第二套生产率。",
+  "spatial_source": "config/spatial_model.json",
+  "duration_semantics_source": "config/duration_semantics.json",
+  "dependency_source": "config/dependency_ontology.json",
+  "status": "provisional_until_calibrated",
+  "note": "本文件中所有折减因子均为施工组织经验构造，不是定额数据，也不是现场观测值。凡 status=provisional 且 confirmed_by=null 的条目，引擎必须在输出中标记为临时假设。",
+  "resource_source_types": "source_types.registry"
+ },
+ "source_types": {
+  "description": "资源输入的来源分类。资源可用性信心只依赖来源，不依赖引擎的乐观程度。规划者假设永远不等于承包商承诺。",
+  "registry": {
+   "inherited_assumption": {
+    "label": "继承假设 / 施工组织经验构造",
+    "confidence": 0.1,
+    "definition": "从引擎历史版本继承，或由施工组织经验构造的数值。无外部来源、无现场观测、无承包商确认。",
+    "may_be_used_for": [
+     "provisional",
+     "insufficient_data"
+    ],
+    "never_treated_as": "承包商资源承诺",
+    "example": "crew_pool.default.available_crews = 1（继承 V6.1 单班组流水）"
+   },
+   "planner_commitment": {
+    "label": "规划者承诺",
+    "confidence": 0.3,
+    "definition": "由我方规划/PM 团队给出并承担责任的假设值，未经承包商确认。",
+    "may_be_used_for": [
+     "provisional",
+     "confirmed"
+    ],
+    "never_treated_as": "承包商资源承诺",
+    "example": "PM 依据同类项目拟定每班组 8 人"
+   },
+   "contractor_proposal": {
+    "label": "承包商建议书",
+    "confidence": 0.5,
+    "definition": "承包商在投标/技术建议书中提出的资源配置，尚未进入合同或资源计划确认。",
+    "may_be_used_for": [
+     "provisional"
+    ],
+    "never_treated_as": "已确认的到岗承诺",
+    "example": "D&B 总包技术标中的劳动力直方图"
+   },
+   "contractor_confirmed": {
+    "label": "已确认承包商承诺",
+    "confidence": 0.9,
+    "definition": "承包商以书面/会议纪要形式确认的到岗班组数、班组人数与可用窗口。",
+    "may_be_used_for": [
+     "confirmed"
+    ],
+    "never_treated_as": null,
+    "example": "定标后劳动力计划（含班组数与进场日期）"
+   },
+   "site_observed": {
+    "label": "现场观测",
+    "confidence": 0.8,
+    "definition": "现场日报/考勤/形象进度实测得到的实际到岗人数与实际产出。",
+    "may_be_used_for": [
+     "confirmed",
+     "provisional"
+    ],
+    "never_treated_as": null,
+    "example": "连续 4 周日报：吊顶 8 人班组实际完成 62 ㎡/工日"
+   },
+   "historical_calibrated": {
+    "label": "历史校准",
+    "confidence": 0.85,
+    "definition": "已完成项目的回归/标定结果，可追溯到具体项目与数据集。",
+    "may_be_used_for": [
+     "confirmed",
+     "provisional"
+    ],
+    "never_treated_as": null,
+    "example": "同类项目 12 组观测标定出的拥挤曲线"
+   }
+  },
+  "confidence_rule": "资源可用性信心 = registry[source_type].confidence × status_weight，其中 confirmed=1.0、provisional=0.5、insufficient_data=0.0。",
+  "separation_rule": "planner_commitment 与 contractor_proposal 的信心严格低于 contractor_confirmed；任何来源为 planner_commitment 的条目在输出中必须显式标注『非承包商承诺』。",
+  "no_fabrication_rule": "无证据时留空并标 status=insufficient_data，禁止以任何来源类型填充猜测值。"
+ },
+ "governance": {
+  "description": "V6.2.1 资源输入治理硬规则。目标是区分「所需资源」「授权资源可用性」「确认的承包商资源承诺」三件事。",
+  "rules": [
+   {
+    "id": "GOV-01",
+    "rule": "status=confirmed 的资源条目必须同时具备非空 basis、非空 confirmed_by，且 source_type 属于 contractor_confirmed / site_observed / historical_calibrated。",
+    "action": "reject",
+    "reason": "把不确定的假设优化为精确的承诺是本引擎最危险的输出形态。"
+   },
+   {
+    "id": "GOV-02",
+    "rule": "status=provisional 的条目不得使用 source_type=contractor_confirmed。",
+    "action": "reject",
+    "reason": "已被承包商确认的资源不应停留在临时状态；两者矛盾说明录入有误。"
+   },
+   {
+    "id": "GOV-03",
+    "rule": "status=insufficient_data 的条目不得携带任何数值型可用性（available_crews / workers_per_crew）。",
+    "action": "reject",
+    "reason": "无证据即无数值，猜测值不得进入排程。"
+   },
+   {
+    "id": "GOV-04",
+    "rule": "crew_pool 未显式声明时，available_crews 沿用的默认值必须标记为 source_type=inherited_assumption、basis=inherited_v6_1_single_crew_pipeline、confirmed_by=null。",
+    "action": "mark_provisional",
+    "reason": "V6.1 的单班组流水是排序假设，不得被解读为『承包商只有一个班组』。"
+   },
+   {
+    "id": "GOV-05",
+    "rule": "工作面容量只能由证据上调，不得为缩短工期静默放大 max_parallel_workfronts / max_workers_per_workfront / max_workers_in_zone。",
+    "action": "reject",
+    "reason": "容量是物理约束，也是敏感性最大的收益杠杆，必须可追溯。"
+   },
+   {
+    "id": "GOV-06",
+    "rule": "拥挤曲线数值只有存在 site_observed 或 historical_calibrated 数据集时才可改写；改写必须同时写入 basis、source_type、confirmed_by、calibration_status。",
+    "action": "reject",
+    "reason": "禁止凭猜测校准。"
+   },
+   {
+    "id": "GOV-09",
+    "rule": "by_trade 下的显式按工种覆盖必须给出非空 basis（说明数值从哪里来）；无依据的覆盖不得生效。",
+    "action": "reject",
+    "reason": "显式覆盖比缺省值影响更大，必须有据可查；没有 basis 就等于凭空填数。"
+   },
+   {
+    "id": "GOV-08",
+    "rule": "除 status=baseline 的定义性条目外，所有资源条目必须声明 source_type；无来源分类的资源输入不得进入排程。",
+    "action": "reject",
+    "reason": "来源未分类 = 证据强度未知，等同于未声明。"
+   },
+   {
+    "id": "GOV-07",
+    "rule": "敏感性扫描输出中出现的任何『最优』班组数只能标注为 DIAGNOSTIC_ONLY，不得标注为 recommended，除非对应 resource_readiness 为 confirmed。",
+    "action": "downgrade_label",
+    "reason": "数学最优 ≠ 现场可行，承包商可用性未确认前不产生建议。"
+   }
+  ],
+  "readiness": {
+   "levels": [
+    "unconfirmed",
+    "partially_confirmed",
+    "confirmed"
+   ],
+   "rule": "就绪度 = 按各资源输入节的 status 加权：全部 confirmed → confirmed；存在 confirmed 且存在非 confirmed → partially_confirmed；无 confirmed → unconfirmed。",
+   "sections": [
+    "crew_pool",
+    "workfront_capacity",
+    "congestion_model",
+    "shift_model"
+   ],
+   "scenario_gate_note": "V6.3 场景优化器必须能够输出：『该情景在数学上可行，但承包商资源可用性尚未确认。』"
+  }
+ },
+ "sensitivity": {
+  "description": "班组数敏感性扫描的确定性设置。产出用于判断计划对资源假设有多敏感，不用于自动推荐班组数。",
+  "crew_counts": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "baseline_crew_count": 1,
+  "stop_rules": [
+   "additional_crew_yields_negligible_schedule_benefit",
+   "physical_or_workfront_capacity_reached",
+   "no_blocking_conflict_reduction"
+  ],
+  "stop_rule_detail": {
+   "additional_crew_yields_negligible_schedule_benefit": "边际节省 <= diminishing_returns.negligible_days 时停止",
+   "physical_or_workfront_capacity_reached": "再增班组不再减少阻断冲突，且关键链已被物理下限/工作面容量锁死",
+   "no_blocking_conflict_reduction": "blocking_conflicts 已为 0 且继续增班组不产生任何工期变化"
+  },
+  "diminishing_returns": {
+   "negligible_days": 2,
+   "marginal_days": 5,
+   "substantial_days": 15,
+   "categories": {
+    "negligible": "边际节省 <= 2 天：增派班组没有工程意义（分类：递减收益/可忽略）",
+    "marginal": "边际节省 3–5 天：需权衡班组调遣、管理与现场协调成本",
+    "moderate": "边际节省 6–15 天：值得评估",
+    "substantial": "边际节省 > 15 天：显著收益，但必须核实资源可用性来源"
+   },
+   "rule": "不得仅因边际节省为正就建议增加班组；negligible 一律分类为『递减收益』并给出不建议的表述。"
+  },
+  "never_recommend_unless_confirmed": true
+ },
+ "calibration": {
+  "description": "拥挤关系的现场标定口径。当前 calibration_status=uncalibrated：有模型、无数据。",
+  "congestion": {
+   "calibration_status": "uncalibrated",
+   "source_type": "inherited_assumption",
+   "confirmed_by": null,
+   "dataset_schema": {
+    "required_fields": [
+     {
+      "field": "observation_id",
+      "type": "string",
+      "note": "唯一标识"
+     },
+     {
+      "field": "date",
+      "type": "date",
+      "note": "观测日"
+     },
+     {
+      "field": "project_id",
+      "type": "string",
+      "note": "项目标识，用于跨项目聚合"
+     },
+     {
+      "field": "trade",
+      "type": "string",
+      "note": "工种"
+     },
+     {
+      "field": "activity_type",
+      "type": "string",
+      "note": "工序，关联 productivity_rates"
+     },
+     {
+      "field": "workers",
+      "type": "int",
+      "note": "当班实际到岗人数"
+     },
+     {
+      "field": "crews",
+      "type": "int",
+      "note": "当班班组数（区分班组数 ≠ 班组规模）"
+     },
+     {
+      "field": "zone_id",
+      "type": "string",
+      "note": "分区标识"
+     },
+     {
+      "field": "zone_area_sqm",
+      "type": "float",
+      "note": "分区面积，用于密度校验"
+     },
+     {
+      "field": "installed_quantity",
+      "type": "float",
+      "note": "当日完成工程量"
+     },
+     {
+      "field": "unit",
+      "type": "string",
+      "note": "工程量单位，须与 productivity_rates 一致"
+     },
+     {
+      "field": "work_hours",
+      "type": "float",
+      "note": "当日实际工时（workers × 有效小时）"
+     },
+     {
+      "field": "duration_days",
+      "type": "float",
+      "note": "该工序在该分区的实际日历工期"
+     }
+    ],
+    "derived": [
+     {
+      "field": "observed_productivity_per_worker_day",
+      "formula": "installed_quantity / (work_hours / hours_per_shift)"
+     },
+     {
+      "field": "reference_productivity_per_worker_day",
+      "formula": "productivity_rates[activity_type].rates_per_worker_day[rate_level]"
+     },
+     {
+      "field": "observed_effective_workers",
+      "formula": "installed_quantity / (reference_productivity × duration_days × shift_multiplier)"
+     },
+     {
+      "field": "observed_crew_efficiency",
+      "formula": "observed_effective_workers / workers"
+     }
+    ],
+    "fit_rule": "按 (trade, workers) 分组，观测数 n>=5 且组内方差可接受时，才允许改写 congestion_model.by_trade[trade].crew_efficiency_table；改写必须写入 basis、source_type、confirmed_by、calibration_status=calibrated。",
+    "minimum_sample_size": 5
+   }
+  }
+ },
+ "congestion_model": {
+  "description": "CREW ≠ 线性生产率。有效产出 = 基础生产率 × 人数 × 拥挤系数(人数)。人数为 1 时系数恒为 1.0，保证与既有生产率口径连续。",
+  "type": "crew_size_table",
+  "interpolation": "step_down",
+  "interpolation_rule": "表中未列出的人数，取下一个更大键位的系数（保守：不给予未列出的效率）。",
+  "extrapolation": "clamp_at_last",
+  "extrapolation_rule": "超过表中最大键位的人数，沿用最小系数，不继续外推。",
+  "default": {
+   "crew_efficiency_table": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 0.97,
+    "4": 0.94,
+    "5": 0.92,
+    "6": 0.9,
+    "8": 0.86,
+    "10": 0.82,
+    "12": 0.78,
+    "16": 0.72,
+    "20": 0.66,
+    "24": 0.6
+   },
+   "min_efficiency": 0.6,
+   "basis": "多人同区作业时通道、材料水平运输、脚手架/登高设备与看护时间被共享，人均有效工时随人数上升而下降。该表为施工组织经验构造，非定额、非观测值。",
+   "status": "provisional",
+   "source_type": "inherited_assumption",
+   "confirmed_by": null,
+   "calibration_status": "uncalibrated",
+   "calibration_source_type": null,
+   "calibration_dataset": "calibration.congestion.dataset_schema",
+   "requires_calibration": true,
+   "calibration_hint": "以同工序、同工种、不同人数的现场日报做回归后再改写，并填入 basis / source_type / confirmed_by / calibration_status。数据集字段见 calibration.congestion.dataset_schema。"
+  },
+  "by_trade": {},
+  "governance_note": "V6.2.1 未改动任何拥挤系数数值。改写只允许在有 site_observed / historical_calibrated 数据集后进行（GOV-06）。"
+ },
+ "shift_model": {
+  "description": "班次 ≠ 线性产出。2 班不默认等于 2 倍生产率；夜班必须作为显式场景提出。",
+  "default_shifts": 1,
+  "hours_per_shift": 8,
+  "shifts": {
+   "1": {
+    "output_multiplier": 1.0,
+    "derate_factor": 1.0,
+    "status": "baseline",
+    "basis": "单班为生产率口径的基准（rate 按每工日 8 小时给出）。"
+   },
+   "2": {
+    "output_multiplier": 1.75,
+    "derate_factor": 0.875,
+    "status": "provisional",
+    "basis": "第二班受交接班、现场监督覆盖、材料与垂直运输窗口、照明与临电、噪音与扰民限制的约束，产出按 2×1.75/2 折算。该数值为施工组织经验构造，非定额、非观测值。",
+    "source_type": "inherited_assumption",
+    "confirmed_by": null,
+    "contractor_status": "contractor_unconfirmed",
+    "calibration_status": "uncalibrated",
+    "constraints": [
+     "交接班与班前会占用有效工时",
+     "现场监督与安全覆盖需加倍",
+     "材料垂直运输与垃圾清运窗口不随班次加倍",
+     "照明、临电与噪音限制"
+    ]
+   }
+  },
+  "night_shift": {
+   "requires_explicit_scenario": true,
+   "default_multiplier": null,
+   "status": "insufficient_data",
+   "source_type": "inherited_assumption",
+   "confirmed_by": null,
+   "contractor_status": "contractor_unconfirmed",
+   "constraints": [
+    "噪音与扰民限制（夜间施工许可）",
+    "照明与临电保障",
+    "监督与安全覆盖",
+    "材料运输与电梯使用窗口"
+   ],
+   "rule": "未显式声明夜班且无证据时，不得默认夜班产出；引擎必须返回 INSUFFICIENT_DATA。"
+  }
+ },
+ "workfront_capacity": {
+  "description": "一个分区/工作面能同时容纳多少人。反算需要 4 人但物理容量只有 2 人时，引擎必须报 RESOURCE_CONSTRAINED，而不是假装 4 人塞得进去。",
+  "zone_area_per_workfront_default": 500,
+  "area_per_workfront_source": "productivity_rates.crew_scaling.area_per_front（若存在则以其为准）",
+  "default": {
+   "max_parallel_workfronts": 2,
+   "max_workers_per_workfront": 8,
+   "max_workers_in_zone": 16,
+   "status": "provisional",
+   "basis": "单区可并行工作面数与每工作面人数为施工组织经验构造；与分区面积联动：可用工作面 = min(ceil(分区面积/area_per_front), max_parallel_workfronts)。",
+   "source_type": "inherited_assumption",
+   "confirmed_by": null,
+   "calibration_status": "uncalibrated",
+   "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+  },
+  "by_trade": {
+   "partitions_ceilings": {
+    "max_parallel_workfronts": 2,
+    "max_workers_per_workfront": 12,
+    "max_workers_in_zone": 24,
+    "status": "provisional",
+    "basis": "隔墙与天花为大面作业，单工作面可容纳人数多于精修工种。",
+    "confirmed_by": null,
+    "source_type": "inherited_assumption",
+    "calibration_status": "uncalibrated",
+    "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+   },
+   "mep_mechanical": {
+    "max_parallel_workfronts": 2,
+    "max_workers_per_workfront": 8,
+    "max_workers_in_zone": 16,
+    "status": "provisional",
+    "basis": "风管与管道受吊装、焊接/试压与通道限制，单工作面人数受限。",
+    "confirmed_by": null,
+    "source_type": "inherited_assumption",
+    "calibration_status": "uncalibrated",
+    "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+   },
+   "mep_electrical": {
+    "max_parallel_workfronts": 2,
+    "max_workers_per_workfront": 8,
+    "max_workers_in_zone": 16,
+    "status": "provisional",
+    "basis": "桥架与线缆敷设受登高与桥架作业面限制。",
+    "confirmed_by": null,
+    "source_type": "inherited_assumption",
+    "calibration_status": "uncalibrated",
+    "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+   },
+   "wet_finishes": {
+    "max_parallel_workfronts": 3,
+    "max_workers_per_workfront": 6,
+    "max_workers_in_zone": 18,
+    "status": "provisional",
+    "basis": "涂料与裱糊可多面展开，但受干燥时间与成品保护限制。",
+    "confirmed_by": null,
+    "source_type": "inherited_assumption",
+    "calibration_status": "uncalibrated",
+    "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+   },
+   "flooring": {
+    "max_parallel_workfronts": 2,
+    "max_workers_per_workfront": 6,
+    "max_workers_in_zone": 12,
+    "status": "provisional",
+    "basis": "地坪与块材铺装受养护与成品保护限制，人员密度受限。",
+    "confirmed_by": null,
+    "source_type": "inherited_assumption",
+    "calibration_status": "uncalibrated",
+    "increase_rule": "只能凭 site_observed / historical_calibrated 证据上调；不得为缩短工期静默放大（GOV-05）。"
+   }
+  },
+  "scope_semantics": {
+   "this_file_scope": "ONE_ZONE",
+   "this_file_scope_zh": "本段的容量是「单个分区内」的容量，不是全项目工作面总数。",
+   "key_fields": {
+    "zone_area_per_workfront_default": "一个工作面的推荐面积（㎡），默认 500；实际以 productivity_rates.<trade>.crew_scaling.area_per_front 为准。",
+    "max_parallel_workfronts": "单个分区内最多几个工作面并行（默认 2）。不是全楼工作面数。",
+    "max_workers_per_workfront": "单个工作面最多几人（按 trade 6~12）。",
+    "max_workers_in_zone": "单个分区的人数硬上限（= max_parallel_workfronts × max_workers_per_workfront）。"
+   },
+   "whole_project_workfronts_are_here": "config/trade_capacity.json -> workfront.effective_workfront_capacity（连续）与 sectional_workfront_count（离散，交接拓扑用）。",
+   "common_misuse": "把全楼面积当作 zone_area 传进 core.resource_model.workfront_capacity/core.resource_optimizer.reverse_crew_requirement。zone_area=None 时它会退化成 max_parallel_workfronts 个工作面，于是得到「全楼只有 2 面 × N 人」的假结论。全楼层面请用 trade_capacity。",
+   "worked_example": "demolition @3000㎡ ｜ 单区：若该项目分区为 500㎡/区，则每区 min(ceil(500/500),2)=1 面 × 12 人 = 12 人/区；6 个区并行 ⇒ 全楼 6 面 × 12 人 = 72 人（= trade_capacity 的 effective_workfront_capacity）。两边对得上，前提是分区数 = 6。",
+   "evidence_date": "2026-09-23",
+   "evidence_by": "PM 工序下限反推（1000㎡ 拆除 4d ⇒ 需 23 人 ⇒ 2 面 × 12 人）。"
+  }
+ },
+ "crew_pool": {
+  "description": "可用班组池。班组是「转场单位」：1 个班组不能同时在两个分区（V6.1 已以 FS 表达）。V6.2 显式化班组数量、每班组人数、分配区域与可用窗口。",
+  "availability_source_default": "derived_from_v6_1_single_crew_pipeline",
+  "availability_source_note": "未声明时沿用 V6.1 的单班组流水假设（available_crews=1）。这不是现场承诺，必须标记为 provisional。",
+  "inherited_default_declaration": {
+   "statement": "默认 available_crews=1 继承自 V6.1 的单班组流水排序，不是承包商的资源承诺。",
+   "status": "provisional",
+   "source_type": "inherited_assumption",
+   "basis": "inherited_v6_1_single_crew_pipeline",
+   "confirmed_by": null,
+   "must_not_be_read_as": "承包商只有一个班组"
+  },
+  "default": {
+   "available_crews": 1,
+   "workers_per_crew_source": "productivity_rates.default_crew_size",
+   "min_practical_workers_source": "productivity_rates.default_crew_size",
+   "max_practical_workers_source": "workfront_capacity.max_workers_per_workfront × max_parallel_workfronts",
+   "shifts": 1,
+   "hours_per_shift": 8,
+   "assigned_floors": null,
+   "assigned_zones": null,
+   "available_from": null,
+   "available_until": null,
+   "status": "provisional",
+   "source_type": "inherited_assumption",
+   "basis": "inherited_v6_1_single_crew_pipeline：V6.1 以单班组串行流水表达跨区施工，V6.2 沿用该假设作为缺省班组池。未获承包商确认前不得解读为实际到岗能力。",
+   "confirmed_by": null,
+   "calibration_status": "uncalibrated"
+  },
+  "by_trade": {},
+  "entry_schema": {
+   "_note": "仅结构示例，不被引擎读取，也不含任何数值。真实数据写入 by_trade.<trade>，且必须同时给出 basis、source_type、confirmed_by。",
+   "_governance": "status=confirmed 时 available_crews / workers_per_crew / shifts 不得为 null，且 basis 与 confirmed_by 必须非空（GOV-01）。",
+   "example": {
+    "partitions_ceilings": {
+     "available_crews": null,
+     "workers_per_crew": null,
+     "shifts": null,
+     "assigned_floors": null,
+     "assigned_zones": null,
+     "available_from": null,
+     "available_until": null,
+     "basis": null,
+     "source_type": null,
+     "confirmed_by": null,
+     "status": "provisional"
+    }
+   },
+   "required_fields": [
+    "available_crews",
+    "workers_per_crew",
+    "shifts",
+    "assigned_floors",
+    "assigned_zones",
+    "available_from",
+    "available_until",
+    "basis",
+    "source_type",
+    "confirmed_by",
+    "status"
+   ],
+   "value_policy": "null = 无证据。禁止为『让模型跑起来』而填入占位数值。"
+  }
+ },
+ "trade_interference": {
+  "description": "同一分区内不同工种同时作业的相互干扰。等级：low / medium / high / blocked。只覆盖核心装修工种，不为「智能」过度设计。",
+  "levels": [
+   "low",
+   "medium",
+   "high",
+   "blocked"
+  ],
+  "default_level": "low",
+  "matrix": {
+   "partitions_ceilings|mep_mechanical": {
+    "level": "high",
+    "reason": "隔墙封板与风管/主管安装争夺同一上部空间与登高设备，且封板会切断管线路径。"
+   },
+   "partitions_ceilings|mep_electrical": {
+    "level": "high",
+    "reason": "桥架与线缆敷设需在隔墙封板前完成，空间与时间均高度耦合。"
+   },
+   "mep_mechanical|mep_electrical": {
+    "level": "medium",
+    "reason": "共用上部空间与登高设备，但作业面可分带错开。"
+   },
+   "mep_mechanical|wet_finishes": {
+    "level": "medium",
+    "reason": "管线试压与焊接产生粉尘与湿作业，影响涂料基层与成品。"
+   },
+   "wet_finishes|flooring": {
+    "level": "high",
+    "reason": "涂料/裱糊与地坪铺装存在成品保护与干燥时间冲突，且共用同一作业面。"
+   },
+   "wet_finishes|joinery": {
+    "level": "medium",
+    "reason": "涂料飞溅与成品保护冲突，可通过分段与遮蔽缓解。"
+   },
+   "joinery|flooring": {
+    "level": "medium",
+    "reason": "固定家具安装与地坪铺装顺序与成品保护冲突。"
+   },
+   "partitions_ceilings|wet_finishes": {
+    "level": "medium",
+    "reason": "封板与腻子打磨产生粉尘，交叉时影响涂料质量。"
+   },
+   "mep_electrical|flooring": {
+    "level": "low",
+    "reason": "线缆敷设与地坪作业面基本分离，干扰可控。"
+   },
+   "general|wet_finishes": {
+    "level": "high",
+    "reason": "清扫与垃圾清运产生扬尘，直接污染涂料与裱糊成品。"
+   },
+   "general|flooring": {
+    "level": "medium",
+    "reason": "材料搬运与垃圾清运影响地坪养护与成品保护。"
+   },
+   "commissioning|wet_finishes": {
+    "level": "blocked",
+    "reason": "调试需封闭与稳定环境，湿作业未完成时不得进行。"
+   },
+   "commissioning|flooring": {
+    "level": "blocked",
+    "reason": "调试需封闭环境，地坪施工产生的粉尘与湿度不可接受。"
+   }
+  }
+ },
+ "optimisation": {
+  "description": "资源优化的行为边界。目标日期只驱动关键/近关键活动，不做全局平均压缩。",
+  "near_critical_float_days": 5,
+  "max_crew_growth_factor": 3.0,
+  "max_crew_growth_basis": "单次提案中人数增长不超过基线人数的 3 倍，超出需人工确认（避免数学上成立但现场不可执行的方案）。",
+  "never_crash": [
+   "inspection_gate",
+   "authority_gate",
+   "mobilisation",
+   "milestone"
+  ],
+  "never_crash_reason": "检查门、政府许可、动员与里程碑不是产能问题，加人不能缩短。",
+  "require_physical_minimum": true,
+  "physical_minimum_source": "config/duration_semantics.json（PROJECT / FLOOR / ZONE / MOBILISATION / INSUFFICIENT_DATA 五类作用域）"
+ },
+ "known_limits": [
+  "拥挤系数表、班次折算、工作面容量均为施工组织经验构造（status=provisional, source_type=inherited_assumption, confirmed_by=null），未做现场标定。",
+  "班组池默认沿用 V6.1 单班组假设（basis=inherited_v6_1_single_crew_pipeline），不是承包商的真实资源承诺。",
+  "congestion_model / workfront_capacity / shift_model / crew_pool 四节当前全部 unconfirmed，资源就绪度 = unconfirmed；任何敏感性结论只能标 DIAGNOSTIC_ONLY。",
+  "工种干扰矩阵只覆盖核心装修工种；未列出的组合一律 low，属保守缺省而非验证结论。",
+  "多班组并行尚未与分包合同/劳动力市场供给联动。",
+  "夜班与加班场景需要显式声明与证据，缺省返回 INSUFFICIENT_DATA。",
+  "workfront_capacity 段是「单区」口径；全项目工作面数在 trade_capacity.workfront（v3.8 已在段内加 scope_semantics 说明，勿再混用）。"
+ ]
+}

@@ -1,0 +1,211 @@
+{
+  "version": "6.3.0",
+  "description": "V6.3 场景优化器：显式枚举的施工组织情景空间。一个情景 = 一组完整的策略杠杆取值（分区数 × 班组池 × 班次）。本文件只描述『有哪些情景、每个情景依赖什么未确认输入』，绝不描述『哪个情景最好』。",
+  "provenance": {
+    "productivity_source": "config/productivity_rates.json",
+    "spatial_source": "config/spatial_model.json",
+    "duration_semantics_source": "config/duration_semantics.json",
+    "dependency_source": "config/dependency_ontology.json",
+    "resource_source": "config/resource_constraints.json",
+    "readiness_source": "core.resource_governance.resource_readiness()",
+    "status": "scenarios_unconfirmed_until_resource_inputs_confirmed",
+    "note": "本文件中所有情景的数学结果都建立在 V6.2.1 已声明的临时资源输入之上。资源输入未确认前，任何情景都只能标 OPTION。"
+  },
+
+  "levers": {
+    "description": "情景可移动的杠杆。只有这三类；其余一切（生产率、工作面容量、拥挤曲线、依赖、合规）对所有情景一视同仁，情景不得改动。",
+    "zone_count": {
+      "label": "分区数",
+      "type": "int",
+      "min": 1,
+      "applies_via": "core.fitout_engine.prepare_spatial_fitout(zone_mode='manual', manual_zones=等面积切分)",
+      "why_it_matters": "分区数决定并行工作面数量，也决定单区容量约束的松紧：多分区缓解单区超员，但增加分批验收与转场。",
+      "evidence_status": "structural_choice",
+      "evidence_note": "分区数是施工组织决策，不是资源承诺；但它会改变资源需求的时间分布，因此仍需与班组池一并确认。",
+      "unconfirmed_because": "分区方案尚未与承包商的施工区段划分、验收批次与材料堆场方案对齐。"
+    },
+    "crews_per_trade": {
+      "label": "每工种班组数",
+      "type": "int_or_map",
+      "min": 1,
+      "applies_via": "core.fitout_engine.prepare_spatial_fitout(crews_per_trade=...)",
+      "why_it_matters": "班组是转场单位。班组数不足时，同一班组不能同日在两区，必须由平衡器串行化，工期随之拉长。",
+      "evidence_status": "inherited_assumption",
+      "source_path": "resource_constraints.crew_pool.default",
+      "unconfirmed_because": "crew_pool.by_trade 为空，班组池沿用 V6.1 单班组流水假设（basis=inherited_v6_1_single_crew_pipeline，confirmed_by=null）。"
+    },
+    "shifts": {
+      "label": "班次",
+      "type": "int",
+      "allowed": [1, 2],
+      "applies_via": "task['shifts'] = shift_model.shifts[n].output_multiplier（注意：不是 n 本身）",
+      "why_it_matters": "2 班不等于 2 倍产出；本引擎按 output_multiplier=1.75 折算，且该折算本身未获确认。",
+      "evidence_status": "provisional",
+      "source_path": "resource_constraints.shift_model.shifts.2",
+      "unconfirmed_because": "2 班产出系数 source_type=inherited_assumption、contractor_status=contractor_unconfirmed。夜班 default_multiplier=null，无证据时返回 INSUFFICIENT_DATA。"
+    }
+  },
+
+  "never_moved_by_a_scenario": [
+    "config/productivity_rates.json 的 38 条默认率",
+    "resource_constraints.workfront_capacity（GOV-05：不得为缩短工期静默放大）",
+    "resource_constraints.congestion_model 拥挤系数表（GOV-06：不得凭猜测校准）",
+    "resource_constraints.shift_model 的折算数值本身（情景只能『选择』已声明的班次，不能改写其系数）",
+    "config/dependency_ontology.json 的依赖类型",
+    "config/spatial_model.json 的合规不可绕过规则",
+    "config/duration_semantics.json 的物理下限"
+  ],
+
+  "scenarios": [
+    {
+      "id": "S1",
+      "label": "基线：自动分区 + 单班组 + 单班",
+      "intent": "V6.1/V6.2 的既有口径，用作所有比较的参照面。不代表任何施工承诺。",
+      "levers": {"zone_count": null, "crews_per_trade": 1, "shifts": 1},
+      "role": "baseline",
+      "notes": "zone_count=null 表示沿用 spatial_model 的自动分区规则。"
+    },
+    {
+      "id": "S2",
+      "label": "2 分区 + 单班组 + 单班",
+      "intent": "只把工作面一分为二，验证『分区本身』能带来多少，而不增加任何人力。",
+      "levers": {"zone_count": 2, "crews_per_trade": 1, "shifts": 1},
+      "role": "option"
+    },
+    {
+      "id": "S3",
+      "label": "4 分区 + 单班组 + 单班",
+      "intent": "继续细分工作面，观察分区的边际收益与碎片化代价（V6.1.1 已警告：更多分区不必然更快）。",
+      "levers": {"zone_count": 4, "crews_per_trade": 1, "shifts": 1},
+      "role": "option"
+    },
+    {
+      "id": "S4",
+      "label": "2 分区 + 2 班组/工种 + 单班",
+      "intent": "分区与人力同步增加，消除『一班组跨两区』的阻断冲突。",
+      "levers": {"zone_count": 2, "crews_per_trade": 2, "shifts": 1},
+      "role": "option"
+    },
+    {
+      "id": "S5",
+      "label": "4 分区 + 3 班组/工种 + 单班",
+      "intent": "V6.2.1 敏感性扫描中的首个自然可行点结构（3 班组）叠加 4 分区，检验二者是否叠加有效。",
+      "levers": {"zone_count": 4, "crews_per_trade": 3, "shifts": 1},
+      "role": "option"
+    },
+    {
+      "id": "S6",
+      "label": "2 分区 + 单班组 + 2 班",
+      "intent": "不动人力结构，只加第二班；用于隔离『班次折算』这一未确认假设的杠杆效应。",
+      "levers": {"zone_count": 2, "crews_per_trade": 1, "shifts": 2},
+      "role": "option"
+    },
+    {
+      "id": "S7",
+      "label": "4 分区 + 3 班组/工种 + 2 班",
+      "intent": "全部未确认杠杆同时拉满的上界情景，用于界定『在最乐观假设下能到多快』，不是可承诺方案。",
+      "levers": {"zone_count": 4, "crews_per_trade": 3, "shifts": 2},
+      "role": "upper_bound"
+    }
+  ],
+
+  "comparison": {
+    "description": "情景之间的比较规则。本引擎默认只做并列对比，不做排序。",
+    "axes": [
+      {"field": "duration_days", "direction": "lower_is_better", "note": "情景的资源可行工期（含平衡）"},
+      {"field": "finish", "direction": "lower_is_better", "note": "完成日期"},
+      {"field": "peak_workers", "direction": "lower_is_better", "note": "高峰人力，现场组织与临设的压力指标"},
+      {"field": "total_worker_days", "direction": "lower_is_better", "note": "总工日，粗略的投入量指标（非成本）"},
+      {"field": "blocking_conflicts_after", "direction": "lower_is_better", "note": "平衡后仍未消除的阻断型班组冲突"},
+      {"field": "capacity_violations", "direction": "lower_is_better", "note": "同区人员超工作面容量次数"},
+      {"field": "unconfirmed_dependency_count", "direction": "lower_is_better", "note": "该情景依赖的未确认输入条数——越少不代表越好，只代表越少赌注"}
+    ],
+    "rank_rule": "只有当所有候选情景的 evidence_state 相同且 resource_readiness.overall == confirmed 时，才允许产出排序与推荐。",
+    "dominance": {
+      "dimensions": ["duration_days", "peak_workers"],
+      "output_label": "PARETO_OPTION_SET",
+      "note": "非支配集是并列候选集合，不是推荐。它只说明『在给定两维上没有被完全压过』，不说明可执行、可获得或已被承包商接受。"
+    }
+  },
+
+  "governance": {
+    "description": "V6.3 场景治理硬规则（GOV-10 .. GOV-14），与 V6.2.1 的 GOV-01..09 叠加生效。",
+    "rules": [
+      {
+        "id": "GOV-10",
+        "rule": "任何情景的分类只能是 OPTION（或 upper_bound / baseline 的结构角色），只有 resource_readiness.overall == confirmed 时才允许出现 RECOMMENDED。",
+        "action": "downgrade_label",
+        "reason": "推荐是把不确定输入伪装成确定结论的最短路径，是本引擎最危险的输出形态。"
+      },
+      {
+        "id": "GOV-11",
+        "rule": "情景不得通过放大工作面容量、改写拥挤曲线、上调班次折算系数或修改生产率来达成目标；情景只能选择 config 已声明的取值。",
+        "action": "reject",
+        "reason": "否则情景比较就变成『谁更敢改物理约束』的比较，失去工程意义。"
+      },
+      {
+        "id": "GOV-12",
+        "rule": "情景空间必须由 config/scenario_space.json 显式枚举；禁止用启发式、搜索或梯度方法自动生成『最优组合』。",
+        "action": "reject",
+        "reason": "自动搜索出来的组合无法向业主解释，也无法向承包商追责。"
+      },
+      {
+        "id": "GOV-13",
+        "rule": "证据状态不同的情景不可相互排序，只可并列对比；比较表必须同时给出每个情景的 evidence_state。",
+        "action": "no_ranking",
+        "reason": "一个依赖 1 项假设的情景和一个依赖 5 项假设的情景，即使工期相同也不可比。"
+      },
+      {
+        "id": "GOV-14",
+        "rule": "『无推荐』是合法且优先的输出。禁止在无确认输入时用『最短工期』『最小高峰人力』等单一指标充当推荐。",
+        "action": "emit_no_recommendation",
+        "reason": "宁可没有推荐，也不要假装有确定答案。"
+      }
+    ],
+    "no_recommendation_output": {
+      "recommended": null,
+      "label": "OPTION",
+      "statement": "情景在数学上可行，但承包商资源可用性尚未确认：本轮不产出推荐情景。",
+      "is_terminal_state": true,
+      "note": "recommended=null 不是失败状态，也不是待补数据占位，而是当前证据下的正确结论。"
+    }
+  },
+
+  "promotion": {
+    "description": "把一个情景从 OPTION 晋升为 RECOMMENDED 所需的最低确认。引擎只解锁标签，不代替人做决策。",
+    "requires_readiness": "confirmed",
+    "engine_role": "引擎在 resource_readiness.overall == confirmed 时才允许出现 RECOMMENDED 标签；是否真的对外承诺仍由 PM 决定。",
+    "minimum_confirmations": [
+      {
+        "path": "resource_constraints.crew_pool.by_trade.<trade>",
+        "fields": ["available_crews", "workers_per_crew", "shifts", "assigned_floors", "assigned_zones", "available_from", "available_until", "basis", "source_type", "confirmed_by", "status"],
+        "why": "班组数与班组规模是所有情景最敏感的杠杆；未确认则情景只是一个假设组合。"
+      },
+      {
+        "path": "resource_constraints.shift_model.shifts.2",
+        "fields": ["output_multiplier", "basis", "source_type", "confirmed_by", "contractor_status", "status"],
+        "why": "使用 2 班的情景直接依赖该折算；未确认则该情景工期含未量化风险。"
+      },
+      {
+        "path": "resource_constraints.workfront_capacity.by_trade.<trade>",
+        "fields": ["max_parallel_workfronts", "max_workers_per_workfront", "max_workers_in_zone", "basis", "source_type", "confirmed_by", "status"],
+        "why": "容量是分区杠杆的上界；未确认则『多分区更快』无法验证。"
+      },
+      {
+        "path": "resource_constraints.congestion_model.by_trade.<trade>",
+        "fields": ["crew_efficiency_table", "basis", "source_type", "confirmed_by", "calibration_status"],
+        "why": "拥挤曲线决定多班组是否真的更快；需按 calibration.congestion.dataset_schema 采集 n>=5 后才可改写。"
+      }
+    ],
+    "promotion_note": "以上四项全部 confirmed 后，resource_readiness.overall 才会变为 confirmed，届时引擎允许（但不强制）输出推荐。"
+  },
+
+  "known_limits": [
+    "情景只移动分区数、班组池、班次三个杠杆；加班、赶工、并行设计与采购前置均未建模。",
+    "情景不含成本维度：total_worker_days 只是投入量代理，不能当造价用。",
+    "分区数为等面积机械切分（split_area），未考虑实际平面形状、竖向分段与验收批次。",
+    "2 班情景沿用 shift_model 的 1.75× 折算，该折算本身 status=provisional。",
+    "高峰人力不随班次变化（班次缩短工期而非减少单日人数），该口径在报告中显式标注。",
+    "所有情景共享同一套未确认的资源输入，因此它们之间的工期差异是『同一组假设下的差异』，不是『不同证据强度下的差异』。"
+  ]
+}
