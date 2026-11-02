@@ -129,17 +129,52 @@ def _ensure_fonts():
 
 
 # ---- text sanitization for PDF safety (no missing glyph boxes) ----
+# STSong-Light (UniGB-UCS2-H) 与 DroidSansFallbackFull 均不含 U+00B7「·」、
+# U+2757「❗」、U+25C6「◆」等字形；副标题分隔与里程碑前缀会渲染成缺字方框。
+# 替换为上述字体集合里确实有的字符（全角「｜」、全角「！」、ASCII「[M]」/「m2」）。
 _EMOJI_RE = re.compile(r"[\U00010000-\U0010ffff\u2600-\u2604\u2606-\u27bf\ufe00-\ufe0f]+")
+_PDF_UNSAFE_REPLACEMENTS = (
+    ("⭐️", "★"),
+    ("⭐", "★"),
+    ("✔️", "√"),
+    ("✔", "√"),
+    ("❌", "×"),
+    ("▶️", ">"),
+    ("◀️", "<"),
+    ("⚠️", "！"),
+    ("⚠", "！"),
+    ("❗", "！"),
+    ("◆", "[M]"),
+    ("·", "｜"),
+    ("・", "｜"),
+    ("･", "｜"),
+    ("㎡", "m2"),
+    ("…", "..."),
+)
 
-def _sanitize_text(text: str) -> str:
-    """清洗文本，避免特殊 Emoji 字符因中文字体缺乏 glyph 渲染为方块 (□)。"""
+
+def _sanitize_text(text: str, *, strip: bool = True) -> str:
+    """清洗文本，避免特殊字符因当前 PDF 字体缺乏 glyph 渲染为方块 (□)。"""
     if not text:
         return ""
-    s = text.replace("⭐️", "★").replace("⭐", "★")
-    s = s.replace("✔️", "√").replace("✔", "√").replace("❌", "×")
-    s = s.replace("▶️", "►").replace("◀️", "◄")
+    s = str(text)
+    for src, dst in _PDF_UNSAFE_REPLACEMENTS:
+        if src in s:
+            s = s.replace(src, dst)
     s = _EMOJI_RE.sub("", s)
-    return s.strip()
+    return s.strip() if strip else s
+
+
+def _patch_canvas_font_text(canvas_obj):
+    """所有落在 PDF 上的 draw*String 都走同一套缺字替换。"""
+    def _wrap(fn):
+        def wrapped(x, y, text, *args, **kwargs):
+            return fn(x, y, _sanitize_text(text, strip=False), *args, **kwargs)
+        return wrapped
+    canvas_obj.drawString = _wrap(canvas_obj.drawString)
+    canvas_obj.drawCentredString = _wrap(canvas_obj.drawCentredString)
+    canvas_obj.drawRightString = _wrap(canvas_obj.drawRightString)
+    return canvas_obj
 
 
 # ============================================================
@@ -305,7 +340,7 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
     for t in tasks:
         # 工期天数明确标识：里程碑显示【◆ 里程碑】，杜绝 0 天歧义
         if t["milestone"]:
-            dur_p = Paragraph("◆ 里程碑", cell_ms)
+            dur_p = Paragraph(_sanitize_text("◆ 里程碑"), cell_ms)
         elif t["summary"]:
             dur_p = Paragraph(f"<b>{t['dur']} 天</b>" if t["dur"] else "—", cell_center)
         elif t["dur"]:
@@ -339,6 +374,7 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
 
     def on_page(canvas_obj, d):
         canvas_obj.saveState()
+        _patch_canvas_font_text(canvas_obj)
         w, h = d.pagesize
         canvas_obj.setFont(FONT_CN_BOLD, 12)
         canvas_obj.setFillColor(colors.HexColor("#1A1A1A"))
@@ -353,7 +389,7 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
         canvas_obj.setFillColor(colors.HexColor("#64748B"))
         legend = ("图例说明：任务名称缩进表示 WBS 层级；里程碑工期明确标示【◆ 里程碑】（非普通零工期任务）；"
                   "工期按各任务日历计；日期取本次排程源数据，法定/物业事项须确认。")
-        canvas_obj.drawString(36, 30, legend)
+        canvas_obj.drawString(36, 30, _sanitize_text(legend, strip=False))
         canvas_obj.setStrokeColor(colors.HexColor("#C9C9C9"))
         canvas_obj.line(36, 42, w - 36, 42)
         canvas_obj.restoreState()
@@ -430,6 +466,7 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
 
     W, H = landscape(A3)
     c = canvas.Canvas(out_path, pagesize=(W, H))
+    _patch_canvas_font_text(c)
 
     margin_x = 28
     header_h = 46
@@ -511,7 +548,7 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
         if bits:
             c.setFillColor(TEXT_SUB)
             c.setFont(font_cn, 8)
-            c.drawString(margin_x, H - 36, "  ·  ".join(bits))
+            c.drawString(margin_x, H - 36, " ｜ ".join(bits))
         if meta.get("schedule_deficit"):
             c.setFillColor(colors.HexColor("#1F1F1F"))
             c.setFont(font_cn_bold, 8)
