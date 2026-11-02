@@ -1,0 +1,193 @@
+{
+  "version": "6.1.0",
+  "description": "V6.1 Spatial / Zone Engine configuration. Defines the space hierarchy, how zones are generated, how quantities are apportioned, which activities are zone-scoped and how inspection gates are instantiated per zone. The V6.0 dependency ontology and the V5.3 evidence layer are NOT modified by this file.",
+  "provenance": {
+    "basis": "Standard commercial fit-out sectional construction practice (分区流水 / area-by-area release).",
+    "not_basis": "Not derived from measured site productivity. Numbers here are PLANNING CONSTRUCTS (zone sizing, crew pipeline), never productivity rates.",
+    "do_not": "Do not treat a zone count as an observed value. Do not change config/productivity_rates.json or config/dependency_ontology.json from here."
+  },
+
+  "hierarchy": {
+    "levels": ["project", "floor", "zone", "workfront"],
+    "level_definitions": {
+      "project": "整个装修工程。设计、采购、许可、T&C、竣工验收在全项目层面发生一次。",
+      "floor": "单个楼层。拆除清运、阶段性保洁、整层报验在楼层层面发生。",
+      "zone": "楼层内可独立移交、独立施工、独立报验的施工分区。物理流水的基本单元。",
+      "workfront": "分区内某一工种班组在某个时点实际占用的作业面。不是人数，是「空间×工种×班组×通道×顺序」的组合。"
+    },
+    "resolution_priority": ["zone", "floor", "project"],
+    "resolution_priority_note": "空间依赖解析优先级：若存在分区级依赖，不得退化使用楼层级或项目级依赖。例：不得用「整层 MEP 完成 FS 整层天花」，必须是「A区 MEP FS A区天花」。"
+  },
+
+  "zone_sizing": {
+    "recommended_zone_area_sqm": 2000,
+    "min_zone_area_sqm": 800,
+    "max_zone_area_sqm": 3000,
+    "max_zones": 8,
+    "min_zones": 1,
+    "workfront_area_sqm": 1500,
+    "notes": "recommended_zone_area_sqm 是施工组织分区的经验规模，不是定额数据，也不是观测值。min/max 是硬约束：分区面积落在此区间之外的方案必须给出警告并说明。"
+  },
+
+  "zone_generation": {
+    "modes": ["manual", "auto"],
+    "manual_requires": "每个分区必须显式给出 zone_id 与 area_sqm；面积合计必须等于项目面积，否则拒绝生成。",
+    "auto_methods": [
+      {
+        "id": "by_area",
+        "formula": "clamp(ceil(project_area_sqm / recommended_zone_area_sqm), min_zones, max_zones)",
+        "reason_template": "项目面积 {area:g}㎡ ÷ 推荐分区规模 {recommended:g}㎡ = {raw} 个分区 → clamp[{min},{max}] = {n} 个（每区约 {per_zone:g}㎡）"
+      },
+      {
+        "id": "by_workfront_capacity",
+        "formula": "clamp(floor(project_area_sqm / workfront_area_sqm), min_zones, max_zones)",
+        "reason_template": "按单工作面可容纳面积 {wf:g}㎡ 测算：floor({area:g} / {wf:g}) = {n} 个工作面"
+      },
+      {
+        "id": "by_target_duration",
+        "formula": "clamp(ceil(total_single_crew_trade_days / target_zone_chain_days), min_zones, max_zones)",
+        "reason_template": "按目标分区流水链长 {target:g} 工作日测算：单班组全专业工期 {total:g} ÷ {target:g} = {n} 个分区",
+        "requires": "total_single_crew_trade_days",
+        "enabled": false,
+        "disabled_reason": "需要生产率引擎先给出单班组全专业工期；V6.1 默认关闭，避免用未标定的工期反推分区数。"
+      }
+    ],
+    "primary_method": "by_area",
+    "primary_method_reason": "面积是唯一无需额外假设即可核验的输入。其余方法作为交叉校核输出，不参与最终决策。",
+    "area_balance": "分区面积按 project_area / n 均分，余数按最大余数法分配到前若干个分区，保证 Σ zone_area == project_area。"
+  },
+
+  "spatial_scope": {
+    "default": "zone",
+    "default_reason": "物理生产工序随工作面移动，按分区实例化。",
+    "project": {
+      "activity_types": ["site_setup", "testing_commissioning", "snagging", "final_cleaning"],
+      "reason": "场地临设、全系统联动调试、缺陷整改、深度精保洁为全项目一次性作业，不随分区流水重复发生。"
+    },
+    "floor": {
+      "activity_types": ["demolition", "waste_removal", "construction_cleaning"],
+      "reason": "拆除与渣料清运噪音粉尘集中，按层一次性组织；阶段性粗保洁按层组织，不随分区流水。"
+    },
+    "zone": {
+      "activity_types": [],
+      "reason": "其余全部为随工作面移动的生产工序，按分区实例化。"
+    },
+    "note": "任何 activity_type 的空间作用域必须在本表显式声明或用 default。default=zone 意味着未声明的新工序默认按分区拆分——新增工序时必须回来复核，不要依赖默认。"
+  },
+
+  "gate_instantiation": {
+    "description": "检查门按空间作用域实例化。分区隐蔽验收是标准做法（分区报验），整层/全系统的验收不得被分区化。",
+    "by_keyword": [
+      {"keyword": "隔墙及主管", "scope": "zone", "condition": "inspection.in_wall",
+       "reason": "隔墙与主管隐蔽工程可按分区独立报验、独立放行，这是分区流水能够成立的前提。"},
+      {"keyword": "天花隐蔽", "scope": "zone", "condition": "inspection.above_ceiling",
+       "reason": "天花隐蔽工程按分区报验，A 区封板不等 B 区。"},
+      {"keyword": "调试前", "scope": "project", "condition": "inspection.pre_commissioning",
+       "reason": "调试前安全验收针对全系统，必须全部工作面完成后一次性进行。"},
+      {"keyword": "空气盲测", "scope": "floor", "condition": "inspection.iaq_first",
+       "reason": "首次室内空气盲测为整层基材采样，无法分区出具结论；因此所有分区的家具进场都等这一道门。"}
+    ],
+    "default_scope": "project",
+    "default_reason": "未识别的检查门一律按项目级实例化（保守方向），不得默认分区化。",
+    "naming": "{zone_label} {gate_name}"
+  },
+
+  "release_conditions": {
+    "description": "每个分区的可用条件与释放条件。可用条件决定分区何时可以开工；释放条件决定分区何时可以交给下一道工序/下一分区。",
+    "zone_available": {
+      "condition": "workface.clear",
+      "label_zh": "作业面清空（拆除与渣料清运完成）",
+      "note": "分区激活的前提。清空之前该分区状态为 not_activated。"
+    },
+    "zone_released": {
+      "condition": "finish.flooring_complete",
+      "label_zh": "该分区全部面层完成",
+      "note": "分区释放给下一阶段（家具、整改、精保洁）的条件。"
+    },
+    "by_activity": {
+      "gypsum_boarding": {"requires": ["inspection.in_wall"], "releases": "隔墙隐蔽验收通过后方可封板"},
+      "gypsum_ceiling": {"requires": ["inspection.above_ceiling"], "releases": "天花隐蔽验收通过后方可封板"},
+      "feature_ceiling": {"requires": ["inspection.above_ceiling"], "releases": "天花隐蔽验收通过后方可封板"},
+      "furniture": {"requires": ["inspection.iaq_first"], "releases": "首次空气盲测合格后方可进家具"},
+      "testing_commissioning": {"requires": ["inspection.pre_commissioning"], "releases": "调试前安全验收通过后方可联动调试"}
+    }
+  },
+
+  "trades": {
+    "description": "工种分组。同一分区内不同工种可并行；同一工种在同一分区内串行。跨区流水的班组转场约束以工种为单位。",
+    "groups": {
+      "general": ["site_setup", "demolition", "waste_removal", "setting_out", "construction_cleaning", "final_cleaning", "snagging"],
+      "partitions_ceilings": ["partition_framing", "gypsum_boarding", "glass_partition", "ceiling_grid", "gypsum_ceiling", "feature_ceiling"],
+      "mep_mechanical": ["hvac_duct", "chw_pipe", "fcu", "diffuser", "sprinkler"],
+      "mep_electrical": ["containment", "power", "lighting", "fire_alarm", "structured_cabling", "av", "security"],
+      "wet_finishes": ["wall_prep", "painting", "wallcovering"],
+      "joinery": ["doors", "joinery"],
+      "flooring": ["raised_floor", "carpet", "vinyl", "tile_stone", "flooring"],
+      "commissioning": ["testing_commissioning"],
+      "furniture": ["furniture"]
+    },
+    "default": "general",
+    "note": "此分组只用于班组转场与工作面竞争判定，不参与生产率计算。"
+  },
+
+  "workfront_model": {
+    "description": "工作面 ≠ 人力。一个工作面由 空间×工种×班组×通道×顺序 共同决定。",
+    "dimensions": ["space", "trade", "crew", "access", "sequence"],
+    "dimension_definitions": {
+      "space": "分区的物理边界与该工序的实际可作业面积",
+      "trade": "工种（同一分区内不同工种可并行，同一工种在同一分区内串行）",
+      "crew": "该工种投入的班组数量与人数",
+      "access": "进场与垂直运输通道；同一通道的分区构成通行竞争（resource 类，不落边）",
+      "sequence": "该工序在分区内部的工序顺序位置"
+    },
+    "inter_zone_pipeline": {
+      "default_policy": "single_crew",
+      "policies": {
+        "single_crew": {
+          "label_zh": "单班组流水",
+          "relationship_when_crews_1": "FS",
+          "relationship_when_crews_gt_1": "SS",
+          "lag_formula": "clamp(ceil(zone_duration_days / crews_for_trade), 1, zone_duration_days)",
+          "reason_when_fs": "该工种只有 1 个班组，完成 A 区后才能转场 B 区；SS 会意味着同一个班组同时在两个分区，物理上不成立。",
+          "reason_when_ss": "该工种有 {crews} 个班组，可在 {crews} 个分区同时作业；滞后取 ceil(分区工期 / 班组数) 表示班组滚动进入下一分区的间隔。",
+          "confidence": "medium"
+        },
+        "parallel_crews": {
+          "label_zh": "多班组并行",
+          "relationship": "none",
+          "reason": "各分区配置独立班组，无转场约束，不生成跨区边（资源约束交由 V6.2）。",
+          "confidence": "low"
+        }
+      },
+      "crews_per_trade_default": 1,
+      "crews_per_trade_note": "V6.1 默认每个工种 1 个班组（单班组流水，保守且物理自洽）。多班组并行需要 V6.2 资源优化提供班组数量与效率折减证据，不得在此伪造。"
+    }
+  },
+
+  "compliance_protection": {
+    "description": "分区重叠不得删除、降级或绕过任何强制合规节点。",
+    "protected_categories": ["inspection", "authority", "testing", "iaq"],
+    "rules": [
+      "禁止为了压缩工期删除检查、批准、许可门。",
+      "禁止把检查/权威类依赖从 FS 降级为 SS。",
+      "分区化只允许改变时机、顺序、资源，不允许改变强制合规的存在性。",
+      "每个分区的每道隐蔽验收必须有独立实例；不得多个分区共用一道分区级验收来「省门」。"
+    ],
+    "validation_codes": ["GATE_NOT_FS", "GATE_DROPPED", "GATE_MISSING_PER_ZONE", "AUTHORITY_MISSING"]
+  },
+
+  "cpm_comparison": {
+    "description": "空间计划必须与基线（单工作面）在同一 CPM 求解器下对比。",
+    "baseline_definition": "同一模板、同一数量、同一生产率、同一日历，sectional=off、workfronts=1。",
+    "compare_fields": ["finish_date", "total_duration_days", "critical_path_length", "critical_task_count", "total_float_days"],
+    "assertion": "spatial_finish <= baseline_finish",
+    "assertion_note": "若空间计划反而更慢，必须如实报告并说明原因（常见：分区数过多导致每区触发 min_duration_days 下限），不得静默返回基线。"
+  },
+
+  "known_limits": [
+    "分区规模 recommended_zone_area_sqm=2000㎡ 是施工组织经验值，无观测数据支撑，属 A0 规划构造，不是证据。",
+    "V6.1 默认单班组流水（crews_per_trade=1），因此跨区关系为 FS；多班组并行的效率折减留待 V6.2。",
+    "首次空气盲测仍为楼层级，所有分区家具进场都等这一道门，这是合规约束导致的真实串行，不是引擎缺陷。",
+    "数量按面积比例分摊，未考虑分区功能差异（如机房区 vs 开放办公区的隔墙密度差异）。分区功能差异需 BOQ 支撑。"
+  ]
+}

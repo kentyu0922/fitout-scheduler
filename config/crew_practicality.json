@@ -1,0 +1,9 @@
+{
+  "_comment": "P1-05 practical crew bounds. Back-solved crews from the target_days horizon produced mathematically valid but organisationally unrealistic 1-person 'isolated worker' crews on small projects. These bounds are construction-organisation defaults with NO field evidence: status is provisional and requires site_observed calibration before being read as fact.",
+  "status": "provisional",
+  "provenance": "No field evidence. A site trade is not realistically staffed by a single isolated worker; provisional default minimum is 2. by_activity_type is deliberately empty until calibrated — no per-trade minimum is invented.",
+  "default_min": 2,
+  "default_max": null,
+  "by_activity_type": {},
+  "calibration_rule": "Replace defaults only with site_observed evidence; record basis and confirmed_by."
+}

@@ -1,0 +1,25 @@
+{
+  "note": "专项房间面积默认值。专项工期只按专项房间面积缩放一次，不随整个办公面积放大。原专项基准工期视为默认房间面积下的工期（沿用规划参数，未经项目校准）；用户给出专项房间面积时按 0.32 次幂缩放（测试类不压缩，法定时钟不缩放）。",
+  "default_sqm": {
+    "datacenter": 100,
+    "mocap": 300,
+    "trading_desk": 500,
+    "lab_hvac": 300,
+    "cleanroom_iso": 200,
+    "anti_vibration": 100,
+    "cda_piping": 300,
+    "esd_grounding": 300,
+    "dev_zone": 500
+  },
+  "labels": {
+    "datacenter": "机房",
+    "mocap": "动捕棚／声学录音室",
+    "trading_desk": "交易区",
+    "lab_hvac": "实验室",
+    "cleanroom_iso": "洁净室",
+    "anti_vibration": "隔振设备区",
+    "cda_piping": "工艺介质服务区",
+    "esd_grounding": "防静电区",
+    "dev_zone": "高密研发区"
+  }
+}

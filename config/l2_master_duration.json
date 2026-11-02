@@ -1,0 +1,1033 @@
+{
+  "version": "1.2.0-l2-master-beat-pm-ruled",
+  "status": "engine_authority",
+  "note": "Engine-owned L2 occupancy. Durations scale with gross area only. D = max(b_min, ceil(b0 × (area/plate_ref_m2)^area_exponent)). b_max, when present, is scaled on the SAME exponent (b_max_ref_days at the reference plate). Q/R/C is diagnostic only. Do not ask the client to lock b0. b0 is the TRADE'S OWN DURATION at plate_ref_m2 (3000 m2). RULED/CLARIFIED by PM 2026-09-23: the PM's phrase 「板块节拍」 means exactly these per-trade durations — PM wording 「B0当然是板块节拍啊」 then 「我意思就是说 他们这些工序的工期啦」. There is NO separate 'beat vs whole-floor completion time' dichotomy; that framing was ours, it created a phantom open question, and it is now CLOSED. b_min / b0 / b_max = the PM-填 form's 下限 / b0 / 上限 columns, one-to-one. Recorded in derivation_policy.pm_rulings_2026_09_23. CORRECTION 2026-09-23: an earlier revision of this field claimed the whole-floor demolition figure (~28d at 3000㎡) was an independent check that b0 cannot be a completion time. That reasoning is WITHDRAWN — the figure is an artefact of trade_capacity's deliberately conservative workfront assumption (1 crew per 2000㎡ workfront; multi-crew parallelism withheld pending contractor evidence). The same package's productivity_rates.crew_scaling gives 4d for the identical case: an 8x spread is a config conflict, not a validation. The b0 question is settled by the PM's ruling, NOT by that withdrawn number, which is kept here only for traceability. 13 packages signed by PM 2026-09-23; contract-basis upgrade APPROVED by PM 2026-09-23. feature_ceiling / glass_partition quantities ruled PARTIAL by PM same day (trade_capacity.quantity_scope_ruling_2026_09_23).",
+  "plate_ref_m2": 3000,
+  "area_exponent": 0.4,
+  "stagger_days": 8,
+  "qrc_warn_ratio": 1.5,
+  "envelope_bands": [
+    {
+      "id": "micro",
+      "max_area": 800,
+      "max_floors": 1,
+      "site_days_low": 45,
+      "site_days_high": 70
+    },
+    {
+      "id": "one_plate",
+      "max_area": 4500,
+      "max_floors": 2,
+      "site_days_low": 70,
+      "site_days_high": 110
+    },
+    {
+      "id": "two_plate",
+      "max_area": 7500,
+      "max_floors": 3,
+      "site_days_low": 100,
+      "site_days_high": 145
+    },
+    {
+      "id": "four_plate",
+      "max_area": 15000,
+      "max_floors": 6,
+      "site_days_low": 150,
+      "site_days_high": 210
+    },
+    {
+      "id": "campus_dual",
+      "max_area": 40000,
+      "max_floors": 16,
+      "site_days_low": 180,
+      "site_days_high": 260
+    },
+    {
+      "id": "hq_triple",
+      "max_area": 80000,
+      "max_floors": 40,
+      "site_days_low": 200,
+      "site_days_high": 300
+    }
+  ],
+  "activity_types": {
+    "site_setup": {
+      "role": "ONCE",
+      "package_id": "mobilise",
+      "overlap_group": "mobilise",
+      "b0_days": 5,
+      "b_min": 5,
+      "scale_mode": "once",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：进场前还要做临水和接临时电以及现场保护工作等。"
+        },
+        "falsified_by": "若现场无可用施工电梯/货梯（须搭设外挂运输），或进场许可审批超过 2 周，本条不成立。"
+      }
+    },
+    "setting_out": {
+      "role": "ONCE",
+      "package_id": "mobilise",
+      "overlap_group": "mobilise",
+      "b0_days": 2,
+      "b_min": 2,
+      "scale_mode": "once",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若原建筑轴网资料缺失、须先行实测复核后才可放线，本条不成立。"
+      }
+    },
+    "demolition": {
+      "role": "SLICE",
+      "package_id": "strip_out",
+      "overlap_group": "strip_out",
+      "b0_days": 5,
+      "b_min": 3,
+      "b_max": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若拆除含结构改动、含石棉/危废处置，或受噪声时段管制只能非连续作业，本条不成立。",
+        "b_max_rule": {
+          "before": "b_max=6 为固定常数，在 6000㎡ 起即截断缩放结果，60000㎡ 时把 17d 钳回 6d（损失 11d）。",
+          "after": "b_max(area) = ceil(b_max_ref_days × (area/plate_ref_m2)^area_exponent)，与 b0 同律。",
+          "basis": "引擎自身文案（apply_plate_waves：拆除为「单板块节拍，上限6天，不是整栋工期」）——6 是参照台 3000㎡ 的单板块上限，故应按同一缩放律标定到其他面积。",
+          "pm_request": "PM：上限要由面积大小根据拆除量来合理往上新增，要有合理的依据算法方法论。"
+        }
+      },
+      "b_max_scale": "area_exponent",
+      "b_max_ref_days": 6
+    },
+    "waste_removal": {
+      "role": "SLICE",
+      "package_id": "strip_out",
+      "overlap_group": "strip_out",
+      "b0_days": 4,
+      "b_min": 2,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若无货运电梯，或物业仅允许非工作时段清运导致作业窗口被压缩，本条不成立。"
+      }
+    },
+    "partition_framing": {
+      "role": "SLICE",
+      "package_id": "partition_system",
+      "overlap_group": "partition_system",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若隔墙高度超过 4m，或轻钢龙骨改为主副龙骨加密体系，本条不成立。"
+      }
+    },
+    "gypsum_boarding": {
+      "role": "SLICE",
+      "package_id": "partition_system",
+      "overlap_group": "partition_system",
+      "b0_days": 10,
+      "b_min": 5,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若要求双层双面封板，或采用防火/防潮等特殊板型，本条不成立。"
+      }
+    },
+    "glass_partition": {
+      "role": "SLICE",
+      "package_id": "joinery_glass",
+      "overlap_group": "finishes",
+      "b0_days": 7,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若玻璃隔断含弧形/超白夹胶并须定制加工（交期超过 4 周），本条不成立。",
+        "quantity_scope": "partial",
+        "quantity_scope_ruling": "PM 2026-09-23：玻璃隔断按实际面积与实际房间数计（逐房间立工作面），非全楼工程量；容量覆盖检验分母应取实际工程量。"
+      }
+    },
+    "hvac_duct": {
+      "role": "SLICE",
+      "package_id": "mep_first_fix",
+      "overlap_group": "mep_first_fix",
+      "b0_days": 8,
+      "b_min": 5,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若风管为工厂预制成品而非现场制作，或须穿越防火分区增设防火阀，本条不成立。"
+      }
+    },
+    "chw_pipe": {
+      "role": "SLICE",
+      "package_id": "mep_first_fix",
+      "overlap_group": "mep_first_fix",
+      "b0_days": 7,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若冷冻水管须保留并改接既有立管，或保温与打压须分两次进场，本条不成立。"
+      }
+    },
+    "containment": {
+      "role": "SLICE",
+      "package_id": "mep_first_fix",
+      "overlap_group": "mep_first_fix",
+      "b0_days": 7,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若强电与弱电桥架须分层敷设且含防火封堵专项验收，本条不成立。"
+      }
+    },
+    "ceiling_grid": {
+      "role": "SLICE",
+      "package_id": "ceiling",
+      "overlap_group": "ceiling",
+      "b0_days": 6,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若吊顶标高落差超过 1m，或含弧形/异形造型，本条不成立。"
+      }
+    },
+    "suspended_ceiling": {
+      "role": "PACKAGE",
+      "package_id": "ceiling",
+      "overlap_group": "ceiling",
+      "b0_days": 10,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若面板为定制尺寸而非标准模数，本条不成立。"
+      }
+    },
+    "gypsum_ceiling": {
+      "role": "SLICE",
+      "package_id": "ceiling",
+      "overlap_group": "ceiling",
+      "b0_days": 8,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若含暗藏灯槽并须加密检修口，本条不成立。"
+      }
+    },
+    "feature_ceiling": {
+      "role": "SLICE",
+      "package_id": "ceiling",
+      "overlap_group": "ceiling",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若特色吊顶含 GRG 或木饰面异形件（须开模定制），本条不成立。",
+        "quantity_scope": "partial",
+        "quantity_scope_ruling": "PM 2026-09-23：造型吊顶为局部工程量——占比可以高（天花无论什么造型都要人工去弄），但不覆盖全楼；容量覆盖检验分母应取实际工程量。"
+      }
+    },
+    "fcu": {
+      "role": "SLICE",
+      "package_id": "mep_second_fix",
+      "overlap_group": "mep_second_fix",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若风机盘管须配合吊顶标高二次调整，或含冷凝水管坡度整改，本条不成立。"
+      }
+    },
+    "sprinkler": {
+      "role": "SLICE",
+      "package_id": "mep_second_fix",
+      "overlap_group": "mep_second_fix",
+      "b0_days": 7,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若涉及既有喷淋系统改造（须消防设计变更并做放水试验），本条不成立。"
+      }
+    },
+    "fire_alarm": {
+      "role": "SLICE",
+      "package_id": "mep_second_fix",
+      "overlap_group": "mep_second_fix",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若须接入既有消防主机并做联动调试（依赖物业/消防窗口期），本条不成立。"
+      }
+    },
+    "structured_cabling": {
+      "role": "SLICE",
+      "package_id": "mep_second_fix",
+      "overlap_group": "mep_second_fix",
+      "b0_days": 8,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若须与 IT 侧对接并含机柜上架（非纯布线作业），本条不成立。"
+      }
+    },
+    "power": {
+      "role": "SLICE",
+      "package_id": "mep_second_fix",
+      "overlap_group": "mep_second_fix",
+      "b0_days": 7,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若涉及既有配电柜增容，或须在停电窗口内作业，本条不成立。"
+      }
+    },
+    "wall_prep": {
+      "role": "SLICE",
+      "package_id": "finishes",
+      "overlap_group": "finishes",
+      "b0_days": 8,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：涂料有绝对严谨要等干燥，一遍两遍的强制规范，不得低于一周。"
+        },
+        "falsified_by": "若基层存在空鼓/开裂须整体铲除重做（而非找平），本条不成立。"
+      }
+    },
+    "painting": {
+      "role": "SLICE",
+      "package_id": "finishes",
+      "overlap_group": "finishes",
+      "b0_days": 8,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：同上。依据 JGJ/T 29-2015——后一遍涂饰材料必须在前一遍表面干燥后进行（溶剂型须实干）；内墙合成树脂乳液涂料工序为基层处理→腻子2遍→底漆1遍→面漆2遍（表7.0.10）。"
+        },
+        "falsified_by": "若采用防霉/抗菌等特殊涂料且层间养护间隔超过 24 小时，本条不成立。"
+      }
+    },
+    "wallcovering": {
+      "role": "SLICE",
+      "package_id": "finishes",
+      "overlap_group": "finishes",
+      "b0_days": 7,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：同饰面包；参照台基准取一周（7d）。"
+        },
+        "falsified_by": "若为定制图案壁布须对花拼幅，本条不成立。"
+      }
+    },
+    "raised_floor": {
+      "role": "SLICE",
+      "package_id": "flooring",
+      "overlap_group": "flooring",
+      "b0_days": 7,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：地面铺装都至少6天。依据 GB 50209-2010 / JGJ/T 175-2018——水泥基自流平面层施工后须养护期满方可上人，养护时间不宜少于7天。"
+        },
+        "falsified_by": "若须含走线槽开孔与封边，或标高须与门槛石收口配合，本条不成立。"
+      }
+    },
+    "flooring": {
+      "role": "PACKAGE",
+      "package_id": "flooring",
+      "overlap_group": "flooring",
+      "b0_days": 8,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：地面铺装都至少6天。"
+        },
+        "falsified_by": "若为实木/复合地板须静置养生 3 天以上再铺装，本条不成立。"
+      }
+    },
+    "carpet": {
+      "role": "SLICE",
+      "package_id": "flooring",
+      "overlap_group": "flooring",
+      "b0_days": 7,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：地面铺装都至少6天。依据——铺设 PVC／地毯等装饰层前须待自流平完全固化（通常3~7天）且基层含水率≤3%。"
+        },
+        "falsified_by": "若为方块地毯且须先清除底胶并等自流平养护期结束，本条不成立。"
+      }
+    },
+    "vinyl": {
+      "role": "SLICE",
+      "package_id": "flooring",
+      "overlap_group": "flooring",
+      "b0_days": 7,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：地面铺装都至少6天。依据同上（基层含水率≤3%）。"
+        },
+        "falsified_by": "若为 PVC 卷材须做焊线处理，或基层含水率尚未达标的，本条不成立。"
+      }
+    },
+    "tile_stone": {
+      "role": "SLICE",
+      "package_id": "flooring",
+      "overlap_group": "flooring",
+      "b0_days": 10,
+      "b_min": 6,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：地面铺装都至少6天。石材／瓷砖湿作业另需砂浆养生。"
+        },
+        "falsified_by": "若含石材干挂，或须做六面防护与现场开孔，本条不成立。"
+      }
+    },
+    "doors": {
+      "role": "SLICE",
+      "package_id": "joinery_glass",
+      "overlap_group": "finishes",
+      "b0_days": 5,
+      "b_min": 2,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若含防火门/双开重型门且须齐套消防认证资料，本条不成立。"
+      }
+    },
+    "joinery": {
+      "role": "SLICE",
+      "package_id": "joinery_glass",
+      "overlap_group": "finishes",
+      "b0_days": 7,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若固定家具为定制异形柜体（非标准模数）并须二次复尺，本条不成立。"
+      }
+    },
+    "diffuser": {
+      "role": "SLICE",
+      "package_id": "terminals",
+      "overlap_group": "terminals",
+      "b0_days": 5,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若风口为配合特色吊顶的定制异形件，本条不成立。"
+      }
+    },
+    "lighting": {
+      "role": "SLICE",
+      "package_id": "terminals",
+      "overlap_group": "terminals",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若含智能照明系统编程与场景调试（依赖业主 IT 配合），本条不成立。"
+      }
+    },
+    "av": {
+      "role": "SLICE",
+      "package_id": "terminals",
+      "overlap_group": "terminals",
+      "b0_days": 4,
+      "b_min": 2,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若含大屏拼接或会议室 AV 集成调试须厂商到场，本条不成立。"
+      }
+    },
+    "security": {
+      "role": "SLICE",
+      "package_id": "terminals",
+      "overlap_group": "terminals",
+      "b0_days": 4,
+      "b_min": 2,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若门禁/监控须接入既有平台并做联动调试，本条不成立。"
+      }
+    },
+    "testing_commissioning": {
+      "role": "GATE",
+      "package_id": "commissioning",
+      "overlap_group": "commissioning",
+      "b0_days": 12,
+      "b_min": 8,
+      "scale_mode": "floors",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若须由第三方检测机构出具报告、且排期受其档期约束，本条不成立。"
+      }
+    },
+    "snagging": {
+      "role": "GATE",
+      "package_id": "commissioning",
+      "overlap_group": "commissioning",
+      "b0_days": 5,
+      "b_min": 3,
+      "scale_mode": "floors",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若业主方要求逐间逐项全数验收（而非抽样），本条不成立。"
+      }
+    },
+    "construction_cleaning": {
+      "role": "SLICE",
+      "package_id": "close_out",
+      "overlap_group": "close_out",
+      "b0_days": 4,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：小面积也要4D，大的依此要合理变化。"
+        },
+        "falsified_by": "若含成品保护拆除与危险品清理，本条不成立。"
+      }
+    },
+    "final_cleaning": {
+      "role": "SLICE",
+      "package_id": "close_out",
+      "overlap_group": "close_out",
+      "b0_days": 4,
+      "b_min": 4,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "pm_signoff",
+        "chain": {
+          "source_type": "pm_signoff_record",
+          "record": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+          "signed_by": "PM",
+          "signed_at": "2026-09-23",
+          "pm_wording": "PM：小面积也要4D，大的依此要合理变化。"
+        },
+        "falsified_by": "若须开荒保洁与精保洁两次进场（验收后返场），本条不成立。"
+      }
+    },
+    "furniture": {
+      "role": "LEAD",
+      "package_id": "ff_e",
+      "overlap_group": "ff_e",
+      "b0_days": 6,
+      "b_min": 3,
+      "scale_mode": "plate",
+      "derivation": {
+        "meaning": "occupancy_window_at_reference_plate",
+        "reference_plate_m2": 3000,
+        "basis": "engine_judgement",
+        "chain": null,
+        "falsified_by": "若家具为定制/进口（交期超过 8 周）或须二次搬运并现场组装，本条不成立。本条与 IAQ 测试顺序绑定，不得单独改期。"
+      }
+    }
+  },
+  "derivation_policy": {
+    "meaning_default": "occupancy_window_at_reference_plate",
+    "reference_plate_m2": 3000,
+    "legal_basis": {
+      "quota_conversion": "官方定额换算：有定额编号，且换算因子有证据取值",
+      "observed_production": "实测产量：有本项目或同类项目的实测产量样本",
+      "engine_judgement": "引擎判断值：无来源，开发者凭经验给定的缺省值（必须具名到工艺包并写 falsified_by）",
+      "pm_signoff": "PM 确认值：由具名 PM 就「未获来源的引擎默认值」逐包签署后确立，必须带签字记录与 PM 原话依据。"
+    },
+    "approval_states": [
+      "unconfirmed",
+      "confirmed",
+      "adjusted",
+      "rejected"
+    ],
+    "review_unit": "package",
+    "rule": "任何 b0 必须带 derivation。basis=engine_judgement 的条目，其工艺包必须有署名块与 falsified_by，否则 CLI 以非零码退出。未确认的工艺包不得被当作合同工期依据。",
+    "never": "不得把缺失的换算因子默认为 1.0 来凑公式；不得把本段当作已确认的来源。",
+    "signoff_record": {
+      "file": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+      "signed_by": "PM",
+      "signed_role": "PM",
+      "signed_at": "2026-09-23",
+      "contract_basis_approved": true,
+      "contract_basis_approved_by": "PM",
+      "contract_basis_approved_at": "2026-09-23",
+      "contract_basis_note": "PM 2026-09-23 明确改为升级：这批基准工期与 13 个工艺包署名结论即为合同工期依据，可用于合同工期约束。PM 原话：「升级 我漏掉了 不升级 这个算数skill就没意义了嘛」。依据：《L2基准工期_工艺包确认表_20260923.xlsx》原件（随包存档）。"
+    },
+ "pm_rulings_2026_09_23": {
+  "b0_semantics": {
+   "ruling": "trade_duration_at_reference_plate",
+   "ruling_zh": "b0 就是该工序的工期 —— 在参照台 3000 ㎡ 上的天数。PM 2026-09-23 澄清：他说的「板块节拍」指的是「这些工序的工期」，不是与『完工工期』对立的另一层概念。",
+   "ruled_by": "PM",
+   "ruled_at": "2026-09-23",
+   "pm_wording": "B0当然是板块节拍啊 这怎么会看不懂",
+   "pm_clarification": "B0 是什么…我说完后你跑完还是没变 应该是要改工期 我所谓的板块节拍跟你理解貌似不同 我意思就是说 他们这些工序的工期啦",
+   "note": "PM 表格《L2基准工期_工艺包确认表》表头写「38 条 b0 数值」、行内写「demolition 5d（上限 6d，下限 3d）」——b0 即工序基准工期，b_min/b_max 为其下限/上限，三层与 PM 表格栏位一一对应，不存在口径分歧。此前把「板块节拍」与「完工工期」并列成二选一，是我方自造的对立，本项就此关闭，不再挂未决。",
+   "withdrawn": "v3.6 的数值『独立证据』（~28d / 5.6 倍）已于 v3.7 撤回，与本裁决无关，仅存档追溯。"
+  },
+      "quantity_scope_feature_ceiling_glass_partition": {
+        "ruling": "partial",
+        "ruling_zh": "造型吊顶与玻璃隔断均为局部工程量，不覆盖全楼。",
+        "ruled_by": "PM",
+        "ruled_at": "2026-09-23",
+        "pm_wording": "肯定是局部工程量啊 怎么可能全楼都吊顶跟玻璃隔断 吊顶可以占比高毕竟天花无论是什么造型 都是要人工去弄的 但隔断就是根据实际面积实际房间数来的",
+        "ceiling_note": "吊顶占比可以高——天花无论什么造型都要人工去弄；但仍是局部工程量。",
+        "partition_note": "隔断按实际面积、实际房间数来（逐房间立工作面），不随全楼面积线性放大。",
+        "recorded_in": "config/trade_capacity.json#by_activity_type.{feature_ceiling,glass_partition}.quantity_scope = partial",
+        "consequence": "容量覆盖检验（CAPACITY_COVERAGE_SHORT）对这两条不再以全楼面积作分母质疑 b0；检验读 quantity_scope 字段分流（count_scope_ruled_partial 见审计）。"
+      }
+    },
+    "changed_value_rule": "PM 填写区间「a~b」时：b_min=a（硬下限），b0 抬至 ≥b（参照台基准）。因此小面积时 D 落在 [a,b] 内、参照台及以上为 b。若要求全程 ≥b，请把 b_min 直接改为 b。"
+  },
+  "packages": {
+    "mobilise": {
+      "zh": "进场与放线",
+      "review_hint": "看：进场准备与测量放线是否与现场条件（电梯/图纸齐全度）匹配。",
+      "items": [
+        "site_setup",
+        "setting_out"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "adjusted",
+        "approved_at": "2026-09-23",
+        "basis_note": "下限5d。PM：进场前还要做临水和接临时电以及现场保护工作等。setting_out 可与 site_setup 并行，故只抬 site_setup。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": [
+          "site_setup"
+        ],
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "strip_out": {
+      "zh": "拆除与清运",
+      "review_hint": "看：b_max=6 是否与拆除范围匹配；全拆且含结构/危废时本条须上调。",
+      "items": [
+        "demolition",
+        "waste_removal"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "adjusted",
+        "approved_at": "2026-09-23",
+        "basis_note": "下限3~4D。PM：1000㎡以下可以3~4D，但上限要由面积大小根据拆除量合理往上新增，要有合理的依据算法方法论。→ 本条 b0/b_min 数值不动，改的是 b_max 的标定方式（见 b_max_rule）。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": "demolition.b_max 由固定常数 6 改为按 area_exponent 同律标定：b_max(area) = ceil(b_max_ref_days × (area/plate_ref_m2)^area_exponent)。",
+        "superseded_by": null
+      }
+    },
+    "partition_system": {
+      "zh": "隔墙系统",
+      "review_hint": "看：隔墙体系（轻钢龙骨/双层板/超高）是否与 b0 假设一致。",
+      "items": [
+        "partition_framing",
+        "gypsum_boarding"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：隔墙体系与 b0 假设一致。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "joinery_glass": {
+      "zh": "门窗玻璃与固定木作",
+      "review_hint": "看：是否为定制加工件（交期风险高于现场作业风险），交期是否已单列。",
+      "items": [
+        "glass_partition",
+        "doors",
+        "joinery"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：定制加工件交期已单列。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "mep_first_fix": {
+      "zh": "机电一次配管",
+      "review_hint": "看：风管/水管为现场制作还是工厂预制，是否涉及既有系统改接。",
+      "items": [
+        "hvac_duct",
+        "chw_pipe",
+        "containment"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：风管／水管的制作方式与既有系统改接已明确。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "ceiling": {
+      "zh": "吊顶",
+      "review_hint": "看：是否含异形/暗藏灯槽；吊顶标高与机电末端是否已协调。",
+      "items": [
+        "ceiling_grid",
+        "suspended_ceiling",
+        "gypsum_ceiling",
+        "feature_ceiling"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：异形／灯槽与标高协调已考虑。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "mep_second_fix": {
+      "zh": "机电二次安装",
+      "review_hint": "看：是否依赖物业/消防/IT 的窗口期（这类外部依赖是最常见超期源）。",
+      "items": [
+        "fcu",
+        "sprinkler",
+        "fire_alarm",
+        "structured_cabling",
+        "power"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：外部窗口期依赖已识别。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "finishes": {
+      "zh": "饰面（涂料/壁纸）",
+      "review_hint": "看：基层状况是否已知；养护间隔是否已被计入。",
+      "items": [
+        "wall_prep",
+        "painting",
+        "wallcovering"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "adjusted",
+        "approved_at": "2026-09-23",
+        "basis_note": "下限6~7D。PM：涂料有绝对严谨要等干燥，一遍两遍的强制规范，不得低于一周；并要求引擎自行 research 深化知识库。取值规则见 changed_value_rule。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": [
+          "wall_prep",
+          "painting",
+          "wallcovering"
+        ],
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "flooring": {
+      "zh": "地面",
+      "review_hint": "看：基层含水率、养生期、石材干挂等前置条件是否已明确。",
+      "items": [
+        "raised_floor",
+        "flooring",
+        "carpet",
+        "vinyl",
+        "tile_stone"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "adjusted",
+        "approved_at": "2026-09-23",
+        "basis_note": "下限6~7D。PM：地面铺装都至少6天。取值规则见 changed_value_rule。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": [
+          "raised_floor",
+          "flooring",
+          "carpet",
+          "vinyl",
+          "tile_stone"
+        ],
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "terminals": {
+      "zh": "末端（风口/灯具/弱电）",
+      "review_hint": "看：是否含系统调试依赖业主或厂商配合。",
+      "items": [
+        "diffuser",
+        "lighting",
+        "av",
+        "security"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：系统调试的业主／厂商配合依赖已识别。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "commissioning": {
+      "zh": "调试与验收",
+      "review_hint": "看：第三方检测与验收方式（抽样/全数）是否已与业主对齐。",
+      "items": [
+        "testing_commissioning",
+        "snagging"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：第三方检测与验收方式已与业主对齐。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "close_out": {
+      "zh": "收尾与清洁",
+      "review_hint": "看：是否含成品保护拆除与返场保洁。",
+      "items": [
+        "construction_cleaning",
+        "final_cleaning"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "adjusted",
+        "approved_at": "2026-09-23",
+        "basis_note": "下限4D。PM：小面积也要4D，大的依此要合理变化。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": [
+          "construction_cleaning",
+          "final_cleaning"
+        ],
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    },
+    "ff_e": {
+      "zh": "家具（FF&E）",
+      "review_hint": "看：交期为长周期项，且与 IAQ 测试顺序强绑定，不得单独改期。",
+      "items": [
+        "furniture"
+      ],
+      "signoff": {
+        "signed_by": "PM",
+        "signed_role": "PM",
+        "approval_state": "confirmed",
+        "approved_at": "2026-09-23",
+        "basis_note": "PM 确认：交期与 IAQ 顺序绑定，不单独改期。",
+        "record_ref": "《L2基准工期_工艺包确认表_20260923.xlsx》（PM 填写原件）",
+        "adjusted_items": null,
+        "adjusted_mechanism": null,
+        "superseded_by": null
+      }
+    }
+  }
+}

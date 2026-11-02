@@ -1,0 +1,46 @@
+{
+    "version": "1.0.0",
+    "default_profile": "STANDARD",
+    "profiles": {
+        "STANDARD": {
+            "description": "标准串行招采链：招标文件、评审、质询、定标、签约依次 FS。适用于常规体量与全部公开招标（法定等标/公示窗口不可压缩）。",
+            "applies_when": {},
+            "overlaps": [],
+            "protected_gates": ["回标", "BAFO", "中标通知书", "签约"]
+        },
+        "FAST_TRACK_SMALL": {
+            "description": "小体量邀请招标 fast-track：短名单方向确定后 RFP 即开编、评审启动次日即发 RFI 质询；回标/BAFO/LOA/签约四道硬门保持 FS 串行不放松。",
+            "applies_when": {
+                "area_sqm_max": 1000,
+                "bidding": ["invite"]
+            },
+            "overlaps": [
+                {
+                    "successor_name_contains": "招标文件 (RFP) 编制",
+                    "predecessor_name_contains": "短名单",
+                    "relationship": "SS",
+                    "lag": 1,
+                    "parallelisable": true,
+                    "relationship_reason": "小体量邀请招标：短名单方向确定后次日即可开始 RFP 编制；回标门（总价包干回标）不受影响，仍在评审前闭合"
+                },
+                {
+                    "successor_name_contains": "质询",
+                    "predecessor_name_contains": "清标",
+                    "relationship": "SS",
+                    "lag": 1,
+                    "parallelisable": true,
+                    "relationship_reason": "评审启动次日即下发 RFI 质询，评审与总包澄清回函并行推进；BAFO 与定标门仍要求质询闭合后进行"
+                }
+            ],
+            "protected_gates": ["回标", "BAFO", "中标通知书", "签约"]
+        },
+        "COMPLEX": {
+            "description": "大体量/复杂项目：标准串行链，另加更长的评审与合规窗口（由模板工期承担，不引入额外重叠）。",
+            "applies_when": {
+                "area_sqm_min": 5000
+            },
+            "overlaps": [],
+            "protected_gates": ["回标", "BAFO", "中标通知书", "签约"]
+        }
+    }
+}

@@ -1,0 +1,8 @@
+output/
+output_mpp/
+__pycache__/
+.pytest_cache/
+dist/
+*.pyc
+*.bak
+.venv/

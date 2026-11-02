@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "reviewed_on": "2026-10-16",
+  "coverage_note": "统一入口覆盖全国；规则适配按明确范围逐步接入，不代表全国已核验。",
+  "profiles": [
+    {
+      "id": "SH_EXISTING_FITOUT",
+      "name": "上海既有非居住建筑装修",
+      "city_aliases": [
+        "上海",
+        "上海市",
+        "shanghai"
+      ],
+      "adapter": "shanghai",
+      "status": "scoped_implemented",
+      "sources": [
+        "https://zjw.sh.gov.cn/gfxwj/20250925/ff0c97d945a243cc9133ca6f52d6d326.html"
+      ],
+      "scope": "沿用已声明工程分类与有效期校验；项目分类不由行业猜测"
+    },
+    {
+      "id": "JS_SUZHOU_SIP_DECORATION",
+      "name": "苏州工业园区常规专业装修",
+      "city_aliases": [
+        "苏州工业园区",
+        "苏州园区",
+        "sip"
+      ],
+      "city_parent_aliases": [
+        "苏州",
+        "苏州市",
+        "suzhou"
+      ],
+      "district_aliases": [
+        "工业园区",
+        "苏州工业园区",
+        "园区",
+        "sip"
+      ],
+      "adapter": "sip",
+      "status": "scoped_pilot_portal_reference",
+      "sources": [
+        "https://one.sipac.gov.cn/szgyyqwsdtzrr/szyqzwdt/html/pages/default/one_thing_zxyjs.html",
+        "https://one.sipac.gov.cn/sgtsc/SGTSCPage/Common/PublicFile/2023年施工图数字化审图常见问题.pdf",
+        "https://one.sipac.gov.cn/szgyyqwsdt/szyqzwdt/html/pages/gov/approval_flow3.html",
+        "https://www.zjg.gov.cn/zjg/gysy_xfaq/202603/ca8431253615425fa1cb13132fd193a9.shtml"
+      ],
+      "scope": "仅限PM声明适用园区常规专业装修直接发包核准路径，不改变原规划用途，非生产/实验设施主体；图审规模须确认。",
+      "time_conflicts": [
+        "专业施工许可装修一件事为1工作日，综合流程为2工作日；暂保守按2工作日规划，须窗口核对。",
+        "消防验收门户存在自然日/工作日差异，保守按15工作日留量，非承诺。"
+      ],
+      "review_days": {
+        "medium_or_below": 7,
+        "large": 10
+      },
+      "permit_days": 2,
+      "direct_award_days": 3,
+      "completion_filing_days": 2,
+      "fire_design_days": 15,
+      "fire_acceptance_days": 15
+    }
+  ]
+}

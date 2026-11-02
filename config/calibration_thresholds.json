@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "description": "Configurable thresholds for calibration statistics and the multi-factor confidence model. Nothing here is hard-coded in Python; changing this file changes behaviour.",
+
+  "sample_size_confidence": [
+    {"min_n": 0, "max_n": 0, "level": "none", "note": "No data. Do not report a rate."},
+    {"min_n": 1, "max_n": 2, "level": "very_low", "note": "Anecdotal. Never a basis for a selected rate."},
+    {"min_n": 3, "max_n": 4, "level": "low"},
+    {"min_n": 5, "max_n": 9, "level": "medium"},
+    {"min_n": 10, "max_n": null, "level": "high"}
+  ],
+
+  "minimum_for_pooling": {
+    "min_samples": 3,
+    "min_projects": 2,
+    "note": "Below these the group is reported as descriptive only and does not produce a selected or calibrated rate."
+  },
+
+  "percentile_method": "linear_type_7_unweighted",
+  "percentiles_reported": ["p25", "median", "p75"],
+
+  "confidence_model": {
+    "weights": {
+      "source_authenticity": 0.18,
+      "scope_match": 0.24,
+      "unit_match": 0.08,
+      "schedule_applicability": 0.22,
+      "sample_size": 0.13,
+      "data_order": 0.07,
+      "cross_source_consistency": 0.08
+    },
+    "factor_scores": {
+      "source_authenticity": {"high": 1.0, "medium": 0.6, "low": 0.3, "unknown": 0.0},
+      "scope_match": {"exact": 1.0, "partial": 0.6, "composite": 0.25, "not_comparable": 0.0},
+      "unit_match": {"native": 1.0, "rescaled": 0.8, "converted": 0.6, "mismatch": 0.0},
+      "schedule_applicability": {"direct": 1.0, "adjusted": 0.65, "reference_only": 0.25, "rejected": 0.0},
+      "data_order": {"A4": 1.0, "A3": 0.9, "A2": 0.6, "A1": 0.5, "A0": 0.0},
+      "cross_source_consistency": {"corroborated": 1.0, "single_source": 0.5, "conflicting": 0.0}
+    },
+    "sample_size_score": {
+      "none": 0.0,
+      "very_low": 0.2,
+      "low": 0.45,
+      "medium": 0.7,
+      "high": 1.0
+    },
+    "score_bands": [
+      {"min_score": 0.0, "max_score": 0.199, "level": "none"},
+      {"min_score": 0.2, "max_score": 0.399, "level": "very_low"},
+      {"min_score": 0.4, "max_score": 0.599, "level": "low"},
+      {"min_score": 0.6, "max_score": 0.799, "level": "medium"},
+      {"min_score": 0.8, "max_score": 1.0, "level": "high"}
+    ],
+    "hard_caps": [
+      {
+        "when": {"schedule_applicability": ["reference_only", "rejected"]},
+        "max_level": "low",
+        "reason": "High source authenticity does not raise planning confidence when the item is not usable in a planning rate."
+      },
+      {
+        "when": {"scope_equivalence": ["not_comparable"]},
+        "max_level": "very_low",
+        "reason": "A non-comparable scope cannot support a planning claim at any sample size."
+      },
+      {
+        "when": {"evidence_purpose": ["budget_consumption"]},
+        "max_level": "medium",
+        "reason": "Budget consumption is priced labour; it is evidence, not observed site production."
+      },
+      {
+        "when": {"sample_size_confidence": ["none", "very_low"]},
+        "max_level": "low",
+        "reason": "样本量 n<3，置信度不得高于 low：小样本不得假装高置信度。"
+      }
+    ]
+  },
+
+  "planning_conversion": {
+    "formula": "planning_rate = reference_rate * scope_factor * site_factor * calibration_coefficient",
+    "rule": "Any factor without evidence stays null. A null factor makes planning_rate null. No factor is ever defaulted to 1.0 to complete the formula.",
+    "factors": {
+      "scope_factor": {"default": null, "evidence_required": "documented scope difference with a quantified effect"},
+      "site_factor": {"default": null, "evidence_required": "measured regional productivity ratio or comparable project record"},
+      "calibration_coefficient": {"default": null, "evidence_required": "A3 population meeting minimum_for_pooling"}
+    }
+  }
+}

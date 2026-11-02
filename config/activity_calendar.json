@@ -1,0 +1,453 @@
+{
+  "version": "1.1.0",
+  "principle": "PROJECT CALENDAR != ACTIVITY CALENDAR != RESOURCE CALENDAR. A 7D site operating calendar must never propagate to design / tender / client approval / authority review / individual resource calendars.",
+  "scope_note": "These are default PLANNING PROFILES for mainland-China commercial fit-out, not legal facts. Every assignment carries basis + confidence and supports project override.",
+  "calendar_definitions": {
+    "SITE_7D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 7,
+      "holiday_policy": "spring_festival_only",
+      "description": "Site construction / installation: weekends working, only Spring Festival (incl. Lantern return) off."
+    },
+    "SITE_6D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 6,
+      "holiday_policy": "spring_festival_only",
+      "description": "Site construction on a 6-day week: Sunday off, statutory holidays working except Spring Festival."
+    },
+    "SITE_5D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 5,
+      "holiday_policy": "all_statutory_holidays_off",
+      "description": "Site construction falling back to the business week (weekends off, all statutory holidays off)."
+    },
+    "BUSINESS_5D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 5,
+      "holiday_policy": "all_statutory_holidays_off",
+      "description": "Design / consultant / client / tender / authority business calendar."
+    },
+    "AUTHORITY_5D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 5,
+      "holiday_policy": "all_statutory_holidays_off_plus_statutory_windows",
+      "description": "Authority processing runs on government business days; statutory review windows are counted in those days."
+    },
+    "FACTORY_6D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 6,
+      "holiday_policy": "factory_calendar_unconfirmed",
+      "description": "Factory production / fabrication: 6-day week assumed provisionally; factory-specific calendar not evidenced."
+    },
+    "LOGISTICS_7D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 7,
+      "holiday_policy": "carrier_calendar_unconfirmed",
+      "description": "Logistics / delivery: 7-day assumed; carrier and customs calendar not evidenced."
+    },
+    "ELAPSED_7D": {
+      "calendar_type": "ACTIVITY",
+      "working_days_per_week": 7,
+      "holiday_policy": "none",
+      "description": "Continuous calendar-day window, independently declared; not site work."
+    }
+  },
+  "class_defaults": {
+    "SITE_CONSTRUCTION": {
+      "calendar_id": "SITE_7D",
+      "site_calendar_bound": true,
+      "basis": "default_cn_commercial_fitout_site_calendar",
+      "confidence": "planning_default"
+    },
+    "SITE_INSTALLATION": {
+      "calendar_id": "SITE_7D",
+      "site_calendar_bound": true,
+      "basis": "default_cn_commercial_fitout_site_calendar",
+      "confidence": "planning_default"
+    },
+    "TESTING_COMMISSIONING": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "execution_party_specific_default_business_days",
+      "confidence": "planning_default",
+      "note": "Execution party unconfirmed. Testing executed by a third-party agency or consultant is assumed to run on business days; on-site contractor T&C may run on the site calendar. Override once the execution party is confirmed."
+    },
+    "DESIGN": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "design_office_business_day_profile",
+      "confidence": "planning_default"
+    },
+    "CONSULTANT_REVIEW": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "consultant_business_day_profile",
+      "confidence": "planning_default"
+    },
+    "CLIENT_APPROVAL": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "client_business_day_profile",
+      "confidence": "planning_default"
+    },
+    "TENDER_COMMERCIAL": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "commercial_procurement_business_day_profile",
+      "confidence": "planning_default"
+    },
+    "AUTHORITY_APPROVAL": {
+      "calendar_id": "AUTHORITY_5D",
+      "site_calendar_bound": false,
+      "basis": "authority_business_day_profile",
+      "confidence": "planning_default"
+    },
+    "LANDLORD_APPROVAL": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "landlord_business_day_profile_unless_project_specific_evidence",
+      "confidence": "planning_default",
+      "note": "5D unless project-specific evidence of a different property-management service window is supplied."
+    },
+    "FACTORY_PRODUCTION": {
+      "calendar_id": "FACTORY_6D",
+      "site_calendar_bound": false,
+      "basis": "factory_calendar_provisional_6d_not_evidenced",
+      "confidence": "provisional"
+    },
+    "LOGISTICS_DELIVERY": {
+      "calendar_id": "LOGISTICS_7D",
+      "site_calendar_bound": false,
+      "basis": "logistics_calendar_configurable_default_7d_not_evidenced",
+      "confidence": "provisional"
+    },
+    "HANDOVER_MOVE": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "client_occupancy_executed_on_client_workdays",
+      "confidence": "planning_default"
+    },
+    "PROJECT_MANAGEMENT": {
+      "calendar_id": "BUSINESS_5D",
+      "site_calendar_bound": false,
+      "basis": "pm_consultant_business_day_profile",
+      "confidence": "planning_default"
+    }
+  },
+  "specialised_classification_rules": [
+    {
+      "class": "TENDER_COMMERCIAL",
+      "keywords": [
+        "招采",
+        "采购",
+        "材料采购",
+        "设备采购"
+      ],
+      "basis": "specialised keyword: procurement / purchasing (beats generic 机电/设备)"
+    },
+    {
+      "class": "AUTHORITY_APPROVAL",
+      "keywords": [
+        "消防设计审查",
+        "消防设计审核",
+        "消防设计备案"
+      ],
+      "basis": "specialised keyword: statutory fire design review (beats generic 审查/设计)"
+    }
+  ],
+  "classification_rules": [
+    {
+      "class": "LANDLORD_APPROVAL",
+      "keywords": [
+        "物业",
+        "业主公约",
+        "安全协议"
+      ],
+      "basis": "name keyword: property / landlord submission"
+    },
+    {
+      "class": "AUTHORITY_APPROVAL",
+      "keywords": [
+        "施工许可证",
+        "许可证办理",
+        "图审合格证",
+        "质安监报监",
+        "住建",
+        "消防验收",
+        "消防备案",
+        "联合竣工验收",
+        "竣工备案",
+        "政府",
+        "主管部门",
+        "批文",
+        "查验",
+        "申报与审批"
+      ],
+      "basis": "name keyword: statutory authority processing"
+    },
+    {
+      "class": "TENDER_COMMERCIAL",
+      "keywords": [
+        "招标",
+        "回标",
+        "定标",
+        "清标",
+        "述标",
+        "标前",
+        "RFI",
+        "BAFO",
+        "LOA",
+        "中标",
+        "合同谈判",
+        "签约",
+        "短名单",
+        "询价",
+        "比价",
+        "价格谈判",
+        "密卦报价",
+        "密封报价",
+        "澄清",
+        "呈批",
+        "供应商定标"
+      ],
+      "basis": "name keyword: commercial procurement / award"
+    },
+    {
+      "class": "CLIENT_APPROVAL",
+      "keywords": [
+        "业主签字",
+        "甲方",
+        "客户确认",
+        "内部审批",
+        "集团特批",
+        "特批"
+      ],
+      "basis": "name keyword: client / owner approval"
+    },
+    {
+      "class": "TESTING_COMMISSIONING",
+      "keywords": [
+        "检测",
+        "调试",
+        "T&C",
+        "盲测",
+        "复测",
+        "采样",
+        "试验",
+        "Commissioning"
+      ],
+      "basis": "name keyword: testing / commissioning"
+    },
+    {
+      "class": "CONSULTANT_REVIEW",
+      "keywords": [
+        "图审",
+        "审查",
+        "评审",
+        "审核意见",
+        "意见修改"
+      ],
+      "basis": "name keyword: consultant / third-party design review"
+    },
+    {
+      "class": "FACTORY_PRODUCTION",
+      "keywords": [
+        "生产",
+        "加工",
+        "定制",
+        "工厂",
+        "Lead Time",
+        "lead time",
+        "交货"
+      ],
+      "basis": "name keyword: factory production / fabrication lead time"
+    },
+    {
+      "class": "LOGISTICS_DELIVERY",
+      "keywords": [
+        "运输",
+        "物流",
+        "清关",
+        "发货",
+        "海运",
+        "空运"
+      ],
+      "basis": "name keyword: logistics / delivery"
+    },
+    {
+      "class": "DESIGN",
+      "keywords": [
+        "方案",
+        "设计",
+        "出图",
+        "效果图",
+        "渲染",
+        "Test Fit",
+        "test fit",
+        "深化",
+        "材料选型",
+        "图纸",
+        "平面图",
+        "机电方案",
+        "概念"
+      ],
+      "basis": "name keyword: design production"
+    },
+    {
+      "class": "SITE_INSTALLATION",
+      "keywords": [
+        "安装",
+        "铺设",
+        "进场就位",
+        "软装",
+        "保洁",
+        "散味",
+        "强排通风",
+        "净化",
+        "地毯",
+        "地板",
+        "灯具",
+        "洁具",
+        "面板"
+      ],
+      "basis": "name keyword: on-site installation / finishing"
+    },
+    {
+      "class": "HANDOVER_MOVE",
+      "keywords": [
+        "搬迁",
+        "入驻",
+        "正式营业",
+        "Handover",
+        "handover",
+        "场地正式移交",
+        "最终移交"
+      ],
+      "basis": "name keyword: handover / occupancy / relocation"
+    },
+    {
+      "class": "SITE_CONSTRUCTION",
+      "keywords": [
+        "拆除",
+        "清运",
+        "龙骨",
+        "封板",
+        "机电",
+        "天花",
+        "墙面",
+        "地坪",
+        "测量放线",
+        "场地保护",
+        "临时设施",
+        "动工准备",
+        "隐蔽",
+        "乳胶漆",
+        "吊顶",
+        "支管",
+        "桥架",
+        "主管道",
+        "预埋",
+        "饰面",
+        "砌筑",
+        "防水",
+        "消防管"
+      ],
+      "basis": "name keyword: on-site construction work"
+    },
+    {
+      "class": "PROJECT_MANAGEMENT",
+      "keywords": [
+        "Kick Off",
+        "kick off",
+        "PEP",
+        "任务书",
+        "Brief",
+        "brief",
+        "执行计划",
+        "需求收集",
+        "启动会",
+        "项目启动"
+      ],
+      "basis": "name keyword: project management / briefing"
+    }
+  ],
+  "fallback": {
+    "class": "PROJECT_MANAGEMENT",
+    "basis": "no classification rule matched — falls back to the business calendar and is reported as UNCLASSIFIED for review",
+    "confidence": "unclassified_fallback"
+  },
+  "phase_fallback_rules": [
+    {
+      "phase_keywords": [
+        "实体施工",
+        "施工阶段"
+      ],
+      "class": "SITE_CONSTRUCTION",
+      "basis": "phase fallback: physical construction stage"
+    },
+    {
+      "phase_keywords": [
+        "验收",
+        "合规审批",
+        "竣工"
+      ],
+      "class": "AUTHORITY_APPROVAL",
+      "basis": "phase fallback: statutory acceptance / completion"
+    },
+    {
+      "phase_keywords": [
+        "招标",
+        "定标",
+        "采购"
+      ],
+      "class": "TENDER_COMMERCIAL",
+      "basis": "phase fallback: procurement"
+    },
+    {
+      "phase_keywords": [
+        "设计",
+        "图审"
+      ],
+      "class": "DESIGN",
+      "basis": "phase fallback: design"
+    },
+    {
+      "phase_keywords": [
+        "搬迁",
+        "交付"
+      ],
+      "class": "HANDOVER_MOVE",
+      "basis": "phase fallback: handover / relocation"
+    }
+  ],
+  "resource_calendar": {
+    "implemented": false,
+    "statement": "ACTIVITY CALENDAR is not the INDIVIDUAL RESOURCE CALENDAR. A 7D site operating calendar means the SITE may be worked 7 days per week; it does NOT mean one crew works 7 consecutive days.",
+    "not_implemented_reason": "Crew availability / rotation / shift / per-resource calendars are not modelled this round. No fatigue model is claimed. The engine only guarantees the two concepts are reported separately and never conflated.",
+    "disclosure": "7D site calendar != 7 consecutive worker-days per individual worker. Crew rotation, shifts and resource calendars require separate modelling."
+  },
+  "override": {
+    "supported": true,
+    "supported_classes": [
+      "SITE_CONSTRUCTION",
+      "SITE_INSTALLATION",
+      "TESTING_COMMISSIONING",
+      "DESIGN",
+      "CONSULTANT_REVIEW",
+      "CLIENT_APPROVAL",
+      "TENDER_COMMERCIAL",
+      "AUTHORITY_APPROVAL",
+      "LANDLORD_APPROVAL",
+      "FACTORY_PRODUCTION",
+      "LOGISTICS_DELIVERY",
+      "HANDOVER_MOVE",
+      "PROJECT_MANAGEMENT"
+    ],
+    "allowed_working_days_per_week": [
+      5,
+      6,
+      7
+    ],
+    "override_source_template": "cli:--activity_calendar_override"
+  }
+}

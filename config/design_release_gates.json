@@ -1,0 +1,40 @@
+{
+    "version": "1.0.0",
+    "applies_to_delivery": ["DB"],
+    "gates": {
+        "SD_CONFIRMED": {
+            "anchor_name_contains": "初步设计SD出图",
+            "maturity": "30% concept — SD 出图与业主确认"
+        },
+        "IFC_REVIEW_PASSED": {
+            "anchor_name_contains": "图审合格证",
+            "maturity": "90% construction — 全套施工图 + 第三方图审合格证"
+        }
+    },
+    "relinks": [
+        {
+            "task_name_contains": "物业装修图纸送审",
+            "from_gate": "IFC_REVIEW_PASSED",
+            "to_gate": "SD_CONFIRMED",
+            "relationship": "FS",
+            "design_release_gate": "LANDLORD_SUBMISSION_READY",
+            "reason": "D&B 模式：物业送审基于 SD 包即可启动，与施工图深化/图审并行推进；后续以 IFC 版本补充报审"
+        },
+        {
+            "task_name_contains": "施工许可证申报",
+            "from_gate": "SD_CONFIRMED",
+            "to_gate": "IFC_REVIEW_PASSED",
+            "relationship": "FS",
+            "design_release_gate": "PERMIT_AFTER_DRAWING_CERTIFICATE",
+            "reason": "所有模式：施工许可在取得施工图审查合格书之后。D&B 物业送审仍可与施工图并行，但发证不得早于合格书。"
+        }
+    ],
+    "statutory_protections": [
+        {
+            "task_name_contains": "施工许可证申报",
+            "must_reference_gate": "IFC_REVIEW_PASSED",
+            "relationship": "FS",
+            "reason": "施工图完成→图审（含修改与复审）→合格书→施工许可→现场施工（含拆除）为硬FS。D&B 亦不得凭 SD 取证前的许可。"
+        }
+    ]
+}

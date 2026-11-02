@@ -1,0 +1,43 @@
+{
+    "version": "1.0.0",
+    "anchors": {
+        "site_construction_start": {
+            "task_name_contains": "Site Takeover",
+            "description": "场地移交与动工准备 —— 实体施工的起点"
+        },
+        "physical_completion": {
+            "task_name_contains": "物理竣工",
+            "description": "物理竣工/硬装施工完成 —— 实体施工的终点（含粗保洁）"
+        }
+    },
+    "semantic_categories": {
+        "SITE_CONSTRUCTION": {
+            "description": "真正的 physical site construction：场地移交起至物理竣工止（含 常规基础施工 / 隐蔽与骨架 / 封板与天花机电 / 饰面与地坪 四段、T&C 联动调试与粗保洁）",
+            "span": "site_construction_start.start → physical_completion.finish",
+            "fallback_between_anchors": true
+        },
+        "FURNITURE_INSTALLATION": {
+            "description": "办公家具及软装进场安装",
+            "task_name_contains_any": ["家具"]
+        },
+        "IAQ_FLUSHOUT": {
+            "description": "室内空气检测、强排通风散味与复测（occupancy readiness 的空气线）",
+            "task_name_contains_any": ["室内空气", "空气质量", "盲测", "空气质量复测", "通风", "散味", "IAQ"]
+        },
+        "TESTING_COMMISSIONING": {
+            "description": "第三方检测、消防验收/备案、联合竣工验收等 post-completion 检测与验收",
+            "task_name_contains_any": ["T&C", "消防设施检测", "电气防火检测", "消防验收", "消防查验", "消防备案", "联合竣工验收", "联合验收"]
+        },
+        "HANDOVER_MOVE": {
+            "description": "深度精保洁、场地正式移交与客户搬迁入驻",
+            "task_name_contains_any": ["精保洁", "Site Handover", "场地正式移交", "搬迁入驻", "搬迁全部完成"]
+        }
+    },
+    "classification_order": [
+        "FURNITURE_INSTALLATION",
+        "IAQ_FLUSHOUT",
+        "TESTING_COMMISSIONING",
+        "HANDOVER_MOVE",
+        "SITE_CONSTRUCTION"
+    ]
+}

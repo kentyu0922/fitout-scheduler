@@ -1,0 +1,2131 @@
+{
+  "version": "0.6.0-scope-and-crew-capacity",
+  "description": "Provisional commercial office fit-out productivity in units per worker per 8h shift. Source confidence and validation status accompany every activity. Production CLI uses detailed activities, resource formula and inspection gates.",
+  "confidence_levels": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "rate_levels": [
+    "low",
+    "typical",
+    "high"
+  ],
+  "default_rate_level": "typical",
+  "rate_level_semantics": "low = pessimistic productivity (fewest m2/worker-day -> longest duration), typical = planning default, high = optimistic productivity (shortest duration). A task may pin `rate_level`; otherwise default_rate_level applies. The chosen level and the full table are echoed in the explainable fields, together with the duration the same task would take at every level.",
+  "activity_types": {
+    "suspended_ceiling": {
+      "label_zh": "天花吊顶 (龙骨 + 封板/矿棉板)",
+      "label_en": "Suspended ceiling (grid + board/tile)",
+      "unit": "m2",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 10.0,
+        "high": 15.0
+      },
+      "rate_basis": "Office fit-out, 2.7-3.0m ceiling, exposed-grid mineral fibre or gypsum lay-in incl. hangers/main tees/cross tees and board fixing. Industry rule-of-thumb 8-15 m2/worker-day; typical 10 until field-calibrated.",
+      "default_crew_size": 6,
+      "min_duration_days": 3,
+      "base_confidence": "low",
+      "quantity_key": "ceiling_area",
+      "factors": {
+        "complexity": {
+          "standard": 1.0,
+          "complex": 1.2,
+          "feature": 1.5
+        },
+        "access": {
+          "open": 1.0,
+          "restricted": 1.15,
+          "high_ceiling": 1.3
+        }
+      },
+      "legacy_template_bridge": {
+        "match_keywords": [
+          "天花吊顶龙骨",
+          "吊顶龙骨"
+        ],
+        "quantity_from_area_ratio": 0.85,
+        "note": "Legacy WBS tasks carry no quantity. When the pilot is on, tasks whose name contains a match keyword are tagged suspended_ceiling and quantity = gross area x ratio (net ceiling area). Derived quantity downgrades confidence. When the Quantity Engine (core/quantity_engine.py, config/quantity_benchmarks.json) supplies derived quantities, the entry's quantity_key (ceiling_area) is used instead of this ratio; the ratio stays as the fallback when no engine output is passed."
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "suspended_ceiling:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "ceiling_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "partition_framing": {
+      "label_zh": "隔墙轻钢龙骨骨架搭设",
+      "label_en": "Partition light-gauge steel stud framing",
+      "unit": "m2",
+      "rates_per_worker_day": {
+        "low": 10.0,
+        "typical": 15.0,
+        "high": 20.0
+      },
+      "rate_basis": "Office fit-out, 2.7-3.2m wall height, 75/100 series C-stud + top/bottom track at 400/600 c/c, incl. setting-out, studs, noggins and door/glazing openings. Quantity = wall area measured on one face; boarding excluded (belongs to the boarding/painting chain). Rule-of-thumb 10-20 m2/worker-day framing only.",
+      "default_crew_size": 6,
+      "min_duration_days": 3,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1.0,
+          "complex": 1.2,
+          "acoustic_double_stud": 1.4
+        },
+        "access": {
+          "open": 1.0,
+          "restricted": 1.15,
+          "high_wall": 1.25
+        }
+      },
+      "legacy_template_bridge": {
+        "match_keywords": [
+          "隔墙轻钢龙骨",
+          "隔墙龙骨"
+        ],
+        "quantity_from_area_ratio": 0.6,
+        "note": "Legacy task `隔墙轻钢龙骨骨架搭设`. Partition wall area (one face) for an open-plan office with meeting rooms is roughly 0.6 x gross floor area; derived quantity downgrades confidence."
+      },
+      "quantity_key": "drywall_partition_area",
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "partition_framing:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "drywall_partition_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "flooring": {
+      "label_zh": "地面铺装 (架空地板 / 地砖 / 地毯)",
+      "label_en": "Floor finish (raised access floor / tile / carpet)",
+      "unit": "m2",
+      "rates_per_worker_day": {
+        "low": 15.0,
+        "typical": 25.0,
+        "high": 35.0
+      },
+      "rate_basis": "Blended office floor finish on a prepared, levelled slab. Single-finish rules of thumb: carpet tile 40-60, raised access floor 20-30, porcelain/ceramic tile 8-12 m2/worker-day. Blended typical 25; pin a single finish with the `finish` factor.",
+      "default_crew_size": 5,
+      "min_duration_days": 2,
+      "base_confidence": "low",
+      "factors": {
+        "finish": {
+          "blended": 1.0,
+          "carpet_tile": 0.6,
+          "raised_access_floor": 1.0,
+          "vinyl_plank": 0.8,
+          "ceramic_tile": 2.5
+        },
+        "complexity": {
+          "standard": 1.0,
+          "complex": 1.2,
+          "pattern_inlay": 1.5
+        },
+        "access": {
+          "open": 1.0,
+          "restricted": 1.15
+        }
+      },
+      "legacy_template_bridge": {
+        "match_keywords": [
+          "地板/地砖/地毯",
+          "地毯铺设",
+          "地板铺设",
+          "地砖铺设"
+        ],
+        "quantity_from_area_ratio": 0.9,
+        "note": "Legacy task `架空防静电地板/地砖/地毯铺设`. Net floor finish area is roughly 0.9 x gross floor area (core, shafts and partition footprints excluded); derived quantity downgrades confidence."
+      },
+      "quantity_key": "flooring_area",
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 10,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "flooring:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "flooring_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "painting": {
+      "label_zh": "墙顶底漆及面漆（不含基层处理）",
+      "label_en": "Primer and finish coats (preparation excluded)",
+      "unit": "m2",
+      "rates_per_worker_day": {
+        "low": 25.0,
+        "typical": 35.0,
+        "high": 50.0
+      },
+      "rate_basis": "Provisional primer and finish coats only; preparation is separate wall_prep. Existing rate values require trade validation for this revised scope.",
+      "default_crew_size": 6,
+      "min_duration_days": 3,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1.0,
+          "complex": 1.2,
+          "feature_colour": 1.4
+        },
+        "access": {
+          "open": 1.0,
+          "restricted": 1.15,
+          "high_ceiling": 1.3
+        },
+        "scope": {
+          "paint_only": 1.0,
+          "with_ceiling_board": 1.5
+        }
+      },
+      "legacy_template_bridge": {
+        "match_keywords": [
+          "乳胶漆"
+        ],
+        "quantity_from_area_ratio": 1.8,
+        "factors": {
+          "scope": "with_ceiling_board"
+        },
+        "note": "Legacy task `天花封石膏板与墙顶乳胶漆饰面` is a composite (ceiling gypsum boarding + paint). Painted surface is roughly 1.8 x gross floor area (both faces of partitions ~1.2 + painted gypsum ceiling ~0.6). The bridge pins factor scope=with_ceiling_board (x1.5) so the boarding work is not silently dropped; the label is visible in the explainable fields. Derived quantity downgrades confidence."
+      },
+      "quantity_key": "paint_area",
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "painting:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "paint_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "demolition": {
+      "unit": "m2",
+      "quantity_key": "demolition_area",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 12.0,
+        "high": 18.0
+      },
+      "default_crew_size": 6,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "demolition:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "demolition_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "waste_removal": {
+      "unit": "m3",
+      "quantity_key": "waste_volume",
+      "rates_per_worker_day": {
+        "low": 1.0,
+        "typical": 2.0,
+        "high": 3.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "waste_removal:installed:m3:v1",
+      "measurement_scope": {
+        "quantity_key": "waste_volume",
+        "unit": "m3",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "setting_out": {
+      "unit": "m2",
+      "quantity_key": "gross_area",
+      "rates_per_worker_day": {
+        "low": 150.0,
+        "typical": 250.0,
+        "high": 350.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 3,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "setting_out:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gross_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "gypsum_boarding": {
+      "unit": "m2",
+      "quantity_key": "partition_surface",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 12.0,
+        "high": 18.0
+      },
+      "default_crew_size": 6,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "gypsum_boarding:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "partition_surface",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "glass_partition": {
+      "unit": "m2",
+      "quantity_key": "glass_partition_area",
+      "rates_per_worker_day": {
+        "low": 4.0,
+        "typical": 6.0,
+        "high": 9.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "glass_partition:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "glass_partition_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "raised_floor": {
+      "unit": "m2",
+      "quantity_key": "raised_floor_area",
+      "rates_per_worker_day": {
+        "low": 12.0,
+        "typical": 20.0,
+        "high": 28.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "raised_floor:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "raised_floor_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "carpet": {
+      "unit": "m2",
+      "quantity_key": "carpet_area",
+      "rates_per_worker_day": {
+        "low": 25.0,
+        "typical": 40.0,
+        "high": 55.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "carpet:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "carpet_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "vinyl": {
+      "unit": "m2",
+      "quantity_key": "vinyl_area",
+      "rates_per_worker_day": {
+        "low": 15.0,
+        "typical": 25.0,
+        "high": 35.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "vinyl:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "vinyl_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "tile_stone": {
+      "unit": "m2",
+      "quantity_key": "tile_stone_area",
+      "rates_per_worker_day": {
+        "low": 5.0,
+        "typical": 8.0,
+        "high": 12.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "tile_stone:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "tile_stone_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "ceiling_grid": {
+      "unit": "m2",
+      "quantity_key": "grid_area",
+      "rates_per_worker_day": {
+        "low": 12.0,
+        "typical": 18.0,
+        "high": 25.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "ceiling_grid:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "grid_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "gypsum_ceiling": {
+      "unit": "m2",
+      "quantity_key": "gypsum_ceiling_area",
+      "rates_per_worker_day": {
+        "low": 6.0,
+        "typical": 10.0,
+        "high": 14.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "gypsum_ceiling:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gypsum_ceiling_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "feature_ceiling": {
+      "unit": "m2",
+      "quantity_key": "feature_ceiling_area",
+      "rates_per_worker_day": {
+        "low": 3.0,
+        "typical": 5.0,
+        "high": 8.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "feature_ceiling:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "feature_ceiling_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "wall_prep": {
+      "unit": "m2",
+      "quantity_key": "wall_prep_area",
+      "rates_per_worker_day": {
+        "low": 15.0,
+        "typical": 25.0,
+        "high": 35.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "wall_prep:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "wall_prep_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "wallcovering": {
+      "unit": "m2",
+      "quantity_key": "wallcovering_area",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 12.0,
+        "high": 18.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "wallcovering:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "wallcovering_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "doors": {
+      "unit": "each",
+      "quantity_key": "door_count",
+      "rates_per_worker_day": {
+        "low": 1.0,
+        "typical": 2.0,
+        "high": 3.0
+      },
+      "default_crew_size": 2,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 4,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "doors:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "door_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "joinery": {
+      "unit": "m",
+      "quantity_key": "joinery_length",
+      "rates_per_worker_day": {
+        "low": 1.0,
+        "typical": 2.0,
+        "high": 3.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "joinery:installed:m:v1",
+      "measurement_scope": {
+        "quantity_key": "joinery_length",
+        "unit": "m",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "hvac_duct": {
+      "unit": "m2",
+      "quantity_key": "duct_surface",
+      "rates_per_worker_day": {
+        "low": 5.0,
+        "typical": 8.0,
+        "high": 12.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "hvac_duct:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "duct_surface",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "chw_pipe": {
+      "unit": "m",
+      "quantity_key": "chw_length",
+      "rates_per_worker_day": {
+        "low": 6.0,
+        "typical": 10.0,
+        "high": 15.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "chw_pipe:installed:m:v1",
+      "measurement_scope": {
+        "quantity_key": "chw_length",
+        "unit": "m",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "fcu": {
+      "unit": "each",
+      "quantity_key": "fcu_count",
+      "rates_per_worker_day": {
+        "low": 0.5,
+        "typical": 1.0,
+        "high": 1.5
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "fcu:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "fcu_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "diffuser": {
+      "unit": "each",
+      "quantity_key": "diffuser_count",
+      "rates_per_worker_day": {
+        "low": 4.0,
+        "typical": 7.0,
+        "high": 10.0
+      },
+      "default_crew_size": 2,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 4,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "diffuser:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "diffuser_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "sprinkler": {
+      "unit": "each",
+      "quantity_key": "sprinkler_points",
+      "rates_per_worker_day": {
+        "low": 3.0,
+        "typical": 5.0,
+        "high": 8.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "sprinkler:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "sprinkler_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "fire_alarm": {
+      "unit": "each",
+      "quantity_key": "fire_alarm_points",
+      "rates_per_worker_day": {
+        "low": 4.0,
+        "typical": 7.0,
+        "high": 10.0
+      },
+      "default_crew_size": 2,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 4,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "fire_alarm:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "fire_alarm_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "lighting": {
+      "unit": "each",
+      "quantity_key": "lighting_points",
+      "rates_per_worker_day": {
+        "low": 4.0,
+        "typical": 6.0,
+        "high": 9.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "lighting:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "lighting_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "power": {
+      "unit": "each",
+      "quantity_key": "power_points",
+      "rates_per_worker_day": {
+        "low": 4.0,
+        "typical": 6.0,
+        "high": 9.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "power:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "power_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "containment": {
+      "unit": "m",
+      "quantity_key": "containment_length",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 12.0,
+        "high": 18.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "containment:installed:m:v1",
+      "measurement_scope": {
+        "quantity_key": "containment_length",
+        "unit": "m",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "structured_cabling": {
+      "unit": "each",
+      "quantity_key": "data_points",
+      "rates_per_worker_day": {
+        "low": 3.0,
+        "typical": 5.0,
+        "high": 8.0
+      },
+      "default_crew_size": 3,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 6,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "structured_cabling:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "data_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "av": {
+      "unit": "each",
+      "quantity_key": "av_count",
+      "rates_per_worker_day": {
+        "low": 0.5,
+        "typical": 1.0,
+        "high": 2.0
+      },
+      "default_crew_size": 2,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 4,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "av:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "av_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "security": {
+      "unit": "each",
+      "quantity_key": "security_count",
+      "rates_per_worker_day": {
+        "low": 2.0,
+        "typical": 3.0,
+        "high": 5.0
+      },
+      "default_crew_size": 2,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 4,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "security:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "security_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "furniture": {
+      "unit": "each",
+      "quantity_key": "furniture_count",
+      "rates_per_worker_day": {
+        "low": 3.0,
+        "typical": 5.0,
+        "high": 8.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "furniture:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "furniture_count",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "testing_commissioning": {
+      "unit": "each",
+      "quantity_key": "commissioning_points",
+      "rates_per_worker_day": {
+        "low": 8.0,
+        "typical": 12.0,
+        "high": 18.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "testing_commissioning:installed:each:v1",
+      "measurement_scope": {
+        "quantity_key": "commissioning_points",
+        "unit": "each",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "snagging": {
+      "unit": "m2",
+      "quantity_key": "gross_area",
+      "rates_per_worker_day": {
+        "low": 40.0,
+        "typical": 70.0,
+        "high": 100.0
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "No verified external source or site observations. Scenario planning only; validate scope and worker-day output with trade contractor."
+      },
+      "crew_scaling": {
+        "target_days": 7,
+        "max_workers_per_front": 12,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "scope_id": "snagging:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gross_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "site_setup": {
+      "unit": "m2",
+      "quantity_key": "gross_area",
+      "rates_per_worker_day": {
+        "low": 100,
+        "typical": 160,
+        "high": 250
+      },
+      "default_crew_size": 6,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "Provisional scenario allowance, no verified field source; validate scope and productivity before use."
+      },
+      "crew_scaling": {
+        "target_days": 3,
+        "max_workers_per_front": 10,
+        "area_per_front": 300,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "label_zh": "场地保护与临时设施搭建",
+      "scope_id": "site_setup:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gross_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "construction_cleaning": {
+      "unit": "m2",
+      "quantity_key": "gross_area",
+      "rates_per_worker_day": {
+        "low": 100,
+        "typical": 180,
+        "high": 250
+      },
+      "default_crew_size": 6,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "Provisional scenario allowance, no verified field source; validate scope and productivity before use."
+      },
+      "crew_scaling": {
+        "target_days": 3,
+        "max_workers_per_front": 12,
+        "area_per_front": 300,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "label_zh": "现场粗保洁与工程除尘",
+      "scope_id": "construction_cleaning:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gross_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    },
+    "final_cleaning": {
+      "unit": "m2",
+      "quantity_key": "gross_area",
+      "rates_per_worker_day": {
+        "low": 25,
+        "typical": 40,
+        "high": 60
+      },
+      "default_crew_size": 4,
+      "min_duration_days": 1,
+      "base_confidence": "low",
+      "factors": {
+        "complexity": {
+          "standard": 1,
+          "complex": 1.25,
+          "bespoke": 1.5
+        },
+        "access": {
+          "open": 1,
+          "restricted": 1.2,
+          "occupied": 1.4
+        }
+      },
+      "rate_status": "provisional",
+      "source": {
+        "type": "uncalibrated_planning_assumption",
+        "reference": null,
+        "confidence": "low",
+        "requires_validation": true,
+        "note": "Provisional scenario allowance, no verified field source; validate scope and productivity before use."
+      },
+      "crew_scaling": {
+        "target_days": 10,
+        "max_workers_per_front": 8,
+        "area_per_front": 500,
+        "max_workfronts": 8,
+        "status": "provisional_planning_policy",
+        "note": "area_per_front denotes provisional crew workspace allowance, not an acceptance zone; target_days is a provisional staffing horizon, not a guaranteed duration",
+        "capacity_basis": "project_area_once_independent_of_acceptance_zones"
+      },
+      "label_zh": "深度精保洁与场地最终移交准备",
+      "scope_id": "final_cleaning:installed:m2:v1",
+      "measurement_scope": {
+        "quantity_key": "gross_area",
+        "unit": "m2",
+        "labor": "all installation workers per 8h day; no cost conversion",
+        "specification_status": "provisional; confirm layers, height, method and included operations before mapping a norm"
+      },
+      "evidence_level": "L0",
+      "provenance": {
+        "status": "unknown_original_numeric_source",
+        "reference": null,
+        "note": "Inherited V5.2.1 provisional assumption; not verified by V5.3."
+      }
+    }
+  }
+}

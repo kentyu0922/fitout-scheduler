@@ -1,0 +1,22 @@
+{
+    "HVAC": {
+        "Chiller_Imported": {"name": "进口冷水机组", "lead_days": 120, "desc": "包含海运与清关周期"},
+        "Chiller_Domestic": {"name": "国产冷水机组", "lead_days": 45, "desc": "国内江浙沪产地发货"},
+        "VAV_Box": {"name": "VAV 变风量末端", "lead_days": 35, "desc": "定制尺寸与带控制面板"}
+    },
+    "Electrical": {
+        "Transformer": {"name": "干式变压器", "lead_days": 60, "desc": "高低压配电升级"},
+        "UPS_Imported": {"name": "大型进口 UPS", "lead_days": 90, "desc": "机房级核心备电保障"},
+        "ATS_Cabinet": {"name": "ATS 双电源切换柜", "lead_days": 45, "desc": "定制盘柜拼装"}
+    },
+    "Finishes": {
+        "Carpet_Imported": {"name": "进口定制地毯", "lead_days": 45, "desc": "欧洲/美国海运"},
+        "Acoustic_Panel": {"name": "定制声学吸音板", "lead_days": 30, "desc": "非标异形定制"},
+        "Operable_Wall": {"name": "活动隔断", "lead_days": 40, "desc": "含现场复尺后下单"}
+    },
+    "Furniture": {
+        "Workstation": {"name": "系统工作站", "lead_days": 35, "desc": "标准办公桌拼装"},
+        "Executive_Desk_Imported": {"name": "高管进口班台", "lead_days": 90, "desc": "意大利原装进口"},
+        "Smart_Locker": {"name": "智能储物柜", "lead_days": 45, "desc": "带人脸识别/IC刷卡"}
+    }
+}

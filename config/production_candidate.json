@@ -1,0 +1,246 @@
+{
+  "version": "6.4.0",
+  "description": "V6 Production Candidate：推荐门控、目标日期三态判定、Programme/现场施工工期拆分、Fast-track 搭接可行性的唯一配置源。",
+  "provenance": {
+    "authored_by": "PMP Lead PM Scheduler",
+    "authored_on": "2026-09-09",
+    "scope": "本轮只做四件事：P0 推荐门控、Target Date、Programme/Site Construction Duration、Fast-track。",
+    "explicitly_out_of_scope": [
+      "Cost Engine（成本引擎）",
+      "Monte Carlo / 概率工期分布",
+      "UI 重构",
+      "PPT 美化",
+      "新的 AI 功能"
+    ],
+    "out_of_scope_rule": "功能缺项保持为空并显式声明，不得用替代指标填充；范围扩张必须改本配置并跑全量回归。"
+  },
+
+  "recommendation_gate": {
+    "description": "唯一的推荐门。引擎在任何证据状态下都不输出单点推荐。",
+    "decision_states": {
+      "NO_RECOMMENDATION": {
+        "label_zh": "无推荐",
+        "meaning": "资源输入未确认；任何单点选择都等于把假设当决策。这是本轮的正式结论，不是缺数据。"
+      },
+      "PM_DECISION_REQUIRED": {
+        "label_zh": "需 PM 决策",
+        "meaning": "资源输入已确认，但工期最短不等于最优；成本、可获得性、合同边界不在引擎范围内。引擎只交付并列候选集。"
+      }
+    },
+    "never_emits": {
+      "recommended": null,
+      "rule": "recommended 字段在任何路径下恒为 null。confirmed 只把 decision_state 从 NO_RECOMMENDATION 升到 PM_DECISION_REQUIRED，不产生推荐。",
+      "must_not_be_read_as": "『引擎还没算出来』——它是算完之后得出的结论：不该推荐。"
+    }
+  },
+
+  "programme_segments": {
+    "definitions": {
+      "programme_duration": "Programme Duration（总工期）= 项目启动里程碑开工 → 客户搬迁入驻/正式交付里程碑完成。含设计、招采、报建、法定等待、施工、验收、交付。",
+      "site_construction_duration": "Site Construction Duration（现场施工工期）= 现场施工段首个施工任务开工 → 现场施工段最后一个施工任务完工。不含设计、报建、招采与法定等待。",
+      "why_separated": "把总工期当成现场施工工期，会导致『现场效率不够』的错误归因：压缩空间往往在报建与招采段，而不在现场。"
+    },
+    "segments": {
+      "pre_construction": {
+        "label_zh": "施工前（启动 / 招采 / 设计深化 / 报建 / 长周期采购）",
+        "counts_toward_site_construction": false,
+        "compressible_by": ["parallel_approval", "early_procurement", "staged_design_freeze"],
+        "note": "其中含政府审批与法定等待期，属不可压缩的行政时间。"
+      },
+      "site_construction": {
+        "label_zh": "现场施工",
+        "counts_toward_site_construction": true,
+        "compressible_by": ["crew_sizing", "shifts", "zoning", "fast_track"],
+        "note": "资源杠杆（班组/班次/分区）只作用于本段。"
+      },
+      "closeout": {
+        "label_zh": "竣工验收与交付",
+        "counts_toward_site_construction": false,
+        "compressible_by": ["early_authority_engagement"],
+        "note": "含法定验收与审批，行政时间不可压缩。"
+      }
+    },
+    "phase_rules": [
+      {
+        "phase_no": 1,
+        "name_contains": ["启动"],
+        "segment": "pre_construction",
+        "label_zh": "项目启动与规划",
+        "statutory_wait": false,
+        "compressible": true
+      },
+      {
+        "phase_no": 2,
+        "name_contains": ["招标", "定标"],
+        "segment": "pre_construction",
+        "label_zh": "D&B 总承包邀请招标与定标",
+        "statutory_wait": false,
+        "compressible": true
+      },
+      {
+        "phase_no": 3,
+        "name_contains": ["设计", "图审"],
+        "segment": "pre_construction",
+        "label_zh": "中标后设计深化与图审",
+        "statutory_wait": false,
+        "compressible": true
+      },
+      {
+        "phase_no": 4,
+        "name_contains": ["施工许可"],
+        "segment": "pre_construction",
+        "label_zh": "施工许可证办理",
+        "statutory_wait": true,
+        "compressible": false,
+        "statutory_note": "政府行政行为与法定等待期。未取得即开工属违规；工期不可由加人/加班压缩。"
+      },
+      {
+        "phase_no": 5,
+        "name_contains": ["长周期", "采购"],
+        "segment": "pre_construction",
+        "label_zh": "长周期设备与家具采购",
+        "statutory_wait": false,
+        "compressible": true
+      },
+      {
+        "phase_no": 6,
+        "name_contains": ["实体施工"],
+        "segment": "site_construction",
+        "label_zh": "实体施工阶段",
+        "statutory_wait": false,
+        "compressible": true
+      },
+      {
+        "phase_no": 7,
+        "name_contains": ["竣工验收", "合规"],
+        "segment": "closeout",
+        "label_zh": "竣工验收与合规审批",
+        "statutory_wait": true,
+        "compressible": false,
+        "statutory_note": "含法定验收与政府审批，行政时间不可压缩。"
+      },
+      {
+        "phase_no": 8,
+        "name_contains": ["搬迁", "交付"],
+        "segment": "closeout",
+        "label_zh": "客户搬迁入驻与正式交付",
+        "statutory_wait": false,
+        "compressible": true
+      }
+    ],
+    "phase_no_regex": "^Phase\\s*(\\d+)",
+    "require_every_phase_matched": true,
+    "require_unique_match": true,
+    "unmatched_fallback": {
+      "segment": null,
+      "on_unmatched": "error",
+      "note": "未命中的 Phase 必须报 error 并显式补规则，禁止静默归入某个分段。"
+    }
+  },
+
+  "fast_track": {
+    "definition": "把原本串行的 Finish-to-Start 依赖改为分区重叠（Start-to-Start + lag），以缩短总工期。",
+    "forbidden_classes": ["inspection", "authority"],
+    "forbidden_reason": "检查门与政府许可是法定/合同持有点：未通过即推进下一工序属违规，不属于可优化范围。",
+    "forbidden_by_phase": {
+      "statutory_wait_phases": true,
+      "reason": "法定等待期（施工许可办理、竣工验收审批）所在阶段的所有入边/出边均不可改为重叠。"
+    },
+    "movable_policies": {
+      "hard": {
+        "allowed_when": "zone 级分区流水已启用（后继任务 spatial_scope == zone 且 workfronts > 1）",
+        "relationship": "SS",
+        "lag_basis": "workfront_pipeline",
+        "lag_rule": "clamp(ceil(predecessor_duration_days / workfronts), lag_min, lag_max)",
+        "risk": "high",
+        "risk_note": "重叠意味着后道工序在前道尚未全部完成时进场；一旦前道返工，影响范围按重叠工作面数放大。",
+        "requires_confirmation": ["承包商承诺分区流水施工", "返工责任与界面交接方式"]
+      },
+      "information": {
+        "allowed_when": "设计/技术参数可按分部提前分批冻结并已获确认",
+        "relationship": "SS",
+        "lag_basis": "none",
+        "risk": "medium",
+        "risk_note": "分批冻结依赖设计方出图承诺；未确认则重叠会变成按未批准图纸施工。",
+        "requires_confirmation": ["设计方分批出图与冻结承诺"]
+      },
+      "resource": {
+        "emits_edge": false,
+        "movable": false,
+        "note": "资源竞争不产生网络边，不参与 fast-track。"
+      }
+    },
+    "evaluation": {
+      "method": "single_edge_re_solve",
+      "rule": "每评估一条边，只改这一条边并重解整个网络，节省量取重解前后的工期差。禁止用估算或累加近似。",
+      "why": "累加近似会把同一条关键路径上的重叠重复计一次工期收益，是 fast-track 最常见的假节省来源。",
+      "report_zero_saving": true
+    }
+  },
+
+  "target_date": {
+    "description": "目标日期判定：三态，不是布尔值。",
+    "verdicts": {
+      "MET": {
+        "label_zh": "当前证据下可达成",
+        "rule": "目标日期不早于最保守情景的完成日期",
+        "strength": "即便如此，仍以未确认的资源输入为前提；不等同于承诺。"
+      },
+      "NOT_MET": {
+        "label_zh": "数学上不可达",
+        "rule": "目标日期早于最激进情景的完成日期",
+        "strength": "这是硬结论：即使资源全部确认到位，在当前 WBS / 生产率 / 法定等待下也排不进，必须改范围或改交付模式。"
+      },
+      "UNVERIFIABLE": {
+        "label_zh": "取决于未确认资源，无法判定",
+        "rule": "目标日期落在最激进与最保守情景之间",
+        "strength": "不是『大概可以』。要判定必须先确认班组池 / 班次 / 工作面容量 / 拥挤曲线。"
+      }
+    },
+    "boundary": "target == fastest_scenario_finish 视为 UNVERIFIABLE 的下界（恰好等于最激进情景，仍依赖全部资源假设成立）。",
+    "must_state": "每次判定都必须同时给出 resource_readiness 的声明：情景在数学上可行，但承包商资源可用性尚未确认。"
+  },
+
+  "governance": {
+    "rule_prefix": "GOV",
+    "rules": [
+      {
+        "id": "GOV-15",
+        "rule": "引擎在任何证据状态下都不得输出单点推荐：recommended 恒为 null。resource_readiness 变为 confirmed 时，decision_state 只从 NO_RECOMMENDATION 升到 PM_DECISION_REQUIRED。",
+        "action": "never_emit_recommendation",
+        "reason": "工期最短不等于最优。成本、班组可获得性、合同边界不在引擎判定范围内，由 PM 决策。"
+      },
+      {
+        "id": "GOV-16",
+        "rule": "目标日期判定必须是三态（MET / NOT_MET / UNVERIFIABLE）；禁止用未确认资源输入下的点估计冒充可达成判定。",
+        "action": "tristate_verdict",
+        "reason": "布尔式的『能不能赶上』会把一个假设直接升级成承诺。"
+      },
+      {
+        "id": "GOV-17",
+        "rule": "Programme Duration 与 Site Construction Duration 必须分开报告，禁止用『总工期』指代现场施工工期。",
+        "action": "split_and_label",
+        "reason": "两者混用会导致对现场效率的错误归因，压缩空间常常在报建与招采段。"
+      },
+      {
+        "id": "GOV-18",
+        "rule": "Fast-track 不得改动 inspection / authority 类依赖与法定等待期所在阶段的边；每条候选边必须单独重解验证节省，禁止估算或累加近似。",
+        "action": "reject_and_re_solve",
+        "reason": "违规搭接不可执行；累加近似会重复计算同一关键路径上的收益，制造假节省。"
+      },
+      {
+        "id": "GOV-19",
+        "rule": "本轮范围限定为推荐门控 / 目标日期 / 工期拆分 / fast-track 四项。不做成本引擎、蒙特卡洛、UI 重构、PPT 美化与新的 AI 功能。缺项显式声明为空，不得用替代指标填充。",
+        "action": "reject_scope_creep",
+        "reason": "宁可 Production Candidate 功能少一点，也要全部逻辑可验证。"
+      }
+    ]
+  },
+
+  "known_limits": [
+    "Programme 分段按 WBS Phase 名称与序号匹配；换模板必须补 phase_rules，否则报 error。",
+    "Fast-track 只评估单条边改动，不做组合搜索：组合收益无法逐条归因，也不可向承包商追责。",
+    "目标日期判定使用 V6.3 情景空间的上下界，因此判定精度受情景空间枚举范围限制。",
+    "本轮不含成本维度：工期最短的情景可能成本最高，引擎不评价。"
+  ]
+}

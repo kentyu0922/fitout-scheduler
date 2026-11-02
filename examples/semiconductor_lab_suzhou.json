@@ -1,0 +1,17 @@
+{
+  "project_name": "示例科技公司A 苏州研发中心半导体测试实验室与总部办公项目",
+  "city": "苏州",
+  "area": 8000,
+  "sector": "semiconductor",
+  "delivery": "DBB",
+  "bidding": "invite",
+  "start_date": "2027-03-01",
+  "cleanroom_class": "Class 1000 / ISO 6",
+  "nc_rating": "NC-35",
+  "esd_level": "ANSI/ESD S20.20 100V",
+  "power_kva": 1600,
+  "specialist_area_sqm": 600,
+  "addon_a13": "required",
+  "addon_a17": "required",
+  "addon_a18": "required"
+}

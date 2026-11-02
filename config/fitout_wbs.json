@@ -1,0 +1,255 @@
+{
+  "packages": {
+    "场地保护与临时设施搭建": [
+      "site_setup"
+    ],
+    "原有装修拆除及建筑垃圾清运": [
+      "demolition",
+      "waste_removal"
+    ],
+    "测量放线与基准标高复核": [
+      "setting_out"
+    ],
+    "隔墙轻钢龙骨骨架搭设": [
+      "partition_framing"
+    ],
+    "大机电主管桥架与主管道预埋安装": [
+      "hvac_duct",
+      "chw_pipe",
+      "containment"
+    ],
+    "墙面封板与天花吊顶龙骨安装": [
+      "gypsum_boarding",
+      "ceiling_grid"
+    ],
+    "二次机电支管敷设、穿线与保温": [
+      "fcu",
+      "sprinkler",
+      "fire_alarm",
+      "structured_cabling",
+      "power"
+    ],
+    "天花封石膏板与墙顶乳胶漆饰面": [
+      "gypsum_ceiling",
+      "feature_ceiling",
+      "wall_prep",
+      "painting",
+      "wallcovering"
+    ],
+    "架空防静电地板/地砖/地毯铺设": [
+      "raised_floor",
+      "carpet",
+      "vinyl",
+      "tile_stone",
+      "glass_partition",
+      "doors",
+      "joinery"
+    ],
+    "机电末端面板与灯具、洁具安装": [
+      "diffuser",
+      "lighting",
+      "av",
+      "security"
+    ],
+    "全系统 T&C 联动调试": [
+      "testing_commissioning",
+      "snagging"
+    ],
+    "现场粗保洁与工程除尘": [
+      "construction_cleaning"
+    ],
+    "办公家具及软装进场就位安装": [
+      "furniture"
+    ],
+    "深度精保洁与场地最终移交准备": [
+      "final_cleaning"
+    ]
+  },
+  "labels": {
+    "demolition": "原有装修拆除",
+    "waste_removal": "建筑垃圾清运",
+    "setting_out": "测量放线与标高复核",
+    "partition_framing": "隔墙轻钢龙骨骨架搭设",
+    "gypsum_boarding": "隔墙石膏板封板",
+    "glass_partition": "玻璃隔断安装",
+    "raised_floor": "架空地板安装",
+    "carpet": "地毯铺设",
+    "vinyl": "弹性地板铺设",
+    "tile_stone": "瓷砖及石材铺设",
+    "ceiling_grid": "天花吊顶龙骨安装",
+    "gypsum_ceiling": "石膏板天花封板",
+    "feature_ceiling": "造型天花安装",
+    "wall_prep": "墙顶基层处理",
+    "painting": "墙顶乳胶漆底漆与面漆",
+    "wallcovering": "墙纸墙布铺贴",
+    "doors": "门及五金安装",
+    "joinery": "固定木作安装",
+    "hvac_duct": "暖通风管安装",
+    "chw_pipe": "冷冻水管安装",
+    "fcu": "风机盘管安装",
+    "diffuser": "风口安装",
+    "sprinkler": "消防喷淋安装",
+    "fire_alarm": "火灾报警点位安装",
+    "lighting": "灯具安装",
+    "power": "电源插座与末端安装",
+    "containment": "机电桥架线槽安装",
+    "structured_cabling": "综合布线安装",
+    "av": "会议室AV安装",
+    "security": "安防系统安装",
+    "furniture": "办公家具及软装进场就位安装",
+    "testing_commissioning": "全系统 T&C 联动调试",
+    "snagging": "施工缺陷整改",
+    "site_setup": "场地保护与临时设施搭建",
+    "construction_cleaning": "现场粗保洁与工程除尘",
+    "final_cleaning": "深度精保洁与场地最终移交准备"
+  },
+  "predecessors": {
+    "site_setup": [],
+    "demolition": [
+      "site_setup"
+    ],
+    "waste_removal": [
+      "demolition"
+    ],
+    "setting_out": [
+      "waste_removal"
+    ],
+    "partition_framing": [
+      "setting_out"
+    ],
+    "hvac_duct": [
+      "setting_out"
+    ],
+    "chw_pipe": [
+      "setting_out"
+    ],
+    "containment": [
+      "setting_out"
+    ],
+    "gypsum_boarding": [
+      "partition_framing"
+    ],
+    "ceiling_grid": [
+      "hvac_duct",
+      "chw_pipe",
+      "containment"
+    ],
+    "fcu": [
+      "chw_pipe"
+    ],
+    "sprinkler": [
+      "hvac_duct"
+    ],
+    "fire_alarm": [
+      "containment"
+    ],
+    "structured_cabling": [
+      "containment"
+    ],
+    "power": [
+      "containment"
+    ],
+    "gypsum_ceiling": [
+      "ceiling_grid"
+    ],
+    "feature_ceiling": [
+      "ceiling_grid"
+    ],
+    "wall_prep": [
+      "gypsum_ceiling",
+      "feature_ceiling",
+      "gypsum_boarding"
+    ],
+    "painting": [
+      "wall_prep"
+    ],
+    "wallcovering": [
+      "wall_prep"
+    ],
+    "raised_floor": [
+      "setting_out"
+    ],
+    "carpet": [
+      "raised_floor",
+      "painting"
+    ],
+    "vinyl": [
+      "raised_floor",
+      "painting"
+    ],
+    "tile_stone": [
+      "setting_out"
+    ],
+    "glass_partition": [
+      "partition_framing",
+      "ceiling_grid"
+    ],
+    "doors": [
+      "glass_partition",
+      "gypsum_boarding"
+    ],
+    "joinery": [
+      "gypsum_boarding"
+    ],
+    "diffuser": [
+      "hvac_duct",
+      "gypsum_ceiling",
+      "feature_ceiling"
+    ],
+    "lighting": [
+      "ceiling_grid",
+      "gypsum_ceiling",
+      "feature_ceiling"
+    ],
+    "av": [
+      "structured_cabling",
+      "power"
+    ],
+    "security": [
+      "structured_cabling",
+      "power"
+    ],
+    "testing_commissioning": [
+      "fcu",
+      "sprinkler",
+      "fire_alarm",
+      "structured_cabling",
+      "power",
+      "diffuser",
+      "lighting",
+      "av",
+      "security"
+    ],
+    "snagging": [
+      "testing_commissioning",
+      "carpet",
+      "vinyl",
+      "tile_stone",
+      "glass_partition",
+      "doors",
+      "joinery",
+      "painting",
+      "wallcovering"
+    ],
+    "construction_cleaning": [
+      "snagging"
+    ],
+    "furniture": [],
+    "final_cleaning": []
+  },
+  "inspection_requirements": {
+    "gypsum_boarding": "隔墙及主管",
+    "gypsum_ceiling": "天花隐蔽",
+    "feature_ceiling": "天花隐蔽",
+    "furniture": "首次室内空气盲测",
+    "fcu": "隔墙及主管",
+    "sprinkler": "隔墙及主管",
+    "fire_alarm": "隔墙及主管",
+    "structured_cabling": "隔墙及主管",
+    "power": "隔墙及主管"
+  },
+  "network_basis": {
+    "status": "provisional",
+    "description": "Trade-specific logical releases; preserve template external approvals and IAQ. Raised floor and wet-area tile are separate work areas; confirm site sequencing before issue. No productivity or fixed duration assumed."
+  }
+}

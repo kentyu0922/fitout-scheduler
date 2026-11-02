@@ -1,0 +1,350 @@
+{
+  "_comment": "城市施工许可证免办限额 + 图审/施工许可时限数据库（全国覆盖，单源随仓库发布）。rule_type: AND_EXEMPT=面积与造价需同时低于阈值才免办; OR_EXEMPT=满足其一即免办。查询顺序: cities(城市名子串匹配) -> provinces(省份名子串匹配) -> default(全国通用兜底，不触发网络调用)。review_days_min=第三方施工图审查最低时限(工作日，不含修改/复审); permit_days_min=施工许可证最低办结时限(工作日); joint_completion_days_min=开工一件事合并办理参考值。港澳台/台湾省不在大陆住建口径内，回退 default。",
+  "default": {
+    "city": "全国通用",
+    "province": "全国通用",
+    "policy_doc": "住建部国家通用标准(住建部令第13/18/51号)",
+    "area_threshold": 300,
+    "cost_threshold_10k": 100,
+    "rule_type": "AND_EXEMPT",
+    "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+    "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+    "review_days_min": 10,
+    "permit_days_min": 7,
+    "joint_completion_days_min": 23
+  },
+  "cities": {
+    "北京": {
+      "city": "北京", "province": "北京市", "policy_doc": "京建法〔2021〕8号；市规划国土发〔2018〕83号",
+      "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 500平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 18,
+      "policy_note": "多审合一一般工程≤15工日(不含修改+复审); 300~2000㎡内部改造取消事前图审,改注册建筑师负责制+事后抽查。"
+    },
+    "天津": {
+      "city": "天津", "province": "天津市", "policy_doc": "津政办规〔2021〕工程建设项目审批制度改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 2, "joint_completion_days_min": 18,
+      "policy_note": "施工图联合审查大型15/中型按阶段; 施工许可承诺1-2日; 简易低风险工程(≤10000㎡)免图审。"
+    },
+    "石家庄": {
+      "city": "石家庄", "province": "河北省", "policy_doc": "河北省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 8, "permit_days_min": 7, "joint_completion_days_min": 21,
+      "policy_note": "图审大型12/中型8工日(国债项目再压20%→大型9/中型6); 联合图审; 施工许可阶段≤25工日(承诺压减)。"
+    },
+    "太原": {
+      "city": "太原", "province": "山西省", "policy_doc": "山西省住建厅令第87号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19,
+      "policy_note": "图审大型15/中型10工日; 施工许可3工日; '拿地即开工'基坑3日+主体3日。"
+    },
+    "沈阳": {
+      "city": "沈阳", "province": "辽宁省", "policy_doc": "辽宁省住建厅施工图审查管理办法",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21,
+      "policy_note": "图审大型15/中型10工日; 施工许可≤5工日; 改革后大型平均9.1/中型6.3工日。"
+    },
+    "大连": {
+      "city": "大连", "province": "辽宁省", "policy_doc": "辽宁省住建厅施工图审查管理办法(大连执行)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21,
+      "policy_note": "执行辽宁省基线; 图审大型15/中型10工日; 施工许可≤5工日。"
+    },
+    "长春": {
+      "city": "长春", "province": "吉林省", "policy_doc": "吉林省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21,
+      "policy_note": "图审一般15工日(大型); 中型及以下按10; 施工许可由20压减至5工日。"
+    },
+    "哈尔滨": {
+      "city": "哈尔滨", "province": "黑龙江省", "policy_doc": "黑龙江省住建厅施工图审查管理办法",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19,
+      "policy_note": "图审大型15/中型10/小型7工日; 开工'一件事'3工日。"
+    },
+    "呼和浩特": {
+      "city": "呼和浩特", "province": "内蒙古自治区", "policy_doc": "内蒙古住建厅施工许可/消防设计审查",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 15, "joint_completion_days_min": 25,
+      "policy_note": "施工许可法定15承诺15工日; 消防设计审查15法定5承诺工日; 图审大型15/中型10工日。"
+    },
+    "上海": {
+      "city": "上海", "province": "上海市", "policy_doc": "沪建规范〔2020〕8号；沪建规范联〔2026〕7号(2026-09-01施行)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 5, "permit_days_min": 2, "joint_completion_days_min": 18,
+      "policy_note": "多图联审(含消防/人防/卫健/水务)一网通办'开工一件事'; 大型房建/市政15工日,中型及以下10工日,5工日内符合性核对。"
+    },
+    "南京": {
+      "city": "南京", "province": "江苏省", "policy_doc": "江苏省施工图审查/施工许可改革(2025)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 6, "permit_days_min": 10, "joint_completion_days_min": 10,
+      "policy_note": "图审由12压至6工日(2025); 施工许可'开工一件事'≤10工日。"
+    },
+    "苏州": {
+      "city": "苏州", "province": "江苏省", "policy_doc": "苏建规〔2020〕9号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 8, "joint_completion_days_min": 20
+    },
+    "杭州": {
+      "city": "杭州", "province": "浙江省", "policy_doc": "浙建〔2020〕18号",
+      "area_threshold": 1000, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 1000平米 或 工程造价 < 200万元",
+      "mandatory_desc": "建筑面积 >= 1000平米 且 工程造价 >= 200万元",
+      "review_days_min": 6, "permit_days_min": 4, "joint_completion_days_min": 15,
+      "policy_note": "工业项目图审5工日/其他12工日; 2026-05-01起一般项目免审+抽查70%,特殊项目后置审查告知承诺(一审10+二审3)。"
+    },
+    "宁波": {
+      "city": "宁波", "province": "浙江省", "policy_doc": "浙建〔2020〕18号(宁波执行)",
+      "area_threshold": 1000, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 1000平米 或 工程造价 < 200万元",
+      "mandatory_desc": "建筑面积 >= 1000平米 且 工程造价 >= 200万元",
+      "review_days_min": 6, "permit_days_min": 4, "joint_completion_days_min": 15,
+      "policy_note": "执行浙江省基线; 工业项目图审5工日/其他12工日。"
+    },
+    "合肥": {
+      "city": "合肥", "province": "安徽省", "policy_doc": "建市〔2020〕59号",
+      "area_threshold": 300, "cost_threshold_10k": 30, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 或 工程造价 < 30万元",
+      "mandatory_desc": "建筑面积 >= 300平米 且 工程造价 >= 30万元",
+      "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16
+    },
+    "福州": {
+      "city": "福州", "province": "福建省", "policy_doc": "闽建〔2019〕1号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 1, "joint_completion_days_min": 15,
+      "policy_note": "图审大型10/中型7工日; 施工许可7日法定、当场办结。"
+    },
+    "厦门": {
+      "city": "厦门", "province": "福建省", "policy_doc": "闽建〔2019〕1号(厦门执行)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 1, "joint_completion_days_min": 15,
+      "policy_note": "执行福建省基线; 图审大型10/中型7工日; 施工许可当场办结。"
+    },
+    "南昌": {
+      "city": "南昌", "province": "江西省", "policy_doc": "江西省住建厅施工图审查备案/施工许可改革(2025)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 5, "permit_days_min": 3, "joint_completion_days_min": 13,
+      "policy_note": "图审备案5工日; 施工许可压缩至3工日(2025)。"
+    },
+    "济南": {
+      "city": "济南", "province": "山东省", "policy_doc": "山东省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19,
+      "policy_note": "图审大型15/中型10,省提'7工日内'; 施工许可3工日(简易1工日)。"
+    },
+    "青岛": {
+      "city": "青岛", "province": "山东省", "policy_doc": "山东省住建厅施工图审查/施工许可改革(青岛执行)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 3, "joint_completion_days_min": 16,
+      "policy_note": "执行山东省'7工日内'图审; 施工许可3工日。"
+    },
+    "郑州": {
+      "city": "郑州", "province": "河南省", "policy_doc": "河南省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21,
+      "policy_note": "施工图审查≤10工日; 施工许可并联后5工日; 消防验收法定15承诺6/3工日。"
+    },
+    "武汉": {
+      "city": "武汉", "province": "湖北省", "policy_doc": "武建规〔2020〕5号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16
+    },
+    "长沙": {
+      "city": "长沙", "province": "湖南省", "policy_doc": "湘建科〔2025〕136号；湘建质〔2025〕131号(2026-01-01施行)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 5, "permit_days_min": 5, "joint_completion_days_min": 16,
+      "policy_note": "图审大型8/中型5工日; 施工许可5工日。"
+    },
+    "广州": {
+      "city": "广州", "province": "广东省", "policy_doc": "粤建规范〔2020〕2号",
+      "area_threshold": 500, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 或 工程造价 < 200万元",
+      "mandatory_desc": "建筑面积 >= 500平米 且 工程造价 >= 200万元",
+      "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16
+    },
+    "深圳": {
+      "city": "深圳", "province": "广东省", "policy_doc": "深府办规〔2025〕3号 / 粤建规范〔2020〕2号 / 市政府令第328、329号",
+      "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 或 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 500平米 且 工程造价 >= 100万元",
+      "review_days_min": 0, "permit_days_min": 3, "joint_completion_days_min": 15,
+      "policy_note": "2020-07-01起取消施工图审查,改告知承诺制(深府办规〔2025〕3号 / 市政府令328、329号); 各项行政许可不得以图审合格文件为前置。review_days_min置0表示无事前第三方图审工期,以'上传勘察设计管理系统+告知承诺'替代。"
+    },
+    "东莞": {
+      "city": "东莞", "province": "广东省", "policy_doc": "广东省/东莞市住建厅施工图审查+开工一件事改革",
+      "area_threshold": 500, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 或 工程造价 < 200万元",
+      "mandatory_desc": "建筑面积 >= 500平米 且 工程造价 >= 200万元",
+      "review_days_min": 7, "permit_days_min": 3, "joint_completion_days_min": 5,
+      "policy_note": "施工许可3工日; 消防设计审查不再前置; 特殊工程技术审查1工日; 开工'一件事'5工日。"
+    },
+    "南宁": {
+      "city": "南宁", "province": "广西壮族自治区", "policy_doc": "广西住建厅施工图审查/施工许可合并办理",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 5, "permit_days_min": 5, "joint_completion_days_min": 12,
+      "policy_note": "施工许可+消防+人防合并5工日; 图审指导大型7/中型5日历日。"
+    },
+    "海口": {
+      "city": "海口", "province": "海南省", "policy_doc": "海南省住建厅施工图审查/施工许可告知承诺",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 15, "permit_days_min": 1, "joint_completion_days_min": 16,
+      "policy_note": "施工许可法定7承诺1(告知承诺); 图审15工日; 消防1工日。"
+    },
+    "重庆": {
+      "city": "重庆", "province": "重庆市", "policy_doc": "重庆市2025'开工一件事'改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 2, "permit_days_min": 2, "joint_completion_days_min": 3,
+      "policy_note": "施工图审查备案2日+施工许可3日; 2025'开工一件事'5事项合并3日; 施工许可出具时限压至2日。"
+    },
+    "成都": {
+      "city": "成都", "province": "四川省", "policy_doc": "成建委〔2020〕189号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16
+    },
+    "贵阳": {
+      "city": "贵阳", "province": "贵州省", "policy_doc": "贵州省住建厅开工一件事/图审改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 15,
+      "policy_note": "开工'一件事'5工日; 图审大型15/中型10; 消防验收承诺4工日。"
+    },
+    "昆明": {
+      "city": "昆明", "province": "云南省", "policy_doc": "云南省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 9,
+      "policy_note": "图审大型15/中型10工日; 施工许可3工日; 开工'一件事'承诺9工日。"
+    },
+    "拉萨": {
+      "city": "拉萨", "province": "西藏自治区", "policy_doc": "藏住建2023办法；藏住建《施工许可管理实施细则》",
+      "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 500平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 15,
+      "policy_note": "图审大型15/中型10工日(藏住建2023办法); 施工许可压缩至5工日(拉萨承诺5; 自治区建筑市场管理条例第11条为7工日)。"
+    },
+    "西安": {
+      "city": "西安", "province": "陕西省", "policy_doc": "陕西省住建厅施工图审查/施工许可改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 15, "permit_days_min": 5, "joint_completion_days_min": 20,
+      "policy_note": "施工许可法定7承诺5/2工日; 图审≤15工日; 消防特殊工程15法定5承诺。"
+    },
+    "兰州": {
+      "city": "兰州", "province": "甘肃省", "policy_doc": "甘建设规〔2023〕3号",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 3, "permit_days_min": 2, "joint_completion_days_min": 11,
+      "policy_note": "图审大型5/中型3工日(二审终结); 施工许可2工日。"
+    },
+    "西宁": {
+      "city": "西宁", "province": "青海省", "policy_doc": "青住建2015通知；青住建2021免办限额调整",
+      "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 500平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 500平米 或 工程造价 >= 100万元",
+      "review_days_min": 10, "permit_days_min": 7, "joint_completion_days_min": 23,
+      "policy_note": "图审大型15/中型10工日(青住建2015通知); 施工许可法定7承诺7(湟中区压缩至5工日); 2021-09-01起投资<100万或面积<500㎡免办。"
+    },
+    "银川": {
+      "city": "银川", "province": "宁夏回族自治区", "policy_doc": "宁住建2019联合审查办法；银川市政府购买图审(2025)",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 7, "permit_days_min": 7, "joint_completion_days_min": 14,
+      "policy_note": "图审:政府投资初审7/复审3总20,社会投资初审5/复审2总15(宁住建2019); 银川内部装修改造3工日(政府购买图审2025,两审终结); 消防设计审查承诺5工日。"
+    },
+    "乌鲁木齐": {
+      "city": "乌鲁木齐", "province": "新疆维吾尔自治区", "policy_doc": "新疆住建厅施工图审查/开工一件事改革",
+      "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT",
+      "exempt_desc": "建筑面积 < 300平米 且 工程造价 < 100万元",
+      "mandatory_desc": "建筑面积 >= 300平米 或 工程造价 >= 100万元",
+      "review_days_min": 5, "permit_days_min": 15, "joint_completion_days_min": 15,
+      "policy_note": "图审大型10/中型5工日(新建规); 消防设计审查15工日; 开工'一件事'15工日(合并施工许可+消防+人防)。"
+    }
+  },
+  "provinces": {
+    "北京市": { "province": "北京市", "policy_doc": "京建法〔2021〕8号", "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 18 },
+    "天津市": { "province": "天津市", "policy_doc": "津政办规〔2021〕", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 2, "joint_completion_days_min": 18 },
+    "河北省": { "province": "河北省", "policy_doc": "河北省住建厅施工图审查改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 8, "permit_days_min": 7, "joint_completion_days_min": 21 },
+    "山西省": { "province": "山西省", "policy_doc": "山西省住建厅令第87号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19 },
+    "内蒙古自治区": { "province": "内蒙古自治区", "policy_doc": "内蒙古住建厅施工许可/消防设计审查", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 15, "joint_completion_days_min": 25 },
+    "辽宁省": { "province": "辽宁省", "policy_doc": "辽宁省住建厅施工图审查管理办法", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21 },
+    "吉林省": { "province": "吉林省", "policy_doc": "吉林省住建厅施工图审查/施工许可改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21 },
+    "黑龙江省": { "province": "黑龙江省", "policy_doc": "黑龙江省住建厅施工图审查管理办法", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19 },
+    "上海市": { "province": "上海市", "policy_doc": "沪建规范〔2020〕8号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 5, "permit_days_min": 2, "joint_completion_days_min": 18 },
+    "江苏省": { "province": "江苏省", "policy_doc": "江苏省施工图审查改革(2025)", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 6, "permit_days_min": 10, "joint_completion_days_min": 10 },
+    "浙江省": { "province": "浙江省", "policy_doc": "浙建〔2020〕18号", "area_threshold": 1000, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT", "review_days_min": 6, "permit_days_min": 4, "joint_completion_days_min": 15 },
+    "安徽省": { "province": "安徽省", "policy_doc": "建市〔2020〕59号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16 },
+    "福建省": { "province": "福建省", "policy_doc": "闽建〔2019〕1号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 7, "permit_days_min": 1, "joint_completion_days_min": 15 },
+    "江西省": { "province": "江西省", "policy_doc": "江西省住建厅施工图审查备案/施工许可改革(2025)", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 5, "permit_days_min": 3, "joint_completion_days_min": 13 },
+    "山东省": { "province": "山东省", "policy_doc": "山东省住建厅施工图审查/施工许可改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 19 },
+    "河南省": { "province": "河南省", "policy_doc": "河南省住建厅施工图审查/施工许可改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 21 },
+    "湖北省": { "province": "湖北省", "policy_doc": "武建规〔2020〕5号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16 },
+    "湖南省": { "province": "湖南省", "policy_doc": "湘建科〔2025〕136号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 5, "permit_days_min": 5, "joint_completion_days_min": 16 },
+    "广东省": { "province": "广东省", "policy_doc": "粤建规范〔2020〕2号", "area_threshold": 500, "cost_threshold_10k": 200, "rule_type": "OR_EXEMPT", "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16 },
+    "广西壮族自治区": { "province": "广西壮族自治区", "policy_doc": "广西住建厅施工许可+消防+人防合并", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 5, "permit_days_min": 5, "joint_completion_days_min": 12 },
+    "海南省": { "province": "海南省", "policy_doc": "海南省住建厅施工许可告知承诺", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 15, "permit_days_min": 1, "joint_completion_days_min": 16 },
+    "重庆市": { "province": "重庆市", "policy_doc": "重庆市2025开工一件事改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 2, "permit_days_min": 2, "joint_completion_days_min": 3 },
+    "四川省": { "province": "四川省", "policy_doc": "成建委〔2020〕189号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 7, "permit_days_min": 5, "joint_completion_days_min": 16 },
+    "贵州省": { "province": "贵州省", "policy_doc": "贵州省住建厅开工一件事/图审改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 15 },
+    "云南省": { "province": "云南省", "policy_doc": "云南省住建厅施工图审查/施工许可改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 3, "joint_completion_days_min": 9 },
+    "西藏自治区": { "province": "西藏自治区", "policy_doc": "藏住建2023办法", "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 5, "joint_completion_days_min": 15 },
+    "陕西省": { "province": "陕西省", "policy_doc": "陕西省住建厅施工图审查/施工许可改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 15, "permit_days_min": 5, "joint_completion_days_min": 20 },
+    "甘肃省": { "province": "甘肃省", "policy_doc": "甘建设规〔2023〕3号", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 3, "permit_days_min": 2, "joint_completion_days_min": 11 },
+    "青海省": { "province": "青海省", "policy_doc": "青住建2015通知", "area_threshold": 500, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 10, "permit_days_min": 7, "joint_completion_days_min": 23 },
+    "宁夏回族自治区": { "province": "宁夏回族自治区", "policy_doc": "宁住建2019联合审查办法", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 7, "permit_days_min": 7, "joint_completion_days_min": 14 },
+    "新疆维吾尔自治区": { "province": "新疆维吾尔自治区", "policy_doc": "新疆住建厅施工图审查/开工一件事改革", "area_threshold": 300, "cost_threshold_10k": 100, "rule_type": "AND_EXEMPT", "review_days_min": 5, "permit_days_min": 15, "joint_completion_days_min": 15 }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "version": "6.1.1",
+  "description": "V6.1.1 工期语义加固层。把「项目/楼层级工期保障」与「分区级物理最短工期」分开，并让空间分解造成的工期膨胀可被度量。本配置不修改、不重解释 config/productivity_rates.json 的任何数值。",
+  "provenance": {
+    "created": "2026-09-09",
+    "baseline": "office-programme-v6.1-spatial-engine",
+    "writes_to": [],
+    "reads_only": [
+      "config/productivity_rates.json",
+      "config/spatial_model.json"
+    ],
+    "principle": "语义未分类 = LEGACY_UNSPECIFIED = 沿用现有行为并显式标注，绝不臆造分类；不得以展示工期收益为由放宽工期保障。"
+  },
+
+  "min_duration_scope_definitions": {
+    "PROJECT": {
+      "label_zh": "项目级最短工期",
+      "meaning": "该工序在【整个项目】层面存在不可压缩的最短工期（全楼统一调试、整体许可窗口、整批材料进场节奏等）。",
+      "applies_per_zone": false,
+      "per_zone_application": "none —— 空间分解后不得把该下限乘以分区数，这是 V6.1.1 要消除的核心膨胀来源。",
+      "aggregate_check": "sum(该工序全部分区 rounded_duration) >= value，否则报 MIN_AGGREGATE_UNDERRUN（只报告，不静默回填）。",
+      "applies_to_instance_scope": ["project"]
+    },
+    "FLOOR": {
+      "label_zh": "楼层级最短工期",
+      "meaning": "该工序在每个【楼层】层面存在不可压缩的最短工期（如整层找平养护、整层试压）。",
+      "applies_per_zone": false,
+      "per_zone_application": "none —— 按楼层聚合校验，不按分区逐个施加。",
+      "aggregate_check": "按 floor_id 分组：sum(该层全部分区 rounded_duration) >= value。",
+      "applies_to_instance_scope": ["floor"]
+    },
+    "ZONE": {
+      "label_zh": "分区级物理最短工期",
+      "meaning": "该工序在【单个分区内】确实存在物理最短工期（如一个分区内最少要铺一层、最少要等一道养护）。",
+      "applies_per_zone": true,
+      "per_zone_application": "applied —— 仅当显式声明为 ZONE 时才对每个分区施加。",
+      "aggregate_check": "none（下限本身就是分区级，聚合不再叠加）。",
+      "applies_to_instance_scope": ["zone"]
+    },
+    "MOBILISATION": {
+      "label_zh": "进场/准备（动员）时间",
+      "meaning": "班组进场、搭设、交底、试做所需的准备时间。它是【一次性或分区一次性】的组织时间，不是生产下限。",
+      "applies_per_zone": false,
+      "per_zone_application": "none —— 必须建模为独立的 mobilisation 任务（duration = mobilisation_duration），不得藏进每个分区的生产下限里。",
+      "modelled_as": "separate_mobilisation_task",
+      "aggregate_check": "none"
+    },
+    "INSPECTION_CYCLE": {
+      "label_zh": "检查/检测周期",
+      "meaning": "报验、检测、出报告所需的最短周期（如空气检测采样周期、消防检测周期）。只对检查门任务成立。",
+      "applies_per_zone": false,
+      "per_zone_application": "none —— 只对 inspection_gate 任务施加；生产任务不得套用。",
+      "applies_to_gate_only": true,
+      "aggregate_check": "none"
+    },
+    "LEGACY_UNSPECIFIED": {
+      "label_zh": "语义未分类（沿用现有行为）",
+      "meaning": "该工序的 min_duration_days 作用域尚未被显式分类。可能是项目级、也可能是动员时间，但目前没有任何证据可以判定。",
+      "applies_per_zone": true,
+      "per_zone_application": "preserve_existing —— 沿用 V6.1 及之前的行为（每个实例都施加），直到被显式分类。",
+      "aggregate_check": "none",
+      "note": "这是向后兼容的唯一正确处置：既不静默重解释历史数值，也不为了让空间方案显得更快而放宽。膨胀部分通过 minimum_duration_penalty_days 暴露出来，由计划工程师判断。"
+    }
+  },
+
+  "classification": {},
+
+  "classification_requirements": {
+    "mandatory_fields": ["min_duration_policy"],
+    "min_duration_policy_fields": {
+      "value": "整数天。显式覆盖库中的 min_duration_days；若省略则仍取库值但作用域生效。",
+      "scope": "PROJECT | FLOOR | ZONE | MOBILISATION | INSPECTION_CYCLE，可给数组表示多重语义。",
+      "basis": "物理/组织理由，必须说明「为什么是这个作用域」，不得只写数值。",
+      "confirmed_by": "确认人/确认日期，未确认的条目不得进入生产配置。"
+    },
+    "rejection_rule": "缺 basis 或 confirmed_by 的条目一律视为无效（校验报错），不得静默降级为 LEGACY_UNSPECIFIED。",
+    "example_NOT_active": {
+      "gypsum_boarding": {
+        "min_duration_policy": {
+          "value": 3,
+          "scope": ["PROJECT"],
+          "basis": "示例：3 天来自全楼统一报审节奏，不是单个分区的物理下限。",
+          "confirmed_by": "示例，未确认，禁止写入生产配置"
+        }
+      }
+    }
+  },
+
+  "mobilisation": {},
+
+  "mobilisation_requirements": {
+    "key": "工种分组名（spatial_model.trades.groups 的键）或 activity_type。",
+    "fields": {
+      "duration_days": "动员/准备工期（整数天）。",
+      "scope": "project | floor | zone。project = 全场一次；zone = 每进一个分区都要重新搭设一次。",
+      "basis": "为什么需要动员时间、依据是什么。",
+      "confirmed_by": "确认人/确认日期。"
+    },
+    "note": "mobilisation 必须生成独立的动员任务并挂在所属工种首个生产任务之前，绝不等价于「每个分区的生产下限 +N 天」。"
+  },
+
+  "legacy_fallback": {
+    "min_duration_scope": "LEGACY_UNSPECIFIED",
+    "behaviour": "preserve_existing",
+    "diagnostic_flag": "legacy_min_penalty_days",
+    "note": "未分类条目的下限惩罚单独累计，便于一眼看出有多少工期膨胀来自「尚未分类的历史下限」。"
+  },
+
+  "target_days_semantics": {
+    "definition": "CREW_SIZING_HORIZON",
+    "definition_zh": "班组配置的时间视界：只用于反算「要在 target_days 内干完需要多少人」。",
+    "used_by": ["recommend_crew"],
+    "is_not": [
+      "duration_cap —— 不是工期上限，工期可以也必须超过 target_days",
+      "guaranteed_duration —— 不承诺任何任务实际会正好用 target_days",
+      "per_zone_minimum —— 不是分区最短工期，不得用它把每个分区任务抬到 target_days",
+      "compression_target —— 不是压缩目标，不得反向裁剪工期"
+    ],
+    "final_duration_formula": "duration = quantity / (productivity x crew x shifts x efficiency) x modifiers，向上取整，最后仅施加【物理上成立】的最短工期约束。",
+    "locked": true,
+    "locked_note": "此定义已锁定。任何把 target_days 当工期上限使用、或把每个分区任务强制抬到 target_days 的实现，视为缺陷。"
+  },
+
+  "diagnostics": {
+    "per_task_fields": [
+      "raw_calculated_duration",
+      "rounded_duration",
+      "applied_min_duration",
+      "min_duration_scope",
+      "rounding_penalty_days",
+      "minimum_duration_penalty_days"
+    ],
+    "field_definitions": {
+      "raw_calculated_duration": "quantity / (rate x crew x shifts x efficiency) x modifiers，未取整的真实计算值（6 位小数）。",
+      "rounded_duration": "ceil(raw_calculated_duration)，向上取整到整数工作日。",
+      "applied_min_duration": "本次实际施加的最短工期值；0 表示本实例不适用任何下限。",
+      "min_duration_scope": "所施加下限的作用域：PROJECT / FLOOR / ZONE / MOBILISATION / INSPECTION_CYCLE / LEGACY_UNSPECIFIED / NONE。",
+      "rounding_penalty_days": "rounded_duration - raw_calculated_duration，取整造成的膨胀。",
+      "minimum_duration_penalty_days": "final_duration - rounded_duration，下限造成的膨胀。"
+    },
+    "purpose": "让「空间分解到底制造了多少虚假工期」可以被逐条、逐工序、逐分区地看到，而不是靠感觉。"
+  },
+
+  "fragmentation_sweep": {
+    "default_zone_counts": [1, 2, 3, 4, 5, 6, 8],
+    "diminishing_return_threshold_days": 1,
+    "metrics": [
+      "finish_date",
+      "cpm_duration_days",
+      "zone_count",
+      "rounding_penalty_days",
+      "minimum_duration_penalty_days",
+      "legacy_unclassified_min_penalty_days",
+      "task_count",
+      "quantity_drift",
+      "graph_issues",
+      "compliance_errors"
+    ],
+    "note": "分区数不是越大越好。分区同时产生两个相反效应：流水重叠省工期；取整 + 下限 + 每段最小规模加工期。本扫描只负责把两条曲线同时摆出来。",
+    "not_a_recommendation_engine": true,
+    "missing_inputs_for_real_recommendation": [
+      "physical workfront capacity",
+      "available crew",
+      "congestion",
+      "access / logistics",
+      "minimum practical zone size"
+    ],
+    "missing_inputs_for_real_recommendation_zh": [
+      "物理工作面容量",
+      "可用班组数",
+      "拥堵/交叉干扰",
+      "通行与物流条件",
+      "最小可实施分区规模"
+    ],
+    "deferred_to": "V6.2 Resource / Crew Optimization"
+  },
+
+  "known_limits": [
+    "classification 与 mobilisation 当前均为空：所有工序的 min_duration_days 作用域都是 LEGACY_UNSPECIFIED，行为与 V6.1 完全一致。这是刻意选择，不是遗漏 —— 分类需要现场依据与确认人。",
+    "PROJECT / FLOOR 下限目前只做聚合校验与报告，不会回填到分区工期：宁可暴露欠账，也不静默加工期。",
+    "跨区流水仍默认单班组 FS；多班组效率折减属于 V6.2。",
+    "未做：机组人员优化、Crash-by-Crew、Scenario Optimizer、UI、MPP 输出。"
+  ]
+}

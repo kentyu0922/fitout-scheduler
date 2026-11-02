@@ -1,0 +1,206 @@
+{
+  "version": "1.0.0-anchored-to-pm-signoff",
+  "status": "BENCHMARK_FILE_LOADED",
+  "note": "Senior PM reference bands for core/senior_pm_review.py. Every band restates a figure the PM signed on 2026-09-23 or a row of the signed envelope table; nothing here is invented, and nothing here can change a calculated CPM duration.",
+  "governance": {
+    "rule": "A reference band is read-only. It never supplies, shortens, overrides or mutates a calculated CPM duration. A duration changes only through an approved scenario that re-solves the CPM.",
+    "no_fabrication": "Every band must carry a source_ref that resolves to a shipped file and key. load_benchmarks() raises when a band has no resolvable source_ref, so an unevidenced reference can never be presented as an evidenced one.",
+    "no_overstatement": "A band is described only as what its source_ref supports. It is never presented as a trade-body figure, a published national norm or a company norm, and it is never presented as a measured project actual."
+  },
+  "provenance": {
+    "status": "ANCHORED_TO_PM_SIGNOFF",
+    "origin": "Derived one-to-one from the PM-signed L2 master-duration table and its signed envelope bands.",
+    "derived_from": "config/l2_master_duration.json",
+    "signed_by": "PM",
+    "signed_role": "PM",
+    "signed_at": "2026-09-23",
+    "signoff_record": "DERIVATION_SIGNOFF_PM_filled_20260923.xlsx",
+    "source_refs": [
+      "config/l2_master_duration.json#envelope_bands",
+      "config/l2_master_duration.json#activity_types"
+    ],
+    "limitations": [
+      "These bands restate figures the PM signed on 2026-09-23. They are not measured project actuals: this pack holds no completed-project duration record, and no calibration dataset has been built from one.",
+      "A band is one trade's signed duration at the reference plate. It is NOT an independent cross-check of the engine. The engine consumes the very same signed table, so a band can confirm that a trade was scheduled as the PM signed it; it cannot establish that the signed figure is achievable.",
+      "The Physical Construction band is the signed envelope band, quoted in site days, for the governing plate and floor row. The PM signed its low and its high; the typical value is the arithmetic midpoint of that signed range and is a derived summary, not a signed number.",
+      "Where the PM signed a floor and no ceiling, the upper bound is b0 and the band is degenerate (low equals high). A degenerate band flags upward drift; it does not assert a normal range.",
+      "Physical Construction is selected by area: the governing row is the smallest signed maximum area that covers the project. Area beyond the largest signed row yields no band and is reported as INSUFFICIENT_BENCHMARK_DATA rather than extrapolated.",
+      "This file contains no area-to-duration lookup, no completion-date target and no saving commitment. Bands are compared on the unit each band declares, so a site-day band is never compared against a Mon-Fri count.",
+      "Trade-body figures, published national norms and company norms are deliberately absent: none was verified for this pack, so none is stated. A reviewer who wants such a reference must supply its source, and it will be recorded as an input, not as a finding."
+    ]
+  },
+  "benchmarks": [
+    {
+      "id": "BM-PHYS-ENV-MICRO",
+      "activity_family": "physical_construction",
+      "envelope_band": "micro",
+      "max_area": 800,
+      "max_floors": 1,
+      "range": {
+        "low": 45,
+        "typical": 57.5,
+        "high": 70
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for a micro project: up to the micro maximum area on a single floor.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[micro]",
+      "notes": "Compared against the engine site-calendar span of the physical construction phase. Never against a Mon-Fri count."
+    },
+    {
+      "id": "BM-PHYS-ENV-ONE-PLATE",
+      "activity_family": "physical_construction",
+      "envelope_band": "one_plate",
+      "max_area": 4500,
+      "max_floors": 2,
+      "range": {
+        "low": 70,
+        "typical": 90,
+        "high": 110
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for a single plate: up to two floors within one plate.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[one_plate]",
+      "notes": "This is the band the 3.10 regression baseline reports as IN_BAND for a single-plate office. Typical is the midpoint of the signed range."
+    },
+    {
+      "id": "BM-PHYS-ENV-TWO-PLATE",
+      "activity_family": "physical_construction",
+      "envelope_band": "two_plate",
+      "max_area": 7500,
+      "max_floors": 3,
+      "range": {
+        "low": 100,
+        "typical": 122.5,
+        "high": 145
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for two plates: up to three floors.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[two_plate]",
+      "notes": "Governs any project above the single-plate maximum area and up to the two-plate maximum area."
+    },
+    {
+      "id": "BM-PHYS-ENV-FOUR-PLATE",
+      "activity_family": "physical_construction",
+      "envelope_band": "four_plate",
+      "max_area": 15000,
+      "max_floors": 6,
+      "range": {
+        "low": 150,
+        "typical": 180,
+        "high": 210
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for four plates: up to six floors.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[four_plate]",
+      "notes": "Governs any project above the two-plate maximum area and up to the four-plate maximum area."
+    },
+    {
+      "id": "BM-PHYS-ENV-CAMPUS-DUAL",
+      "activity_family": "physical_construction",
+      "envelope_band": "campus_dual",
+      "max_area": 40000,
+      "max_floors": 16,
+      "range": {
+        "low": 180,
+        "typical": 220,
+        "high": 260
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for a dual-campus project: up to sixteen floors.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[campus_dual]",
+      "notes": "Governs any project above the four-plate maximum area and up to the dual-campus maximum area."
+    },
+    {
+      "id": "BM-PHYS-ENV-HQ-TRIPLE",
+      "activity_family": "physical_construction",
+      "envelope_band": "hq_triple",
+      "max_area": 80000,
+      "max_floors": 40,
+      "range": {
+        "low": 200,
+        "typical": 250,
+        "high": 300
+      },
+      "unit": "site_days",
+      "basis": "PM-signed envelope band for a three-tower headquarters: up to forty floors.",
+      "source_type": "PM_SIGNED_ENVELOPE_BAND",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#envelope_bands[hq_triple]",
+      "notes": "The largest signed row. A project larger than this maximum area has no signed band and is reported as INSUFFICIENT_BENCHMARK_DATA."
+    },
+    {
+      "id": "BM-MOB-SITE-SETUP",
+      "activity_family": "mobilisation_site_protection",
+      "activity_type": "site_setup",
+      "range": {
+        "low": 5,
+        "typical": 5,
+        "high": 5
+      },
+      "unit": "working_days",
+      "basis": "PM-signed b_min 5 d and b0 5 d for site_setup, package mobilise, approval_state adjusted.",
+      "source_type": "PM_SIGNED_TRADE_DURATION",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#activity_types[site_setup]",
+      "notes": "The PM signed a floor of 5 d for temporary water, temporary power and site protection, and signed no ceiling, so the upper bound is b0. Degenerate band: it flags upward drift, it does not assert a normal range."
+    },
+    {
+      "id": "BM-TC-TESTING-COMMISSIONING",
+      "activity_family": "testing_commissioning",
+      "activity_type": "testing_commissioning",
+      "range": {
+        "low": 8,
+        "typical": 10,
+        "high": 12
+      },
+      "unit": "working_days",
+      "basis": "PM-signed b_min 8 d and b0 12 d for testing_commissioning, package commissioning, approval_state confirmed.",
+      "source_type": "PM_SIGNED_TRADE_DURATION",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#activity_types[testing_commissioning]",
+      "notes": "Scales on floors. The signed band is the plan of record; the review compares the scheduled integrated-T&C block against it."
+    },
+    {
+      "id": "BM-FF-E-FURNITURE",
+      "activity_family": "furniture_installation",
+      "activity_type": "furniture",
+      "range": {
+        "low": 3,
+        "typical": 4.5,
+        "high": 6
+      },
+      "unit": "working_days",
+      "basis": "PM-signed b_min 3 d and b0 6 d for furniture, package ff_e, approval_state confirmed.",
+      "source_type": "PM_SIGNED_TRADE_DURATION",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#activity_types[furniture]",
+      "notes": "The signed note binds this trade to the IAQ test sequence, so the band constrains placement only and never authorises changing the furniture date on its own."
+    },
+    {
+      "id": "BM-CLOSE-CONSTRUCTION-CLEANING",
+      "activity_family": "closeout_handover",
+      "activity_type": "construction_cleaning",
+      "range": {
+        "low": 4,
+        "typical": 4,
+        "high": 4
+      },
+      "unit": "working_days",
+      "basis": "PM-signed b_min 4 d and b0 4 d for construction_cleaning, package close_out, approval_state adjusted.",
+      "source_type": "PM_SIGNED_TRADE_DURATION",
+      "confidence": "pm_signed",
+      "source_ref": "config/l2_master_duration.json#activity_types[construction_cleaning]",
+      "notes": "The signed close_out package also carries final_cleaning at the same signed 4 d. The engine raises no closeout_handover activity, so this band is stated and reported as not comparable until such an activity exists."
+    }
+  ]
+}

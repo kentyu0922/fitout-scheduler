@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "description": "Unit normalization. The raw value, raw unit and conversion formula are always retained; a normalized value is never stored without its provenance.",
+  "standard_hours": 8,
+  "day_basis_note": "A source recorded against an 8-hour workday maps 1:1. A source using a different day length is rescaled by standard_hours / source_hours_per_workday. Recorded actual hours in A3 data are never rescaled.",
+
+  "conversion_formula": "normalized_value = (quantity_scale / labor_consumption) * (standard_hours / source_hours_per_workday)",
+  "inverse_formula": "labor_consumption = quantity_scale / normalized_value * (source_hours_per_workday / standard_hours)",
+
+  "quantity_unit_groups": {
+    "area": {
+      "normalized_unit": "m2",
+      "units": {"m2": 1.0, "平方米": 1.0, "10m2": 10.0, "10平方米": 10.0, "100m2": 100.0}
+    },
+    "length": {
+      "normalized_unit": "m",
+      "units": {"m": 1.0, "米": 1.0, "10m": 10.0, "10米": 10.0, "100m": 100.0}
+    },
+    "count": {
+      "normalized_unit": "each",
+      "units": {"each": 1.0, "套": 1.0, "个": 1.0, "件": 1.0, "台": 1.0, "10套": 10.0, "10个": 10.0}
+    }
+  },
+
+  "normalized_output_unit": {
+    "area": "m2/worker-8h-day",
+    "length": "m/worker-8h-day",
+    "count": "each/worker-8h-day"
+  },
+
+  "labor_unit_aliases": {
+    "工日": "worker_day",
+    "工日/单位": "worker_day",
+    "工日/m2": "worker_day",
+    "工日/10m2": "worker_day",
+    "工日/10m": "worker_day",
+    "工日/套": "worker_day",
+    "worker_day": "worker_day"
+  },
+
+  "rules": {
+    "retain_raw_always": true,
+    "reject_unknown_unit": true,
+    "no_derived_value_without_formula": true
+  }
+}
