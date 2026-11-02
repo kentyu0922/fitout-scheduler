@@ -14,11 +14,11 @@
     "bold": 700
   },
   "colors": {
-    "accent_red": "E30613",
-    "space": "003E51",
-    "midnight": "131E29",
-    "ocean": "BCDEE6",
-    "sand": "E0C6AD",
+    "accent_red": "6B5CE7",
+    "space": "1F1F1F",
+    "midnight": "1F1F1F",
+    "ocean": "D9D6F0",
+    "sand": "D9D6F0",
     "ink": "1A1A1A",
     "rule_grey": "C9C9C9",
     "placeholder_grey": "888888"
@@ -28,13 +28,13 @@
       "font": "Arial",
       "size": 56,
       "weight": "light",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "cover_subtitle": {
       "font": "Arial",
       "size": 28,
       "weight": "regular",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "cover_byline": {
       "font": "Arial",
@@ -46,19 +46,19 @@
       "font": "Arial",
       "size": 36,
       "weight": "light",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "h2": {
       "font": "Arial",
       "size": 22,
       "weight": "light",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "h3": {
       "font": "Arial",
       "size": 16,
       "weight": "semibold",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "body": {
       "font": "Arial",
@@ -71,7 +71,7 @@
       "italic": true,
       "size": 18,
       "weight": "regular",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "caption": {
       "font": "Arial",
@@ -89,7 +89,7 @@
       "font": "Arial",
       "size": 10,
       "weight": "semibold",
-      "color": "003E51"
+      "color": "1F1F1F"
     },
     "placeholder": {
       "font": "Consolas",

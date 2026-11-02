@@ -7,7 +7,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.oxml.xmlchemy import OxmlElement
 
-COLORS={'space':'003E51','ink':'1A1A1A','ocean':'BCDEE6','grey':'888888','light':'F4FAFB','red':'E30613','white':'FFFFFF'}
+COLORS={'space':'1F1F1F','ink':'1A1A1A','ocean':'D9D6F0','grey':'888888','light':'F7F5FB','red':'6B5CE7','white':'FFFFFF'}
 def rgb(key):return RGBColor.from_string(COLORS.get(key,key))
 def text(s,x,y,w,h,value,size=20,color='ink',bold=False):
     box=s.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h));tf=box.text_frame

@@ -85,7 +85,7 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     model = ZM.load_spatial_model()
-    demo_key = "MNC_Standard_Fitout_DB_Invite"
+    demo_key = "Standard_Fitout_DB_Invite"
     plan = _build(DEMO_AREA, demo_key)
     solved = solve_schedule(plan["tasks"], START)
 

@@ -37,7 +37,7 @@ TEMPLATES = json.loads((ROOT / "templates" / "wbs_templates.json").read_text(enc
 RATES = None  # loaded lazily
 START = "2026-09-08"
 DEMO_AREA = 6000.0
-DEMO_TEMPLATE = "MNC_Standard_Fitout_DB_Invite"
+DEMO_TEMPLATE = "Standard_Fitout_DB_Invite"
 TARGET_DATE = "2027-05-15"
 
 CHANGED_FILES = [

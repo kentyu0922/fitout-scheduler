@@ -161,9 +161,9 @@ def write_delivery_note(output: Path, payload: dict, route: dict, changes: dict 
     doc = Document()
     
     # 文档调色板
-    COLOR_SPACE = RGBColor(0x00, 0x3E, 0x51)      # #003E51 Space navy (标题与核心要素)
+    COLOR_SPACE = RGBColor(0x1F, 0x1F, 0x1F)      # #1F1F1F charcoal (标题与核心要素)
     COLOR_INK = RGBColor(0x1A, 0x1A, 0x1A)        # #1A1A1A Ink (正文)
-    COLOR_RED = RGBColor(0xE3, 0x06, 0x13)        # #E30613 Accent red (警示/重度提示)
+    COLOR_RED = RGBColor(0xE6, 0xB8, 0x4D)        # #E6B84D attention gold (警示/待处理)
     
     style = doc.styles['Normal']
     style.font.name = 'Arial'

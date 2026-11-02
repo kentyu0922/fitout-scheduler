@@ -3,7 +3,7 @@
 export_html.py - 生成 高管级 (C-Suite Standard) 交付策略与进度推演决策看板
 ======================================================================================
 特性标准 (executive dashboard standard):
-  1. 【排版风格与商务美学】：纯净瓷白与雅致浅灰 (#f8fafc / #ffffff)，极细 1px 微边框 (#e2e8f0)，深空海军蓝 (#0f172a) 与克制点缀，Pretendard/Inter/SF Pro 高阶等宽数字排版。
+  1. 【排版风格与商务美学】：纯净瓷白与雅致浅灰 (#f8fafc / #ffffff)，极细 1px 微边框 (#e2e8f0)，深空海军蓝 (#1F1F1F) 与克制点缀，Pretendard/Inter/SF Pro 高阶等宽数字排版。
   2. 【项目主轴大标题第一优先】：统领全屏 21px Hero Title，去除非必要突兀英文黑标。
   3. 【极简横向胶囊分段器】：右上角纯横向 [ 中文 | English ] 一体化圆角药丸滑动切换，100% 双语字典覆盖。
   4. 【5 大 Executive KPI 卡片】：项目开工日、施工许可核发(含5~8d质安监保函安全窗口)、硬装物理竣工日、最终交付入驻日、总工期基准锁定。
@@ -27,8 +27,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Neutral accent mark (no company lockup).
 BRAND_MARK_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" height="32" width="64" role="presentation">
-  <rect x="0" y="10" width="64" height="4" fill="#E30613"/>
-  <rect x="0" y="18" width="36" height="4" fill="#003E51"/>
+  <rect x="0" y="10" width="64" height="4" fill="#6B5CE7"/>
+  <rect x="0" y="18" width="36" height="4" fill="#1F1F1F"/>
 </svg>"""
 
 def _parse_date(val: Any) -> Optional[datetime.date]:
@@ -220,9 +220,9 @@ def generate_html_report(
             disabled = 'disabled' if it['progress'] == 100 else ''
             
             av_code = it["person"][:2] if it["person"] else "PM"
-            av_color = "#C2410C" if "设计" in it["unit"] else ("#5C534A" if "施工" in it["unit"] else ("#E05A24" if "采招" in it["unit"] else "#6E675F"))
+            av_color = "#6B5CE7" if "设计" in it["unit"] else ("#5C534A" if "施工" in it["unit"] else ("#6B5CE7" if "采招" in it["unit"] else "#6E675F"))
             av_bg = "#F3EAE1"
-            fill_color = "#C2410C" if it['progress'] == 100 else ("#E07A3D" if it['progress'] > 0 else "#D6CBBF")
+            fill_color = "#6B5CE7" if it['progress'] == 100 else ("#8B7EF0" if it['progress'] > 0 else "#D9D6F0")
             icon = ""
 
             rows_html += f"""
@@ -344,29 +344,29 @@ def generate_html_report(
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;display=swap" rel="stylesheet" />
   <style>
     :root {{
-      --canvas-bg: #E8DFD4;
-      --tablet-bezel: #1C1814;
-      --app-bg: #F6F1EA;
-      --card-bg: #FFFCF8;
-      --card-subtle: #F3EAE1;
-      --card-opaque: #FFFCF8;
-      --border-subtle: #EBE0D4;
-      --border-line: #E2D4C6;
+      --canvas-bg: #F7F5FB;
+      --tablet-bezel: #1F1F1F;
+      --app-bg: #F7F5FB;
+      --card-bg: #FFFFFF;
+      --card-subtle: #F7F5FB;
+      --card-opaque: #FFFFFF;
+      --border-subtle: #E5E5E5;
+      --border-line: #D4D0E0;
 
-      --text-main: #2A241E;
-      --text-secondary: #5C534A;
-      --text-muted: #6E675F;
-      --text-dim: #8A8178;
+      --text-main: #1F1F1F;
+      --text-secondary: #4A4A4A;
+      --text-muted: #6B6B6B;
+      --text-dim: #8A8A8A;
 
-      --accent-red: #E30613;
-      --accent-orange: #E05A24;
-      --accent-deep: #C2410C;
-      --accent-sand: #E8D5C4;
-      --accent-peach: #F4E6D8;
-      --color-primary: #C2410C;
-      --color-on-primary: #FFF7F1;
-      --color-surface: #FFFCF8;
-      --color-on-surface: #2A241E;
+      --accent-red: #E6B84D;
+      --accent-orange: #6B5CE7;
+      --accent-deep: #6B5CE7;
+      --accent-sand: #D9D6F0;
+      --accent-peach: #F7F5FB;
+      --color-primary: #6B5CE7;
+      --color-on-primary: #FFFFFF;
+      --color-surface: #FFFFFF;
+      --color-on-surface: #1F1F1F;
 
       --space-1: 4px;
       --space-2: 8px;
@@ -402,7 +402,7 @@ def generate_html_report(
       font-family: -apple-system, BlinkMacSystemFont, "Inter", "Pretendard", "SF Pro Display", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       font-size: 16px;
       line-height: var(--lh-body);
-      background: #E8DFD4;
+      background: #F7F5FB;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
       scroll-padding-top: var(--header-h);
@@ -667,7 +667,7 @@ def generate_html_report(
       line-height: var(--lh-body);
     }}
     .d7-hero {{
-      background: linear-gradient(145deg, #C2410C 0%, #E05A24 55%, #EA7A3C 100%);
+      background: linear-gradient(145deg, #6B5CE7 0%, #6B5CE7 55%, #8B7EF0 100%);
       border: none;
       color: #FFF7F1;
       box-shadow: 0 10px 28px rgba(194, 65, 12, 0.22);
@@ -712,7 +712,7 @@ def generate_html_report(
     }}
     .d7-hero .d7-pill {{
       background: rgba(255,255,255,0.92);
-      color: #C2410C;
+      color: #6B5CE7;
     }}
     .d7-metric-val {{
       font-size: var(--fs-2xl);
@@ -731,7 +731,7 @@ def generate_html_report(
     .d7-bar-track.light {{ background: #F0E6DC; }}
     .d7-bar-fill.terra {{
       height: 100%;
-      background: linear-gradient(90deg, #C2410C, #E05A24);
+      background: linear-gradient(90deg, #6B5CE7, #6B5CE7);
       border-radius: 999px;
     }}
     .d7-gauge-wrap {{
@@ -789,7 +789,7 @@ def generate_html_report(
       text-align: center;
       padding-bottom: 6px;
     }}
-    .d7-gantt-col.cny {{ color: #C2410C; }}
+    .d7-gantt-col.cny {{ color: #6B5CE7; }}
     .d7-gantt-label {{
       font-size: 11px;
       font-weight: 700;
@@ -821,14 +821,14 @@ def generate_html_report(
       padding: 0 8px;
       min-width: 0;
     }}
-    .d7-bar.done {{ background: #C2410C; }}
-    .d7-bar.prog {{ background: #E07A3D; }}
+    .d7-bar.done {{ background: #6B5CE7; }}
+    .d7-bar.prog {{ background: #8B7EF0; }}
     .d7-bar.plan {{ background: #EDE4DA; color: #8A8178; }}
     .d7-today-line {{
       position: absolute;
       top: 0; bottom: 0;
       width: 0;
-      border-left: 1.5px dashed #C2410C;
+      border-left: 1.5px dashed #6B5CE7;
       opacity: 0.55;
       pointer-events: none;
     }}
@@ -917,41 +917,41 @@ def generate_html_report(
     }}
     .d7-status.down {{ background: var(--accent-peach); color: var(--accent-deep); }}
     .d7-status.active {{ background: var(--card-subtle); color: var(--accent-deep); }}
-    .d7-status.idle {{ background: #F1EBE4; color: var(--text-secondary); }}
+    .d7-status.idle {{ background: #F7F5FB; color: var(--text-secondary); }}
     .d7-insight {{
-      background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 55%, #FFF7ED 100%);
-      border: 1px solid #FED7AA;
+      background: linear-gradient(145deg, #FFFFFF 0%, #F7F5FB 55%, #FFFFFF 100%);
+      border: 1px solid #D9D6F0;
       border-radius: var(--radius-md);
       padding: 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 4px 20px -2px rgba(234, 88, 12, 0.08);
+      box-shadow: 0 4px 20px -2px rgba(107, 92, 231, 0.08);
       position: relative;
       overflow: hidden;
       transition: all var(--ease);
     }}
     .d7-insight:hover {{
-      border-color: #FDBA74;
-      box-shadow: 0 8px 24px -2px rgba(234, 88, 12, 0.12);
+      border-color: #C4B8E8;
+      box-shadow: 0 8px 24px -2px rgba(107, 92, 231, 0.12);
     }}
     .d7-insight::before {{
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #E30613 0%, #EA580C 100%);
+      background: linear-gradient(90deg, #6B5CE7 0%, #6B5CE7 100%);
     }}
     .d7-insight h3 {{
       font-size: 14.5px;
       font-weight: 800;
-      color: #0F172A;
+      color: #1F1F1F;
       margin: 4px 0 6px;
     }}
     .d7-insight .d7-kicker {{
       font-size: 10.5px;
       font-weight: 800;
-      color: #C2410C;
+      color: #6B5CE7;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }}
@@ -963,7 +963,7 @@ def generate_html_report(
       max-width: 100%;
     }}
     .d7-insight-btn {{
-      background: #0F172A;
+      background: #1F1F1F;
       color: #FFFFFF;
       border: none;
       border-radius: 999px;
@@ -1346,10 +1346,9 @@ def generate_html_report(
       flex-direction: column;
       gap: 5px;
     }}
-    .risk-item-box.critical,
     .risk-item-box.high,
     .risk-item-box.medium {{ border-left-color: var(--accent-deep); }}
-    .risk-item-box.critical {{ border-left-width: 4px; }}
+    .risk-item-box.critical {{ border-left-color: var(--accent-red); border-left-width: 4px; }}
 
     .risk-item-head {{
       display: flex;
@@ -1487,7 +1486,7 @@ def generate_html_report(
             <div class="d7-gauge-wrap">
               <svg viewBox="0 0 120 72" aria-hidden="true">
                 <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="#F0E6DC" stroke-width="10" stroke-linecap="round"/>
-                <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="#E05A24" stroke-width="10" stroke-linecap="round" stroke-dasharray="144" stroke-dashoffset="0"/>
+                <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="#6B5CE7" stroke-width="10" stroke-linecap="round" stroke-dasharray="144" stroke-dashoffset="0"/>
               </svg>
               <div class="d7-gauge-label">{gauge_pct}%</div>
             </div>
@@ -1502,8 +1501,8 @@ def generate_html_report(
                 <div class="d7-kicker">{start_date_str} → {finish_date_str} · {total_calendar_days} 日历天</div>
               </div>
               <div class="d7-gantt-legend">
-                <span><i class="d7-leg-dot" style="background:#C2410C;"></i>已完成</span>
-                <span><i class="d7-leg-dot" style="background:#E07A3D;"></i>进行中</span>
+                <span><i class="d7-leg-dot" style="background:#6B5CE7;"></i>已完成</span>
+                <span><i class="d7-leg-dot" style="background:#8B7EF0;"></i>进行中</span>
                 <span><i class="d7-leg-dot" style="background:#EDE4DA;"></i>未开始</span>
               </div>
             </div>
@@ -1530,15 +1529,15 @@ def generate_html_report(
             <h3 style="font-size:14px; color:var(--text-main);">投资结构 · Budget Mix</h3>
             <div class="d7-kicker">按阶段锁定，非现场已发生</div>
             <div class="d7-stack">
-              <span style="width:18%; background:#C2410C;"></span>
-              <span style="width:62%; background:#E07A3D;"></span>
+              <span style="width:18%; background:#6B5CE7;"></span>
+              <span style="width:62%; background:#8B7EF0;"></span>
               <span style="width:14%; background:#E8B48A;"></span>
               <span style="width:6%; background:#F0E6DC;"></span>
             </div>
-            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#C2410C;"></i>设计深化</span><span>{("-" if cost_unknown else str(cost_design) + " 万")}</span></div>
-            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#E07A3D;"></i>现场施工</span><span>{("-" if cost_unknown else str(cost_gc) + " 万")}</span></div>
+            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#6B5CE7;"></i>设计深化</span><span>{("-" if cost_unknown else str(cost_design) + " 万")}</span></div>
+            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#8B7EF0;"></i>现场施工</span><span>{("-" if cost_unknown else str(cost_gc) + " 万")}</span></div>
             <div class="d7-budget-row"><span><i class="d7-dot" style="background:#E8B48A;"></i>家具机电</span><span>{("-" if cost_unknown else str(cost_ffne) + " 万")}</span></div>
-            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#D6CBBF;"></i>检测验收</span><span>{("-" if cost_unknown else str(cost_qa) + " 万")}</span></div>
+            <div class="d7-budget-row"><span><i class="d7-dot" style="background:#D9D6F0;"></i>检测验收</span><span>{("-" if cost_unknown else str(cost_qa) + " 万")}</span></div>
             <div class="d7-budget-row"><span>合计</span><span>{("-" if cost_unknown else str(cost_wan) + " 万")}</span></div>
           </div>
         </div>
@@ -1551,15 +1550,15 @@ def generate_html_report(
               <div class="d7-donut">
                 <svg viewBox="0 0 36 36">
                   <circle cx="18" cy="18" r="14" fill="none" stroke="#F0E6DC" stroke-width="5"/>
-                  <circle cx="18" cy="18" r="14" fill="none" stroke="#C2410C" stroke-width="5" stroke-dasharray="55 45" stroke-dashoffset="0"/>
-                  <circle cx="18" cy="18" r="14" fill="none" stroke="#E07A3D" stroke-width="5" stroke-dasharray="25 75" stroke-dashoffset="-55"/>
+                  <circle cx="18" cy="18" r="14" fill="none" stroke="#6B5CE7" stroke-width="5" stroke-dasharray="55 45" stroke-dashoffset="0"/>
+                  <circle cx="18" cy="18" r="14" fill="none" stroke="#8B7EF0" stroke-width="5" stroke-dasharray="25 75" stroke-dashoffset="-55"/>
                   <circle cx="18" cy="18" r="14" fill="none" stroke="#E8B48A" stroke-width="5" stroke-dasharray="20 80" stroke-dashoffset="-80"/>
                 </svg>
                 <div class="d7-donut-center"><b>{donut_pct}%</b><span>配置完成</span></div>
               </div>
               <div class="d7-legend-list">
-                <div><i class="d7-leg-dot" style="background:#C2410C;"></i>施工总包 55%</div>
-                <div><i class="d7-leg-dot" style="background:#E07A3D;"></i>设计深化 25%</div>
+                <div><i class="d7-leg-dot" style="background:#6B5CE7;"></i>施工总包 55%</div>
+                <div><i class="d7-leg-dot" style="background:#8B7EF0;"></i>设计深化 25%</div>
                 <div><i class="d7-leg-dot" style="background:#E8B48A;"></i>检测顾问 20%</div>
                 <button type="button" class="d7-ghost-btn" onclick="switchMainView('calendar')">查看时间轴</button>
               </div>

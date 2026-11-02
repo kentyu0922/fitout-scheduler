@@ -32,7 +32,7 @@ RATES = load_productivity_rates()
 START = "2026-09-08"
 DEMO_AREA = 6000.0
 ZONE_COUNTS = [1, 2, 3, 4, 5, 6, 8]
-KEY = "MNC_Standard_Fitout_DB_Invite"
+KEY = "Standard_Fitout_DB_Invite"
 
 OUT = ROOT / "output" / "v6_1_1"
 OUT.mkdir(parents=True, exist_ok=True)

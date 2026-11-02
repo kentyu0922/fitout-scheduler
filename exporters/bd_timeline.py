@@ -96,7 +96,7 @@ def generate_axis_board(project_title,project_meta,tasks,output_path):
             centered(center-width/2,y+.37,width,.33,f'{day.year}/{day.month}/{day.day}',15,'grey')
     # Arrow intervals are explicitly an anchor-to-anchor BD narrative. They do
     # not replace the overlapping L2 phases available in the PM companion deck.
-    colors=['E0C6AD','BCDEE6','C9C9C9','003E51','E0C6AD','BCDEE6']
+    colors=['D9D6F0','D9D6F0','C9C9C9','1F1F1F','D9D6F0','D9D6F0']
     bands=mainline_bands(tasks,points)
     for i,(label,start,end) in enumerate(bands):
         x1=xdate(dt.date.fromisoformat(start));x2=xdate(dt.date.fromisoformat(end))
@@ -111,7 +111,7 @@ def generate_axis_board(project_title,project_meta,tasks,output_path):
         if tick<axis_end:
             nxt=dt.date(tick.year+(tick.month==12),1 if tick.month==12 else tick.month+1,1)
             w=xdate(nxt)-x
-            rect(s,x,axis_y,w,band_h,'F4FAFB' if tick.year==a.year else 'F3E8DD')
+            rect(s,x,axis_y,w,band_h,'F7F5FB' if tick.year==a.year else 'F7F5FB')
             line=s.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,Inches(x),Inches(axis_y-.025),Inches(x),Inches(axis_y+band_h+.13));line.line.color.rgb=rgb('C9C9C9');line.line.width=Pt(.7)
             centered(x,axis_y+.04,w,.29,str(tick.month)+'月',16 if month_count<=12 else 13,'space',True)
             centered(x,axis_y+.34,w,.22,str(tick.year),10,'grey')

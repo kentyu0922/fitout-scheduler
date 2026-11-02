@@ -66,7 +66,7 @@ def write_conditions(output,payload):
     doc=Document();sec=doc.sections[0];sec.top_margin=Inches(.6);sec.bottom_margin=Inches(.6)
     for name in ['Normal','Heading 1','Heading 2']:
         st=doc.styles[name];st.font.name='Arial';st.font.size=Pt(10 if name=='Normal' else 16 if name=='Heading 1' else 12)
-        st.font.color.rgb=RGBColor.from_string('1A1A1A' if name=='Normal' else '003E51')
+        st.font.color.rgb=RGBColor.from_string('1A1A1A' if name=='Normal' else '1F1F1F')
         st.element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'),'DengXian')
     doc.add_heading('本次排程条件',0)
     doc.add_paragraph(payload.get('project',{}).get('project_name','项目'))
@@ -80,7 +80,7 @@ def write_conditions(output,payload):
             cells[0].text=x['label'];cells[1].text=x['value'];cells[2].text=x['status']
             if x['status']=='用户提供':cells[2].text+='\n'+('对话' if x['source']=='explicit_cli_or_prompt_facts' else Path(x['source']).name)
         for cell in flat_cells[:3]:
-            sh=OxmlElement('w:shd');sh.set(qn('w:fill'),'BCDEE6');cell._tc.get_or_add_tcPr().append(sh)
+            sh=OxmlElement('w:shd');sh.set(qn('w:fill'),'D9D6F0');cell._tc.get_or_add_tcPr().append(sh)
     excluded=[x['label'] for x in data if x['field'].startswith('addon_') and x['value']=='明确排除']
     unknown=[x['label'] for x in data if x['field'].startswith('addon_') and x['value']=='未确认、不自动加载']
     if excluded:doc.add_paragraph('本次明确排除：'+'、'.join(excluded)+'。')

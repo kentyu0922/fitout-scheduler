@@ -36,7 +36,7 @@ from core.zone_model import split_area                          # noqa: E402
 TEMPLATES = json.loads((ROOT / "templates" / "wbs_templates.json").read_text(encoding="utf-8"))["templates"]
 START = "2026-09-08"
 DEMO_AREA = 6000.0
-DEMO_TEMPLATE = "MNC_Standard_Fitout_DB_Invite"
+DEMO_TEMPLATE = "Standard_Fitout_DB_Invite"
 TRADES = ["general", "partitions_ceilings", "mep_mechanical", "mep_electrical",
           "wet_finishes", "joinery", "flooring", "commissioning", "furniture"]
 

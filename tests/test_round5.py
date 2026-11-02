@@ -296,7 +296,7 @@ def test_document_styling_preserves_text_and_chinese_fonts():
     for p in list(doc.paragraphs)+[p for c in table._cells for p in c.paragraphs]:
         for run in p.runs:
             assert run.font.name=='Arial' and run._r.rPr.rFonts.get(qn('w:eastAsia'))=='DengXian'
-            assert str(run.font.color.rgb)==('003E51' if p._p is title._p else '1A1A1A')
+            assert str(run.font.color.rgb)==('1F1F1F' if p._p is title._p else '1A1A1A')
 
 
 def test_cold_unpacked_full_delivery_under_one_point_five_seconds(tmp_path):

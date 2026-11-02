@@ -206,7 +206,7 @@ def main(argv=None) -> None:
     # ③ 招采形态 (DB=D&B / DBB) 与 ④ 招标方式 (invite=邀请 / public=公开) 为正交两维
     parser.add_argument("--delivery", type=str, choices=["DB", "DBB"], help="招采形态: DB(D&B 设计施工一体化) / DBB(设计-招标-施工)")
     parser.add_argument("--bidding", type=str, choices=["invite", "public"], help="招标方式: invite(邀请招标) / public(公开招标)")
-    parser.add_argument("--mode", type=str, help="(兼容旧版) 直接指定模板键, 如 MNC_Standard_Fitout_DB_Invite")
+    parser.add_argument("--mode", type=str, help="(兼容旧版) 直接指定模板键, 如 Standard_Fitout_DB_Invite")
     parser.add_argument("--target_date", type=str, help="硬性要求的项目交付搬迁日 (YYYY-MM-DD)。用户原意保持不变，绝不隐藏提前")
     parser.add_argument("--allow_diagnostic_baseline", action="store_true", default=False,
                         help="倒排不可行时仍写出诊断产物；缺省：不可行则非零退出。")
@@ -321,10 +321,10 @@ def main(argv=None) -> None:
                              "--freight_lifts, --zones, or --rate_level. The agent must not pass this.")
     # ③ x ④ -> 4 套模板键映射
     TEMPLATE_MAP = {
-        ("DB", "invite"):  "MNC_Standard_Fitout_DB_Invite",
-        ("DB", "public"):  "MNC_Standard_Fitout_DB_Public",
-        ("DBB", "invite"): "MNC_Standard_Fitout_DBB_Invite",
-        ("DBB", "public"): "MNC_Standard_Fitout_Office_DBB",
+        ("DB", "invite"):  "Standard_Fitout_DB_Invite",
+        ("DB", "public"):  "Standard_Fitout_DB_Public",
+        ("DBB", "invite"): "Standard_Fitout_DBB_Invite",
+        ("DBB", "public"): "Standard_Fitout_Office_DBB",
     }
     
     args = parser.parse_args(argv)

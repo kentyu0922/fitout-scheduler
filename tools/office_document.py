@@ -11,12 +11,12 @@ def apply(doc,title):
         if style.type==1:
             style.font.name='Arial'
             style.element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'),'DengXian')
-            style.font.color.rgb=RGBColor.from_string('003E51' if style.name.startswith(('Heading','Title')) else '1A1A1A')
+            style.font.color.rgb=RGBColor.from_string('1F1F1F' if style.name.startswith(('Heading','Title')) else '1A1A1A')
     for p in list(doc.paragraphs)+[p for t in doc.tables for c in t._cells for p in c.paragraphs]:
         # Resolving p.style repeatedly scans every document style for the default.
         # Cache names once; missing/invalid paragraph style IDs still use the default.
         name=paragraph_names.get(p._p.style,default_name)
-        color=RGBColor.from_string('003E51' if name.startswith(('Heading','Title')) else '1A1A1A')
+        color=RGBColor.from_string('1F1F1F' if name.startswith(('Heading','Title')) else '1A1A1A')
         for run in p.runs:
             run.font.name='Arial';run._r.get_or_add_rPr().rFonts.set(qn('w:eastAsia'),'DengXian')
             run.font.color.rgb=color

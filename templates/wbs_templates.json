@@ -2,8 +2,8 @@
   "version": "2.0",
   "description": "PMP Lead PM Master 标准 WBS 模版库 (8000㎡洁净室 + 20000㎡纯办公)",
   "templates": {
-    "MNC_Standard_Fitout_DB_Invite": {
-      "name": "标准外企 (MNC) D&B 设计施工一体化工装项目模板 (Design & Build)",
+    "Standard_Fitout_DB_Invite": {
+      "name": "标准 D&B 设计施工一体化工装项目模板 (Design & Build)",
       "description": "适用于办公/实验室工装。单一责任点：前期规划 ➔ D&B 邀请比选多轮招采 ➔ 中标后承包商深化与图审 ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 强排通风 ➔ 验收+二次复测 ➔ 搬迁。",
       "node_count": 78,
       "base_area": 8000,
@@ -585,8 +585,8 @@
         }
       ]
     },
-    "MNC_Standard_Fitout_Office_DBB": {
-      "name": "标准外企 (MNC) DBB 公开招标工装项目模板 (Design-Bid-Build, Open Public Tendering)",
+    "Standard_Fitout_Office_DBB": {
+      "name": "标准 DBB 公开招标工装项目模板 (Design-Bid-Build, Open Public Tendering)",
       "description": "适用于大面积/国有资金项目。前期规划 ➔ 招设计单位(含Pre-Q) ➔ 设计深化与第三方图审合格 ➔ 施工总包公开招标 ➔ 申领施工许可证 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 通风 ➔ 验收+二次复测 ➔ 搬迁。",
       "node_count": 83,
       "base_area": 8000,
@@ -594,7 +594,7 @@
       "tasks": [
         {
           "id": 1,
-          "name": "标准外企 (MNC) DBB 公开招标工装项目",
+          "name": "标准 DBB 公开招标工装项目",
           "outline_level": 1,
           "duration_days": 0,
           "predecessors": ""
@@ -1205,8 +1205,8 @@
         }
       ]
     },
-    "MNC_Standard_Fitout_DB_Public": {
-      "name": "标准外企 (MNC) D&B 设计施工一体化公开招标工装项目模板 (Design & Build, Open Public Tendering)",
+    "Standard_Fitout_DB_Public": {
+      "name": "标准 D&B 设计施工一体化公开招标工装项目模板 (Design & Build, Open Public Tendering)",
       "description": "适用于办公/实验室工装。单一责任点：前期规划 ➔ D&B 公开招标(公告/挂网/开标/公示) ➔ 中标后承包商深化与图审 ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 强排通风 ➔ 验收+二次复测 ➔ 搬迁。",
       "node_count": 73,
       "base_area": 8000,
@@ -1214,7 +1214,7 @@
       "tasks": [
         {
           "id": 1,
-          "name": "标准外企 (MNC) D&B 公开招标工装项目",
+          "name": "标准 D&B 公开招标工装项目",
           "outline_level": 1,
           "duration_days": 0,
           "predecessors": ""
@@ -1752,8 +1752,8 @@
         }
       ]
     },
-    "MNC_Standard_Fitout_DBB_Invite": {
-      "name": "标准外企 (MNC) DBB 邀请招标工装项目模板 (Design-Bid-Build, Invited Tendering)",
+    "Standard_Fitout_DBB_Invite": {
+      "name": "标准 DBB 邀请招标工装项目模板 (Design-Bid-Build, Invited Tendering)",
       "description": "适用于纯办公/综合工装。前期规划 ➔ 招设计单位(含Pre-Q) ➔ 方案/SD/CD施工图深化/第三方图审合格 ➔ 招施工总包(图审后发标，BOQ提前编制) ➔ 施工许可 ➔ 实体施工 ➔ 物理竣工 ➔ 首次盲测+家具进场 ➔ 通风 ➔ 验收+二次复测 ➔ 搬迁。",
       "node_count": 89,
       "base_area": 8000,
@@ -1761,7 +1761,7 @@
       "tasks": [
         {
           "id": 1,
-          "name": "标准外企 (MNC) DBB 邀请招标工装项目",
+          "name": "标准 DBB 邀请招标工装项目",
           "outline_level": 1,
           "duration_days": 0,
           "predecessors": ""

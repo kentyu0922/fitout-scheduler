@@ -84,21 +84,21 @@ def generate(path):
     ws.title = "项目准入与事实采集表"
     ws.merge_cells("B1:F1")
     ws["B1"] = "项目总控进度事实采集与决策需求表"
-    ws["B1"].font = Font(name="Microsoft YaHei", size=14, bold=True, color="003E51")
+    ws["B1"].font = Font(name="Microsoft YaHei", size=14, bold=True, color="1F1F1F")
     ws.merge_cells("B2:F2")
     ws["B2"] = "请填写项目实际工程条件及来源依据；未提供参数按披露的规划暂估处理，不代表已核实的定额。启动日、目标搬迁日至少填写一项。"
     ws["B2"].font = Font(name="Microsoft YaHei", size=10, color="555555")
 
     thin_gray = Side(style='thin', color='E0E0E0')
-    top_space = Side(style='medium', color='003E51')
-    bottom_red = Side(style='thin', color='E30613')
+    top_space = Side(style='medium', color='1F1F1F')
+    bottom_red = Side(style='thin', color='6B5CE7')
     header_border = Border(top=top_space, bottom=bottom_red, left=None, right=None)
     row_border = Border(bottom=thin_gray, left=None, right=None)
 
     for i, text in enumerate(["字段键", "字段说明", "填写要求", "项目值", "来源/备注", "示例或合法选项"], 1):
         cell = ws.cell(4, i, text)
-        cell.fill = PatternFill("solid", fgColor="BCDEE6")
-        cell.font = Font(name="Microsoft YaHei", size=11, bold=True, color="003E51")
+        cell.fill = PatternFill("solid", fgColor="D9D6F0")
+        cell.font = Font(name="Microsoft YaHei", size=11, bold=True, color="1F1F1F")
         cell.border = header_border
         cell.alignment = Alignment(vertical="center", horizontal="center" if i in (1, 4) else "left")
     ws.row_dimensions[4].height = 28

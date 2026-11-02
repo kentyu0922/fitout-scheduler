@@ -297,10 +297,10 @@ def scenario_comparison_for(run_dir: str, root: str):
     if not (delivery and bidding):
         return None
     mode = args.get("mode") or {
-        ("DB", "invite"): "MNC_Standard_Fitout_DB_Invite",
-        ("DB", "public"): "MNC_Standard_Fitout_DB_Public",
-        ("DBB", "invite"): "MNC_Standard_Fitout_DBB_Invite",
-        ("DBB", "public"): "MNC_Standard_Fitout_Office_DBB",
+        ("DB", "invite"): "Standard_Fitout_DB_Invite",
+        ("DB", "public"): "Standard_Fitout_DB_Public",
+        ("DBB", "invite"): "Standard_Fitout_DBB_Invite",
+        ("DBB", "public"): "Standard_Fitout_Office_DBB",
     }.get((delivery, bidding))
     if not mode:
         return None

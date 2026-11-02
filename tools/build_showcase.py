@@ -17,10 +17,10 @@ from core.procurement_policy import PROFILE
 
 logging.disable(logging.CRITICAL)
 T=json.loads((ROOT/'templates/wbs_templates.json').read_text(encoding='utf-8'))['templates']
-ROUTES=[dict(key='DBB_invite',delivery='DBB',bidding='invite',label='设计施工分开 · 邀请',template='MNC_Standard_Fitout_DBB_Invite'),
-        dict(key='DBB_public',delivery='DBB',bidding='public',label='设计施工分开 · 公开',template='MNC_Standard_Fitout_Office_DBB'),
-        dict(key='DB_invite',delivery='DB',bidding='invite',label='设计施工一体 · 邀请',template='MNC_Standard_Fitout_DB_Invite'),
-        dict(key='DB_public',delivery='DB',bidding='public',label='设计施工一体 · 公开',template='MNC_Standard_Fitout_DB_Public')]
+ROUTES=[dict(key='DBB_invite',delivery='DBB',bidding='invite',label='设计施工分开 · 邀请',template='Standard_Fitout_DBB_Invite'),
+        dict(key='DBB_public',delivery='DBB',bidding='public',label='设计施工分开 · 公开',template='Standard_Fitout_Office_DBB'),
+        dict(key='DB_invite',delivery='DB',bidding='invite',label='设计施工一体 · 邀请',template='Standard_Fitout_DB_Invite'),
+        dict(key='DB_public',delivery='DB',bidding='public',label='设计施工一体 · 公开',template='Standard_Fitout_DB_Public')]
 CATEGORIES={'项目条件':['A01','A02','A03','A19'],'数字与业务':['A04','A05','A06','A08','A09','A10','A11'],
             '空间与环境':['A07','A12','A13','A17','A18'],'工艺与交付':['A14','A15','A16','A20','A21','A22']}
 

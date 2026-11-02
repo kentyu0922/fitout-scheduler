@@ -279,12 +279,12 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
     header_style = ParagraphStyle("hdr", fontName=FONT_CN_BOLD, fontSize=9,
                                    leading=11, textColor=colors.HexColor("#1A1A1A"), alignment=TA_CENTER)
     name_base = ParagraphStyle("nb", fontName=FONT_CN, fontSize=8.5, leading=11,
-                               textColor=colors.HexColor("#003E51"), alignment=TA_LEFT)
+                               textColor=colors.HexColor("#1F1F1F"), alignment=TA_LEFT)
     name_bold = ParagraphStyle("nb_b", parent=name_base, fontName=FONT_CN_BOLD)
-    name_ms = ParagraphStyle("nb_ms", parent=name_bold, textColor=colors.HexColor("#003E51"))
+    name_ms = ParagraphStyle("nb_ms", parent=name_bold, textColor=colors.HexColor("#1F1F1F"))
     cell_center = ParagraphStyle("cc", fontName=FONT_CN, fontSize=8.5, leading=11,
-                                 textColor=colors.HexColor("#003E51"), alignment=TA_CENTER)
-    cell_ms = ParagraphStyle("cc_ms", parent=cell_center, fontName=FONT_CN_BOLD, textColor=colors.HexColor("#003E51"))
+                                 textColor=colors.HexColor("#1F1F1F"), alignment=TA_CENTER)
+    cell_ms = ParagraphStyle("cc_ms", parent=cell_center, fontName=FONT_CN_BOLD, textColor=colors.HexColor("#1F1F1F"))
 
     def name_cell(task):
         indent = (task["level"] - 1) * 12
@@ -346,7 +346,7 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
         canvas_obj.setFont(FONT_CN, 8)
         canvas_obj.drawRightString(w - 36, h - 38,
                                    "导出基准：%s    第 %d 页" % (datetime.date.today().isoformat(), d.page))
-        canvas_obj.setStrokeColor(colors.HexColor("#BCDEE6"))
+        canvas_obj.setStrokeColor(colors.HexColor("#D9D6F0"))
         canvas_obj.setLineWidth(1.2)
         canvas_obj.line(36, h - 45, w - 36, h - 45)
         canvas_obj.setFont(FONT_CN, 7.5)
@@ -367,12 +367,12 @@ def build_table_pdf(tasks, out_path, title=DEFAULT_TITLE):
 # Format 2: Executive A3 Gantt PDF (High-End Visual Dashboard)
 # ============================================================
 # Professional Palette
-BG_DARK = HexColor("#003E51")          # Space navy
-BG_HEADER_CARD = HexColor("#003E51")
-ACCENT_BLUE = HexColor("#003E51")
-ACCENT_SKY = HexColor("#BCDEE6")
+BG_DARK = HexColor("#1F1F1F")          # charcoal
+BG_HEADER_CARD = HexColor("#1F1F1F")
+ACCENT_BLUE = HexColor("#1F1F1F")
+ACCENT_SKY = HexColor("#D9D6F0")
 HEADER_LINE = ACCENT_SKY
-ACCENT_GOLD = HexColor("#003E51")
+ACCENT_GOLD = HexColor("#1F1F1F")
 TEXT_WHITE = colors.white
 TEXT_MUTED = HexColor("#888888")       # Slate 400
 TEXT_MAIN = HexColor("#1A1A1A")        # Slate 900
@@ -380,24 +380,24 @@ TEXT_SUB = HexColor("#888888")         # Slate 600
 
 BORDER_LIGHT = HexColor("#DEDFE1")     # Slate 200
 BORDER_DARK = HexColor("#888888")      # Slate 400
-BORDER_HEADER = HexColor("#003E51")    # Slate 700
+BORDER_HEADER = HexColor("#1F1F1F")    # Slate 700
 GRID_MONTH = HexColor("#C9C9C9")       # Month vertical line
 
 ZEBRA_EVEN = colors.white
 ZEBRA_ODD = HexColor("#FAFBFB")        # Slate 50
-ROW_SUM_BG = HexColor("#EAF3F5")       # Slate 100 for summary
+ROW_SUM_BG = HexColor("#F7F5FB")       # summary row
 ROW_MS_BG = HexColor("#FFFFFF")        # Soft Amber 50 for milestone
 
-BAR_PHASE = HexColor("#003E51")        # Dark Slate summary bracket
-BAR_TASK_DEFAULT = HexColor("#003E51")
-BAR_PROCURE = HexColor("#BCDEE6")      # Teal 600
+BAR_PHASE = HexColor("#1F1F1F")        # Dark Slate summary bracket
+BAR_TASK_DEFAULT = HexColor("#1F1F1F")
+BAR_PROCURE = HexColor("#D9D6F0")      # lavender gray
 
-MS_STATUTORY = HexColor("#003E51")
-MS_GATE = HexColor("#003E51")
-MS_TENDER = HexColor("#003E51")
+MS_STATUTORY = HexColor("#1F1F1F")
+MS_GATE = HexColor("#1F1F1F")
+MS_TENDER = HexColor("#1F1F1F")
 
-HOLIDAY_BG = HexColor("#FEF2F2")       # Soft Rose (Spring Festival Window)
-HOLIDAY_BORDER = HexColor("#FCA5A5")   # Rose 300
+HOLIDAY_BG = HexColor("#F7F5FB")       # holiday window
+HOLIDAY_BORDER = HexColor("#C4B8E8")   # lavender
 
 
 def build_gantt_pdf(title, tasks, out_path, meta=None):
@@ -513,11 +513,11 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
             c.setFont(font_cn, 8)
             c.drawString(margin_x, H - 36, "  ·  ".join(bits))
         if meta.get("schedule_deficit"):
-            c.setFillColor(colors.HexColor("#B00020"))
+            c.setFillColor(colors.HexColor("#1F1F1F"))
             c.setFont(font_cn_bold, 8)
             c.drawString(margin_x + 320, H - 36, str(meta["schedule_deficit"].get("banner") or ""))
         if meta.get("equipment_lead_warnings") or meta.get("incomplete_leads"):
-            c.setFillColor(colors.HexColor("#B00020"))
+            c.setFillColor(colors.HexColor("#1F1F1F"))
             c.setFont(font_cn_bold, 8)
             c.drawRightString(W - margin_x - 70, H - 36, "交货期未填，不完整")
         logo = os.path.join(os.path.dirname(BASE), "assets", "brand-mark.png")
@@ -672,7 +672,7 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
                 name_display = name_str
 
             c.setFont(font_cn_bold if is_phase else font_cn, 7.5)
-            c.setFillColor(TEXT_MAIN if not is_ms else HexColor("#003E51"))
+            c.setFillColor(TEXT_MAIN if not is_ms else HexColor("#1F1F1F"))
             c.drawString(margin_x + LEFT_COLS[1][1] + indent + 2, cy - 2.5, name_display)
 
             # 左表 3: 工期天数 (0天彻底修复：里程碑专用标识，阶段加粗显示汇总天数)
@@ -692,7 +692,7 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
 
             # 左表 4: 起始日 (关键里程碑明确展示起始日)
             c.setFont(font_cn_bold if is_phase else font_cn, 7.0)
-            c.setFillColor(TEXT_MAIN if not is_ms else HexColor("#003E51"))
+            c.setFillColor(TEXT_MAIN if not is_ms else HexColor("#1F1F1F"))
             c.drawCentredString(margin_x + LEFT_COLS[3][1] + LEFT_COLS[3][2] / 2, cy - 2.5, t["start"])
 
             # 左表 5: 截止日 (关键里程碑明确展示截止日)
@@ -732,7 +732,7 @@ def build_gantt_pdf(title, tasks, out_path, meta=None):
                 p.lineTo(mx - dd, cy)
                 p.close()
                 c.setFillColor(ms_color)
-                c.setStrokeColor(HexColor("#003E51") if ms_color == MS_TENDER else HexColor("#003E51"))
+                c.setStrokeColor(HexColor("#1F1F1F") if ms_color == MS_TENDER else HexColor("#1F1F1F"))
                 c.setLineWidth(0.6)
                 c.drawPath(p, fill=1, stroke=1)
 
